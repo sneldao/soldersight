@@ -1,0 +1,132 @@
+{
+  "388f924cae5aab42": {
+    "label": "violation",
+    "action": "BLOCK",
+    "confidence": 0.964,
+    "probabilities": {
+      "supported": 0.01145831268748015,
+      "violation": 0.9635042592886295,
+      "insufficient_information": 0.02190121240781838,
+      "inconsistent_context": 0.003136215616072007
+    },
+    "prediction_set": [
+      "supported",
+      "violation",
+      "insufficient_information"
+    ],
+    "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+    "unsure": true
+  },
+  "34e0a2ea22b09997": {
+    "label": "insufficient_information",
+    "action": "REVIEW",
+    "confidence": 0.452,
+    "probabilities": {
+      "supported": 0.15922673186531217,
+      "violation": 0.35291347662025063,
+      "insufficient_information": 0.4516086159867232,
+      "inconsistent_context": 0.036251175527713946
+    },
+    "prediction_set": [
+      "supported",
+      "violation",
+      "insufficient_information",
+      "inconsistent_context"
+    ],
+    "reason": "Not enough evidence to clear automatically \u2014 route to a human inspector.",
+    "unsure": true
+  },
+  "150bf35755eea87c": {
+    "label": "supported",
+    "action": "SHIP",
+    "confidence": 0.459,
+    "probabilities": {
+      "supported": 0.45890333252733495,
+      "violation": 0.08435625056665041,
+      "insufficient_information": 0.43603876025778476,
+      "inconsistent_context": 0.02070165664822999
+    },
+    "prediction_set": [
+      "supported",
+      "violation",
+      "insufficient_information",
+      "inconsistent_context"
+    ],
+    "reason": "Claim supported by evidence and policy \u2014 cleared to ship.",
+    "unsure": true
+  },
+  "a0698a32f8b63d1c": {
+    "label": "violation",
+    "action": "BLOCK",
+    "confidence": 0.961,
+    "probabilities": {
+      "supported": 0.012171740235737673,
+      "violation": 0.9609869259846118,
+      "insufficient_information": 0.024243675171232427,
+      "inconsistent_context": 0.002597658608418223
+    },
+    "prediction_set": [
+      "supported",
+      "violation",
+      "insufficient_information"
+    ],
+    "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+    "unsure": true
+  },
+  "f715b2ad83acf214": {
+    "label": "violation",
+    "action": "BLOCK",
+    "confidence": 0.952,
+    "probabilities": {
+      "supported": 0.014810688419377866,
+      "violation": 0.9518442891375908,
+      "insufficient_information": 0.02893376689114189,
+      "inconsistent_context": 0.004411255551889561
+    },
+    "prediction_set": [
+      "supported",
+      "violation",
+      "insufficient_information"
+    ],
+    "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+    "unsure": true
+  },
+  "594551b264945399": {
+    "label": "violation",
+    "action": "BLOCK",
+    "confidence": 0.922,
+    "probabilities": {
+      "supported": 0.022563925215140578,
+      "violation": 0.921840081482242,
+      "insufficient_information": 0.04640880578334049,
+      "inconsistent_context": 0.00918718751927676
+    },
+    "prediction_set": [
+      "supported",
+      "violation",
+      "insufficient_information",
+      "inconsistent_context"
+    ],
+    "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+    "unsure": true
+  },
+  "ffa2acb3179c09de": {
+    "label": "violation",
+    "action": "BLOCK",
+    "confidence": 0.803,
+    "probabilities": {
+      "supported": 0.05035173928869431,
+      "violation": 0.8025690190209774,
+      "insufficient_information": 0.12599087305444268,
+      "inconsistent_context": 0.021088368635885608
+    },
+    "prediction_set": [
+      "supported",
+      "violation",
+      "insufficient_information",
+      "inconsistent_context"
+    ],
+    "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+    "unsure": true
+  }
+}
