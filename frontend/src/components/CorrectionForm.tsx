@@ -86,7 +86,7 @@ export function CorrectionForm({
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <Button type="submit" disabled={status === "saving"}>Save correction</Button>
           {status === "saved" && (
-            <span style={{ color: "var(--accent)" }}>
+            <span style={{ color: "var(--ok)" }}>
               Rule added to the adapted task.
             </span>
           )}

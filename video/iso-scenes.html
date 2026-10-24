@@ -160,73 +160,15 @@
 </div>
 <script>
   // Gallery settings: palette 'ember' | 'city' | your own [[name, darkAccent, darkHi, lightAccent, lightHi], ...]
-  window.GALLERY = { palette: [['Ember','#ff9a2e','#ffc77a','#d97706','#f59e0b'],['Signal','#ff453a','#ff8a80','#dc2626','#f87171']], autoDemo: false, storageKey: 'iso-glow-accent' };
+  window.GALLERY = { palette: [['Signal','#ff453a','#ff8a80','#dc2626','#f87171'],['Ember','#ff9a2e','#ffc77a','#d97706','#f59e0b']], autoDemo: false, storageKey: 'iso-glow-accent' };
   const FIGS = [];
 </script>
 <!-- FIGURES: one <script> per figure, each calling FIGS.push({...}). Order here = Fig 1, 2, 3 ... -->
 <script>
 // SolderSight — "No Answer Key" scene figures
-// Fig 1: the board — a defective trace lights up under inspection
+// Fig 1: lives in board2.js (hi-spec real-copper version)
 // Fig 2: the testimony — the inspection terminal writes its own confession
 // Fig 3: the gate — Sapling's arm comes down on the ship lane
-
-FIGS.push({
-  id: 'board', name: 'The board', hint: 'Click the board · space re-inspects',
-  aria: 'Isometric circuit board on an inspection plate. One trace is broken; scanning lights the gap.',
-  mount(stage, api) {
-    const K = api.iso.frame([[0,0,0],[300,0,0],[0,230,0],[300,230,0],[150,115,60]]);
-    const { TOP, FRONT, box, rect } = K;
-    let svg = box(0,0,0, 300,230,8, 12);                                   // ground plate
-    svg += `<g transform="${TOP(12,12,8)}"><rect class="detail" x="0" y="0" width="276" height="206" rx="6"/></g>`;
-    svg += box(40,40,8, 220,150,5, 3);                                     // the PCB
-    // traces + pads on the board top plane (local 220x150)
-    let t = `<g transform="${TOP(40,40,13)}">`;
-    for (const y of [24, 44, 104, 124]) {
-      t += `<rect class="detail" x="10" y="${y}" width="200" height="3" rx="1"/>`;
-    }
-    for (const x of [30, 70, 150, 190]) {
-      t += `<rect class="detail" x="${x}" y="14" width="3" height="122" rx="1"/>`;
-    }
-    t += `<rect class="detail" x="88" y="58" width="34" height="34" rx="2" fill="none"/>`;        // chip outline
-    t += `<rect class="detail" x="160" y="52" width="20" height="14" rx="1" fill="none"/>`;
-    t += `<circle class="detail" cx="52" cy="70" r="9" fill="none"/><circle class="detail" cx="52" cy="70" r="3"/>`;
-    // the defective street at y=74: two stubs with an 8-unit gap at x=96..104
-    t += `<rect id="board-stub-a" class="detail" x="10" y="72.5" width="86" height="3"/>`;
-    t += `<rect id="board-stub-b" class="detail" x="104" y="72.5" width="106" height="3"/>`;
-    t += `<path id="board-crack" class="detail" d="M93 82 l5 -6 -3 6 5 -6 -3 6 5 -6" fill="none" stroke-width="1.6"/>`;
-    t += `<circle id="board-halo" class="halo" cx="100" cy="74" r="26" filter="url(#bloom)"/>`;
-    t += `<circle id="board-dot" class="halo" cx="100" cy="74" r="6" filter="url(#glow)"/>`;
-    t += `</g>`;
-    svg += t;
-    // scan gantry: two posts + a carriage bar over the board
-    svg += box(24,40,8, 10,150,44, 3);
-    svg += box(266,40,8, 10,150,44, 3);
-    svg += `<g id="board-beam">${box(24,86,52, 252,10,8, 3)}</g>`;
-    svg += `<g transform="${FRONT(24,96,60)}"><rect class="detail" x="0" y="0" width="252" height="2"/></g>`;
-    // scan light under the beam
-    svg += `<g transform="${TOP(34,86,52)}"><rect id="board-scan" class="halo" x="0" y="0" width="232" height="10" filter="url(#bloom)"/></g>`;
-    stage.setAttribute('viewBox', K.viewBox); stage.innerHTML = svg;
-
-    const st = { lit: false };
-    const halo = stage.querySelector('#board-halo'), scan = stage.querySelector('#board-scan');
-    const dot = stage.querySelector('#board-dot');
-    const stubA = stage.querySelector('#board-stub-a'), stubB = stage.querySelector('#board-stub-b');
-    const crack = stage.querySelector('#board-crack');
-    function render() {
-      halo.classList.toggle('hot', st.lit); scan.classList.toggle('hot', st.lit);
-      dot.classList.toggle('hot', st.lit);
-      stubA.classList.toggle('lit', st.lit); stubB.classList.toggle('lit', st.lit);
-      crack.classList.toggle('lit', st.lit);
-      api.power(st.lit);
-      api.readout(st.lit ? 'open circuit · trace gap at cell (96,74)' : 'awaiting scan');
-    }
-    const inspect = () => { st.lit = true; render(); };
-    stage.addEventListener('click', inspect);
-    render();
-    return { key: e => (e.key === ' ' || e.key === 'Enter') ? (inspect(), true) : false,
-             demo: () => api.after(400, inspect) };
-  },
-});
 
 FIGS.push({
   id: 'testimony', name: 'The testimony', hint: 'Click the terminal · space prints the verdict',

@@ -2,12 +2,13 @@ import base64
 import json
 import os
 import time
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Annotated
 
 from fastapi import FastAPI, File, Form, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
-from openai import OpenAI
+from openai import APIConnectionError, APIStatusError, OpenAI
 from pydantic import BaseModel
 
 import sapling
@@ -79,12 +80,15 @@ class Comparison(BaseModel):
 class Verify(BaseModel):
     """Verify the vision model's proposed disposition against evidence + policy.
 
-    evidence_types is what inspection *found* (defaults to the board's AOI labels);
-    disposition is what the vision model *claimed*. Sapling checks one against the
-    other under the acceptance policy.
+    The honest evidence is what the model itself reported: pass `regions` (the
+    triage result's per-crop observations) and the gate audits the ship claim
+    against the model's own notes — no answer key. `evidence_types` is the explicit
+    oracle mode: the caller asserts what AOI found, used for the demo's
+    "gate vs ground truth" contrast.
     """
 
     disposition: str
+    regions: list[dict] | None = None
     evidence_types: list[str] | None = None
     confidence: float | None = None
     policy: str | None = None
@@ -107,21 +111,47 @@ def get_client() -> OpenAI:
 
 
 def read_corrections() -> list[dict]:
+    """Correction rows, each tagged with its ledger `index` and an `enabled` flag.
+
+    Disabling is itself a ledger row (`{"action": "disable", "target": <index>}`) —
+    the file stays append-only and history is never rewritten.
+    """
     if not CORRECTIONS_PATH.is_file():
         return []
-    out = []
+    rows = []
     for line in CORRECTIONS_PATH.read_text(encoding="utf-8").splitlines():
         try:
-            out.append(json.loads(line))
+            rows.append(json.loads(line))
         except json.JSONDecodeError:
             continue
+    disabled = {
+        row["target"]
+        for row in rows
+        if row.get("action") == "disable" and isinstance(row.get("target"), int)
+    }
+    out = []
+    for index, row in enumerate(rows):
+        if row.get("action") == "disable":
+            continue
+        row["index"] = index
+        row["enabled"] = index not in disabled
+        out.append(row)
     return out
 
 
+def append_ledger(path: Path, row: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(row) + "\n")
+
+
 def allowed_types() -> list[str]:
-    """A correction can name a defect the taxonomy didn't carry, e.g. tombstoning."""
+    """A correction can name a defect the taxonomy didn't carry, e.g. tombstoning.
+    A disabled correction's added type leaves the taxonomy with it."""
     types = list(BASE_DEFECT_TYPES)
     for row in read_corrections():
+        if not row.get("enabled", True):
+            continue
         added = row.get("corrected", {}).get("defect_type")
         if added and added not in types:
             types.append(added)
@@ -129,9 +159,12 @@ def allowed_types() -> list[str]:
 
 
 def learned_rules() -> list[str]:
-    """One rule line per distinct correction; the inspector's latest wording wins."""
+    """One rule line per distinct enabled correction; the inspector's latest
+    wording wins."""
     rules: dict[tuple, str] = {}
     for row in read_corrections():
+        if not row.get("enabled", True):
+            continue
         before, after = row.get("original", {}), row.get("corrected", {})
         if not after.get("defect_type"):
             continue
@@ -368,6 +401,16 @@ def board_crop(board_id: str, index: int) -> Response:
     return Response(crop(test, regions[index]), media_type="image/jpeg")
 
 
+def corrections_payload() -> dict:
+    """The state a client needs after writing or disabling a correction."""
+    return {
+        "corrections": read_corrections(),
+        "rules": learned_rules(),
+        "defect_types": allowed_types(),
+        "adapted_instructions": instructions_for("adapted"),
+    }
+
+
 @app.post("/corrections")
 def correction(body: Correction) -> dict:
     """An inspector's corrected label.
@@ -376,35 +419,58 @@ def correction(body: Correction) -> dict:
     task per matching model + instructions + output format, so corrected rules make a
     task of their own rather than editing the provider's answers.
     """
-    row = {"ts": int(time.time()), **body.model_dump()}
-    CORRECTIONS_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with CORRECTIONS_PATH.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(row) + "\n")
-    return {
-        "stored": True,
-        "rules": learned_rules(),
-        "defect_types": allowed_types(),
-        "adapted_instructions": instructions_for("adapted"),
-    }
+    append_ledger(CORRECTIONS_PATH, {"ts": int(time.time()), **body.model_dump()})
+    return {"stored": True, **corrections_payload()}
 
 
-def classify_image(data: bytes, lane: str) -> tuple[dict, dict]:
+@app.post("/corrections/{index}/disable")
+def disable_correction(index: int) -> dict:
+    """Take a rule out of the adapted task's instructions without rewriting the
+    ledger — the disable is itself an appended row, so what the line taught stays
+    auditable."""
+    if not any(row["index"] == index for row in read_corrections()):
+        raise HTTPException(status_code=404, detail="no such correction")
+    append_ledger(
+        CORRECTIONS_PATH, {"ts": int(time.time()), "action": "disable", "target": index}
+    )
+    return {"stored": True, **corrections_payload()}
+
+
+# Retry once on transient Mubit/OpenAI failures; a demo-time flake shouldn't kill a board.
+RETRYABLE_STATUS = {408, 409, 425, 429, 500, 502, 503, 504}
+
+
+def classify_image(data: bytes, instructions: str) -> tuple[dict, dict]:
     """One Mubit call over a crop. Returns the verdict and what the call cost."""
     encoded = base64.b64encode(data).decode("ascii")
     data_url = f"data:image/jpeg;base64,{encoded}"
 
     started = time.perf_counter()
-    raw = get_client().chat.completions.with_raw_response.create(
-        model=MODEL,
-        messages=[
-            {"role": "system", "content": instructions_for(lane)},
-            {
-                "role": "user",
-                "content": [{"type": "image_url", "image_url": {"url": data_url}}],
-            },
-        ],
-        response_format={"type": "json_object"},
-    )
+    raw = None
+    for attempt in range(2):
+        try:
+            raw = get_client().chat.completions.with_raw_response.create(
+                model=MODEL,
+                messages=[
+                    {"role": "system", "content": instructions},
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "image_url", "image_url": {"url": data_url}}
+                        ],
+                    },
+                ],
+                response_format={"type": "json_object"},
+            )
+            break
+        except APIStatusError as exc:
+            if attempt == 1 or exc.status_code not in RETRYABLE_STATUS:
+                raise
+            time.sleep(0.25)
+        except APIConnectionError:
+            if attempt == 1:
+                raise
+            time.sleep(0.25)
     latency_ms = round((time.perf_counter() - started) * 1000, 1)
     request_id = raw.headers.get("x-middleware-request-id")
     response = raw.parse()
@@ -445,12 +511,75 @@ def region_truth(annotations: list[dict], region: Region) -> dict:
     return ground_truth([a for a in annotations if overlaps(a, region)])
 
 
+# A defect claim below this confidence can't condemn a board on its own: the
+# verdict falls back to the worst *confident* region and carries a caveat, so the
+# shaky claim stays visible without letting noise scrap a clean board.
+MIN_VERDICT_CONFIDENCE = 0.5
+
+
 def verdict_of(results: list[dict]) -> dict:
-    """The board inherits its disposition from its worst region."""
-    return max(
-        results,
-        key=lambda r: DISPOSITION_RANK.get(r["disposition"], 0),
+    """The board inherits its disposition from its worst confident region.
+
+    Error rows can't set the verdict, and a low-confidence scrap/rework claim
+    becomes a caveat instead of a verdict — the board falls back to the worst
+    confident region so one noisy flag can't scrap a clean board.
+    """
+    valid = [r for r in results if "error" not in r]
+    if not valid:
+        return {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "rework",
+            "confidence": 0.0,
+            "reason": "inspection incomplete — route to human review",
+        }
+    worst = max(valid, key=lambda r: DISPOSITION_RANK.get(r["disposition"], 0))
+    confidence = worst.get("confidence", 1.0)
+    if worst["disposition"] == "pass" or confidence >= MIN_VERDICT_CONFIDENCE:
+        return dict(worst)
+    confident = [r for r in valid if r.get("confidence", 1.0) >= MIN_VERDICT_CONFIDENCE]
+    if not confident:
+        verdict = dict(worst)
+        verdict["caveat"] = (
+            "verdict rests on low-confidence regions — route to human review"
+        )
+        return verdict
+    fallback = max(confident, key=lambda r: DISPOSITION_RANK.get(r["disposition"], 0))
+    verdict = dict(fallback)
+    verdict["caveat"] = (
+        f"a {worst['disposition']}-grade region ({worst['defect_type']}) was reported "
+        f"at only {confidence:.0%} confidence — flagged, not decisive"
     )
+    return verdict
+
+
+def inspect_one_region(
+    image: bytes, region: Region, annotations: list[dict] | None, instructions: str
+) -> dict:
+    """Classify one crop. A failed call becomes an error row — one bad crop must not
+    kill the whole board (and it stays out of the verdict and the scoring)."""
+    started = time.perf_counter()
+    try:
+        classification, metrics = classify_image(crop(image, region), instructions)
+    except Exception as exc:  # noqa: BLE001 — any failure becomes a row, not a dead board
+        return {
+            "region": vars(region),
+            "error": getattr(exc, "detail", str(exc)),
+            "metrics": {
+                "latency_ms": round((time.perf_counter() - started) * 1000, 1),
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "total_tokens": 0,
+                "cost_usd": 0.0,
+                "mubit_request_id": None,
+            },
+        }
+    row = {**classification, "region": vars(region), "metrics": metrics}
+    if annotations is not None:
+        truth = region_truth(annotations, region)
+        row["ground_truth"] = truth
+        row["score"] = score(classification, truth)
+    return row
 
 
 def inspect_regions(
@@ -460,15 +589,27 @@ def inspect_regions(
     lane: str,
     board_id: str | None,
 ) -> dict:
-    results = []
-    for region in regions:
-        classification, metrics = classify_image(crop(image, region), lane)
-        row = {**classification, "region": vars(region), "metrics": metrics}
-        if annotations is not None:
-            truth = region_truth(annotations, region)
-            row["ground_truth"] = truth
-            row["score"] = score(classification, truth)
-        results.append(row)
+    # Instructions are built once per board: re-reading the corrections ledger per
+    # crop would let a mid-triage correction change the prompt between crops of the
+    # same board.
+    instructions = instructions_for(lane)
+    with ThreadPoolExecutor(max_workers=min(len(regions), 5) or 1) as pool:
+        results = list(
+            pool.map(
+                lambda region: inspect_one_region(
+                    image, region, annotations, instructions
+                ),
+                regions,
+            )
+        )
+    failed = [r for r in results if "error" in r]
+    if len(failed) == len(results):
+        raise HTTPException(
+            status_code=502, detail=f"all {len(results)} region calls failed"
+        )
+
+    # Record after the calls, in region order, so the ledger stays deterministic.
+    for row in results:
         record_run(
             {
                 "ts": int(time.time()),
@@ -489,8 +630,9 @@ def inspect_regions(
             if k not in ("region", "metrics", "score", "ground_truth")
         },
         "regions": results,
+        "region_errors": len(failed) or None,
         "metrics": {
-            "calls": len(results),
+            "calls": len(results) - len(failed),
             "latency_ms": round(sum(r["metrics"]["latency_ms"] for r in results), 1),
             "total_tokens": sum(r["metrics"]["total_tokens"] for r in results),
             "cost_usd": round(sum(r["metrics"]["cost_usd"] for r in results), 6),
@@ -503,12 +645,20 @@ def inspect_regions(
 async def triage(
     image: Annotated[UploadFile, File()],
     lane: Annotated[str, Form()] = "baseline",
+    template: Annotated[UploadFile | None, File()] = None,
 ) -> dict:
-    """A photo with no template to diff against: inspect it as quadrants."""
-    if not image.content_type or not image.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="upload must be an image")
+    """A photo under test. With a reference template attached it gets the real
+    diff-based inspection; without one it falls back to blind quadrants."""
+    for upload, label in ((image, "image"), (template, "template")):
+        if upload is not None and not (upload.content_type or "").startswith("image/"):
+            raise HTTPException(status_code=400, detail=f"{label} must be an image")
     data = await image.read()
-    return inspect_regions(data, grid_regions(data, grid=2), None, lane, None)
+    if template is not None:
+        template_data = await template.read()
+        regions = changed_regions(template_data, data) or grid_regions(data, grid=2)
+    else:
+        regions = grid_regions(data, grid=2)
+    return inspect_regions(data, regions, None, lane, None)
 
 
 def board_image(board_id: str) -> tuple[bytes, list[Region]]:
@@ -546,9 +696,33 @@ def metrics() -> dict:
     return {"lanes": {lane: summarize(rows) for lane, rows in by_lane.items()}}
 
 
+def lane_health() -> dict | None:
+    """What the adapted task buys vs costs on recorded runs — the tradeoff a rule
+    carries, as a managed number rather than a footnote."""
+    by_lane: dict[str, list[dict]] = {}
+    for row in read_runs():
+        by_lane.setdefault(row.get("lane", "baseline"), []).append(row)
+    base = summarize(by_lane["baseline"]) if "baseline" in by_lane else None
+    adapted = summarize(by_lane["adapted"]) if "adapted" in by_lane else None
+    if not base or not adapted:
+        return None
+
+    def delta(key: str) -> float | None:
+        a, b = adapted.get(key), base.get(key)
+        return round(a - b, 3) if a is not None and b is not None else None
+
+    return {
+        "missed_defect_rate": delta("missed_defect_rate"),
+        "false_alarm_rate": delta("false_alarm_rate"),
+        "type_accuracy": delta("type_accuracy"),
+        "board_disposition_accuracy": delta("board_disposition_accuracy"),
+    }
+
+
 @app.get("/rules")
 def rules() -> dict:
-    """What the inspector has taught so far, and the two task prompts that result."""
+    """What the inspector has taught so far, the two task prompts that result, and
+    what the adapted task is buying vs costing on the recorded runs."""
     return {
         "corrections": read_corrections(),
         "rules": learned_rules(),
@@ -557,6 +731,7 @@ def rules() -> dict:
             "baseline": instructions_for("baseline"),
             "adapted": instructions_for("adapted"),
         },
+        "lane_health": lane_health(),
     }
 
 
@@ -615,31 +790,55 @@ def verify_bundle(policy: str, evidence: str, claim: str) -> dict:
     }
 
 
+def latest_regions(board_id: str) -> list[dict] | None:
+    """The most recent contiguous run of recorded region rows for a board — the
+    model's own notes from its last triage, for callers that don't pass them in."""
+    batch: list[dict] = []
+    for row in reversed(read_runs()):
+        if row.get("board_id") == board_id and "defect_type" in row:
+            batch.append(row)
+        elif batch:
+            break
+    return list(reversed(batch)) or None
+
+
 @app.post("/verify/board/{board_id}")
 def verify_board(board_id: str, body: Verify) -> dict:
     """The policy gate: is the vision model's disposition claim actually allowed?
 
-    Evidence is what inspection found (the board's AOI labels unless the caller
-    overrides); the claim is the disposition the vision model proposed. Sapling
-    decides whether that claim is supported, violates policy, or needs a human —
-    the step that catches a cheap model confidently clearing a defective board.
+    Default evidence is what the model itself reported, region by region — the
+    gate needs no answer key. Passing `evidence_types` explicitly switches to
+    oracle mode (the AOI labels), kept for the demo's ground-truth contrast.
     """
     if not (DATA_DIR / "images" / f"{board_id}_test.jpg").is_file():
         raise HTTPException(status_code=404, detail="unknown board")
 
     truth = ground_truth(annotations_for(board_id))
-    evidence_types = body.evidence_types
-    if evidence_types is None:
-        evidence_types = truth["defect_types"]
+    # Precedence: explicit regions > explicit oracle types > the board's recorded
+    # regions > AOI labels as a last resort.
+    regions = body.regions if body.regions is not None else None
+    if regions is None and body.evidence_types is None:
+        regions = latest_regions(board_id)
+    if regions:
+        evidence_mode = "trace"
+        evidence = sapling.build_trace_evidence(regions)
+    else:
+        evidence_mode = "oracle"
+        evidence = sapling.build_evidence(
+            body.evidence_types
+            if body.evidence_types is not None
+            else truth["defect_types"],
+            body.confidence,
+        )
 
     policy = body.policy or sapling.default_policy()
-    evidence = sapling.build_evidence(evidence_types, body.confidence)
     claim = sapling.build_claim(body.disposition)
 
     bundle = verify_bundle(policy, evidence, claim)
     # So the demo can show "vision said pass, gate caught it" against the truth.
     bundle["board_id"] = board_id
     bundle["claimed_disposition"] = body.disposition
+    bundle["evidence_mode"] = evidence_mode
     bundle["ground_truth"] = truth
     return bundle
 

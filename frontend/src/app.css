@@ -1,0 +1,554 @@
+/* SolderSight rules layer — the "case file" identity, built on the tokens in
+   theme.css. theme.css owns colour/type/spacing variables; this file owns how they
+   are applied. Loaded after theme.css so component rules win.
+
+   The read: a lab notebook, not a dashboard. Paper panels with hairline edges,
+   uppercase mono for every label and measurement, and verdicts applied as stamps. */
+
+:root {
+  /* Text-safe variants. The palette's hues are chosen to read as fills on dark
+     boards; as small text on paper several fall under WCAG AA (4.5:1), so anything
+     that IS text uses these instead. */
+  --danger-ink: #b41f1f; /* on panel 6.06:1 (--danger is 4.47) */
+  --warn-ink: #8a4008; /*   on panel 6.31:1 (--warn is 4.64) */
+  --accent-ink: #8a4d05; /*  on panel 6.06:1 (--accent is 2.95) */
+  --info-ink: #1d4ed8; /*   on panel 6.20:1 */
+  --dim-ink: #5a5f63; /*    on bg 5.28:1 (--text-dim is 4.21) */
+
+  --paper: #fffefb; /* panel interior, a shade brighter than the desk */
+  --paper-edge: #d9d5cc; /* aged-hairline, softer than --panel-border */
+}
+
+/* ---------- structure ---------- */
+
+.app {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px 24px 64px;
+  display: grid;
+  gap: 20px;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--paper-edge);
+}
+
+.app-header h1 {
+  font-size: 22px;
+  margin: 0;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.col {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.row.tight {
+  gap: 6px;
+}
+
+.stack {
+  display: grid;
+  gap: 12px;
+}
+
+.grid4,
+.grid2 {
+  display: grid;
+  gap: 12px;
+}
+.grid4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.grid2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .grid4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- type ---------- */
+
+.mono {
+  font-family: var(--mono);
+}
+.dim {
+  color: var(--dim-ink);
+}
+.micro {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim-ink);
+}
+.hint {
+  font-size: 12px;
+  color: var(--dim-ink);
+  margin: 0;
+}
+.measure {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--dim-ink);
+  word-break: break-all;
+}
+
+.ok-text {
+  color: var(--ok);
+}
+.bad-text {
+  color: var(--danger-ink);
+}
+.warn-text {
+  color: var(--warn-ink);
+}
+.accent-text {
+  color: var(--accent-ink);
+}
+
+/* ---------- panels: sheets of paper on a desk ---------- */
+
+.panel {
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  box-shadow: 0 1px 2px rgba(22, 24, 26, 0.06);
+  position: relative;
+}
+
+.panel > h2 {
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--paper-edge);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* Every panel is a page in the file: number the corners. */
+.panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 2px;
+  background: var(--accent);
+}
+
+/* ---------- controls ---------- */
+
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid var(--paper-edge);
+  background: var(--paper);
+  color: var(--text);
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #1c1204; /* ink on amber: 6.0:1 */
+}
+
+.btn.small {
+  padding: 3px 9px;
+  font-size: 12px;
+}
+
+.field {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--dim-ink);
+}
+
+.check {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+  color: var(--dim-ink);
+}
+
+/* ---------- defect badges: hue is the fill, ink is the text ---------- */
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+
+/* ---------- stats ---------- */
+
+.stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--dim-ink);
+}
+
+.stat-value {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- verdict stamps ---------- */
+
+.stamp {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border: 2px solid currentColor;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 30%, transparent);
+  transform: rotate(-1.4deg);
+  display: inline-block;
+}
+
+.stamp.ship,
+.stamp.ok {
+  color: #056a4e;
+}
+.stamp.block,
+.stamp.bad {
+  color: var(--danger-ink);
+}
+.stamp.review,
+.stamp.warn {
+  color: var(--warn-ink);
+}
+
+.verdict-line {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.caveat {
+  margin: 0;
+  font-size: 13px;
+  color: var(--warn-ink);
+  border-left: 2px solid var(--warn);
+  padding-left: 10px;
+}
+
+.partial {
+  margin: 0;
+  font-size: 13px;
+  color: var(--danger-ink);
+  border-left: 2px solid var(--danger);
+  padding-left: 10px;
+}
+
+/* ---------- region cards: the crops, filed in order ---------- */
+
+.regions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.region-card {
+  text-align: left;
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-radius: var(--radius);
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+}
+
+.region-card.picked {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.region-card.failed {
+  cursor: default;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--paper),
+    var(--paper) 8px,
+    color-mix(in srgb, var(--danger) 5%, var(--paper)) 8px,
+    color-mix(in srgb, var(--danger) 5%, var(--paper)) 16px
+  );
+}
+
+.region-card img {
+  width: 100%;
+  border-radius: 6px;
+  border: 1px solid var(--paper-edge);
+}
+
+.region-reason {
+  font-size: 12px;
+  color: var(--dim-ink);
+}
+
+.truth-line {
+  font-size: 12px;
+}
+
+/* ---------- policy gate ---------- */
+
+.gate {
+  background: var(--paper);
+  border: 1px solid var(--paper-edge);
+  border-left: 3px solid var(--text-dim);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 1px 2px rgba(22, 24, 26, 0.06);
+}
+
+.gate.ship {
+  border-left-color: var(--ok);
+}
+.gate.block {
+  border-left-color: var(--danger);
+}
+.gate.review {
+  border-left-color: var(--warn);
+}
+
+.gate-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--paper-edge);
+}
+
+.gate-title {
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--mono);
+}
+
+.gate-title.ship {
+  color: #056a4e;
+}
+.gate-title.block {
+  color: var(--danger-ink);
+}
+.gate-title.review {
+  color: var(--warn-ink);
+}
+
+.gate-caught {
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--danger-ink);
+  background: color-mix(in srgb, var(--danger) 7%, var(--paper));
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+}
+
+.prob-row {
+  display: grid;
+  grid-template-columns: 140px 1fr 44px;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+}
+
+.prob-track {
+  height: 8px;
+  background: var(--edge);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.prob-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--text-dim);
+}
+
+.prob-fill.lead {
+  background: var(--accent);
+}
+
+.gate-details {
+  font-size: 12px;
+  color: var(--dim-ink);
+}
+
+.gate-details summary {
+  cursor: pointer;
+}
+
+.gate-details b {
+  color: var(--text);
+}
+
+/* ---------- rules / ledger ---------- */
+
+.rule-line {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--paper-edge);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.prompt-block {
+  font-family: var(--mono);
+  font-size: 11px;
+  white-space: pre-wrap;
+  color: var(--dim-ink);
+  background: var(--panel);
+  border: 1px solid var(--paper-edge);
+  border-radius: 8px;
+  padding: 10px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.type-chip {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--paper-edge);
+  color: var(--text);
+}
+
+.type-chip.added {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* ---------- tables ---------- */
+
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tbl th {
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--dim-ink);
+  border-bottom: 1px solid var(--paper-edge);
+  padding: 6px 8px;
+}
+
+.tbl td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--edge);
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- board viewer ---------- */
+
+.board-view {
+  border-radius: var(--radius);
+  overflow: hidden;
+  width: 100%;
+  border: 1px solid var(--paper-edge);
+}
+
+.board-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.board-frame img {
+  width: 100%;
+  display: block;
+}
+
+.cam-video {
+  width: 100%;
+  border-radius: var(--radius);
+  background: #000;
+}
+
+.overlay-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001s !important;
+    transition-duration: 0.001s !important;
+  }
+  .stamp {
+    transform: none;
+  }
+}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./ui";
+import { Button, ErrorPanel } from "./ui";
 
 // Live camera input. Captures a still frame and hands it to onCapture as a JPEG blob.
 export function CameraCapture({ onCapture, disabled }: { onCapture: (blob: Blob) => void; disabled?: boolean }) {
@@ -61,7 +61,7 @@ export function CameraCapture({ onCapture, disabled }: { onCapture: (blob: Blob)
           </>
         )}
       </div>
-      {error && <p style={{ color: "var(--danger)", margin: 0 }}>Camera error: {error}</p>}
+      {error && <ErrorPanel message={`Camera error: ${error}`} onDismiss={() => setError(null)} />}
     </div>
   );
 }
