@@ -89,8 +89,8 @@ blocked because of **the model's own sentence**, at violation ≈ 0.84.
 
 ## Checklist
 
-- [ ] Record `python backend/trace_demo.py` (headline) and/or `gate_demo.py`
-- [ ] Post on X, tag **@MubitLabs**
-- [ ] Post on LinkedIn, tag **Mubit**
-- [ ] Post the `side-quests` entry with both links + repo by **14:00 BST**
+- [x] Record `python backend/trace_demo.py` (headline) and/or `gate_demo.py`
+- [x] Post on X, tag **@MubitLabs**
+- [x] Post on LinkedIn, tag **Mubit**
+- [x] Post the `side-quests` entry with both links + repo by **14:00 BST**
 - [ ] (Optional) like Banyan Sapling on Hugging Face 🤗

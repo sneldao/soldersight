@@ -169,6 +169,39 @@ Plus "none" (clean board → pass).
 ### Sun 12:30 (if finalist — 5-min stage demo)
 - Full demo with metrics.
 
+## Hugging Face strategy — Gradio Space + interactive agentic experience
+
+Mubit is launching globally and wants novel, imaginative use cases that demonstrate what their stack actually looks like in practice. A Hugging Face presence gives us:
+
+- **Zero-infrastructure demo** — Gradio Spaces are free, CPU-hosted, no server to manage
+- **Discoverability** — HF is where the open-weights / verification-model community lives (Banyan Sapling weights are already on HF)
+- **Shareable link** — one URL for judges, press, and Mubit's team
+
+### Proposed: "SolderSight — PCB Defect Triage with Mubit Banyan Sapling"
+
+**Static (always-on, free):**
+- Gradio Space hosting a gallery of DeepPCB boards with ground-truth overlays
+- Before/after slider showing baseline vs adapted lane results
+- README-style explanation of the Mubit stack in one app (calibration → Sapling verification → task adaptation)
+- Links to repo, demo video, and side-quest submission
+
+**Interactive (agentic experience, on-demand):**
+- Upload a PCB image → runs through the vision model → Sapling verifies the "ship it" decision against the model's own notes → shows BLOCK/REVIEW/SHIP with confidence
+- Correction form: override the disposition, see the adapted task prompt update in real time
+- "Trace audit" mode: paste model notes → Sapling flags self-contradictions without any ground truth
+
+**Why this works on HF free tier:**
+- Vision model calls can be mocked/pre-recorded (we already have `runs.jsonl` with 30 boards)
+- Sapling verification can be gated behind a "Run Sapling" button that calls the Mubit API on-demand
+- Gradio Spaces support file uploads, image display, and state — perfect for the interactive flow
+
+**Files to create:**
+- `hf_space/app.py` — Gradio app
+- `hf_space/requirements.txt` — gradio, plus minimal deps
+- `hf_space/README.md` — HF model card style description
+
+This gives us a living, linkable artifact that outlasts the hackathon and shows Mubit's team exactly what their stack enables.
+
 ## Submission format
 - MP4 or MOV video (3 min max) + PDF deck.
 - No YouTube links accepted.
@@ -197,3 +230,17 @@ Plus "none" (clean board → pass).
 - **Objective:** defect labels are ground-truthable; accuracy goes up measurably.
 - **Real stakes:** scrap cost, QA throughput, 6-12 month ROI (from fardinhossain007's analysis).
 - **Mubit showcase:** correction → model update → improvement is the entire demo. The "own your intelligence layer" story: we stopped paying GPT-4 for PCB triage and now own a task-adapted open model that's better, cheaper, faster.
+
+## Competitive landscape — where Mubit fits, and where SolderSight differentiates
+
+Mubit sells three pillars. SolderSight demonstrates all three in one app:
+
+| Mubit pillar | What it does | SolderSight demonstration |
+|-------------|-------------|--------------------------|
+| **Agentic runtime calibration** | Proxy base URL in front of OpenAI/Anthropic/Gemini; captures traces, groups calls into tasks, trains small task-adapted adapters, swaps them in when they beat the frontier model | `/compare` — same crops down baseline (GPT-4o-mini) vs adapted lane (learned rules from corrections); accuracy/cost/latency side by side |
+| **Banyan Sapling** | Semantic verification model — reads policy + evidence + claim; returns supported / violation / insufficient_information / inconsistent_context with calibrated uncertainty | `/verify/board/{id}` (policy gate vs AOI evidence) + `/verify/trace` (trace audit vs model's own notes, no answer key) |
+| **Minima** | Cost-aware model routing — send every task to the cheapest model that can handle it | Baseline vs adapted lane cost comparison; adapted lane is cheaper per board |
+
+**Sapling's key differentiators:** open weights (Apache 2.0 on Hugging Face), calibrated uncertainty ("unsure" ~45% of the time rather than hallucinating a verdict), purpose-built verifier (Qwen3-30B-A3B pruned to 23B, not a general assistant), explicit policy+evidence+claim input contract.
+
+**Implication for SolderSight:** We're not just "using Sapling" — we're showing a complete agent trust pipeline: vision model proposes → Sapling audits self-consistency (trace audit, no answer key) → Sapling verifies against independent AOI evidence + written policy (policy gate) → corrections adapt the task → better, cheaper, faster. That's the Mubit stack in miniature, demonstrated end-to-end on a visual, manufacturable domain.

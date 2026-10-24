@@ -23,6 +23,10 @@ build/
 # Cloudflare / wrangler
 .wrangler/
 
+# Video: keep the storyboard source (HTML/JS/md); the rendered frames under
+# video/shots/ are regenerable outputs (and exceed the 500KB commit cap).
+video/shots/
+
 # OS / editor
 .DS_Store
 *.log
