@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import type { Annotation } from "../types";
-import { DEFECT_COLORS } from "../colors";
+import { defectColor } from "../colors";
 
 // Animated boxes drawn over a board image. Coordinates are in the image's pixel space.
 export function DefectOverlay({
@@ -20,7 +20,7 @@ export function DefectOverlay({
       aria-label="Defect annotations"
     >
       {annotations.map((a, i) => {
-        const color = DEFECT_COLORS[a.type];
+        const color = defectColor(a.type);
         return (
           <motion.rect
             key={`${a.x1}-${a.y1}-${i}`}

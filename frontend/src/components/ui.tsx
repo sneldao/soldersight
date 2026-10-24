@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import type { DefectType } from "../types";
-import { DEFECT_COLORS } from "../colors";
+import { defectColor } from "../colors";
 
 export function Panel({ title, children }: { title?: string; children: ReactNode }) {
   return (
@@ -22,7 +22,7 @@ export function Panel({ title, children }: { title?: string; children: ReactNode
 }
 
 export function Badge({ type }: { type: DefectType }) {
-  const color = DEFECT_COLORS[type];
+  const color = defectColor(type);
   return (
     <span
       style={{

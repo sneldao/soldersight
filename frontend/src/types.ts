@@ -7,7 +7,10 @@ export const DEFECT_TYPES = [
   "pinhole",
   "none",
 ] as const;
-export type DefectType = (typeof DEFECT_TYPES)[number];
+export type KnownDefectType = (typeof DEFECT_TYPES)[number];
+// A correction can add a defect type the taxonomy did not carry, so the wire value is
+// any string; the known names stay for colouring and autocomplete.
+export type DefectType = KnownDefectType | (string & {});
 
 export const SEVERITIES = ["cosmetic", "minor", "major", "critical"] as const;
 export type Severity = (typeof SEVERITIES)[number];
@@ -48,6 +51,127 @@ export interface Board {
   templateUrl: string;
   testUrl: string;
   annotations: Annotation[];
+}
+
+// One region the AOI-style proposer picked out of the board, in test-image pixels.
+export interface Region {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  delta: number;
+}
+
+export interface CallMetrics {
+  latency_ms: number;
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+  cost_usd: number;
+  mubit_request_id: string | null;
+}
+
+export interface RegionScore {
+  type_correct: boolean;
+  disposition_correct: boolean;
+}
+
+// One crop, one Mubit call, and what the DeepPCB labels say was in it.
+export interface RegionResult extends Classification {
+  region: Region;
+  metrics: CallMetrics;
+  ground_truth?: GroundTruth;
+  score?: RegionScore;
+}
+
+export interface GroundTruth {
+  defect_types: DefectType[];
+  disposition: Disposition;
+  worst: string;
+}
+
+export interface RunMetrics {
+  calls: number;
+  latency_ms: number;
+  total_tokens: number;
+  cost_usd: number;
+  mubit_request_ids: (string | null)[];
+}
+
+// The board verdict is its worst region.
+export interface Inspection extends Classification {
+  board_id: string | null;
+  lane: string;
+  regions: RegionResult[];
+  metrics: RunMetrics;
+}
+
+export interface LaneSummary {
+  calls: number;
+  boards: number;
+  scored: number;
+  defect_regions: number;
+  type_accuracy: number | null;
+  disposition_accuracy: number | null;
+  missed_defect_rate: number | null;
+  false_alarm_rate: number | null;
+  board_disposition_accuracy: number | null;
+  avg_latency_ms: number | null;
+  total_tokens: number;
+  total_cost_usd: number;
+  avg_cost_usd: number | null;
+}
+
+export interface BoardVerdict {
+  id: string;
+  ground_truth: GroundTruth;
+  verdicts: Record<
+    string,
+    {
+      defect_type: DefectType;
+      disposition: Disposition;
+      cost_usd: number;
+      latency_ms: number;
+      correct: boolean;
+    }
+  >;
+  // The same crops, judged down each lane.
+  regions: Record<string, RegionResult[]>;
+}
+
+export interface Comparison {
+  boards: BoardVerdict[];
+  lanes: Record<string, LaneSummary>;
+}
+
+export interface BenchmarkBoard {
+  id: string;
+  ground_truth: GroundTruth;
+  verdicts: BoardVerdict["verdicts"];
+}
+
+// capture_comparison.py's saved file: one recorded run over several boards.
+export interface Benchmark {
+  generated_utc: string;
+  model: string;
+  corrections: number;
+  boards: BenchmarkBoard[];
+  lanes: Record<string, LaneSummary>;
+}
+
+export interface CorrectionRow {
+  ts: number;
+  board_id: string;
+  original: Partial<Classification>;
+  corrected: Partial<Classification>;
+  reason: string;
+}
+
+export interface Rules {
+  corrections: CorrectionRow[];
+  rules: string[];
+  defect_types: DefectType[];
+  lanes: { baseline: string; adapted: string };
 }
 
 // Banyan Sapling verdicts for the policy gate.

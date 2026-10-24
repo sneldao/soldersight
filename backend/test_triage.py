@@ -369,6 +369,25 @@ def test_compare_runs_the_same_crops_down_both_lanes(monkeypatch, tmp_path):
     assert verdicts["baseline"]["correct"] is False
     assert verdicts["adapted"]["correct"] is True
     assert body["boards"][0]["ground_truth"]["disposition"] == "scrap"
+    # Each lane carries its own region rows, so the UI can show the two verdicts over
+    # the same crop without spending a third set of calls.
+    regions = body["boards"][0]["regions"]
+    assert {lane: len(rows) for lane, rows in regions.items()} == {
+        "baseline": 1,
+        "adapted": 1,
+    }
+    assert regions["adapted"][0]["score"]["type_correct"] is True
+
+
+def test_crop_serves_the_region_the_model_saw():
+    client = TestClient(main.app)
+    board = client.get("/boards").json()[0]["id"]
+
+    res = client.get(f"/crop/{board}/0")
+    assert res.status_code == 200
+    assert res.headers["content-type"] == "image/jpeg"
+    assert client.get(f"/crop/{board}/99").status_code == 404
+    assert client.get("/crop/a.b/0").status_code == 404
 
 
 def test_compare_rejects_unknown_board(monkeypatch, tmp_path):

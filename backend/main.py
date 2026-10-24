@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 from openai import OpenAI
 from pydantic import BaseModel
@@ -336,6 +336,26 @@ def asset(name: str) -> FileResponse:
     return FileResponse(path, media_type="image/jpeg")
 
 
+@app.get("/benchmark")
+def benchmark() -> dict:
+    """The last two-lane capture, so the numbers quoted on stage are recorded ones."""
+    path = DATA_DIR / "comparison.json"
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="no capture recorded yet")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+@app.get("/crop/{board_id}/{index}")
+def board_crop(board_id: str, index: int) -> Response:
+    """The exact crop a region verdict came from, re-derived so it always matches."""
+    if not board_id.isalnum():
+        raise HTTPException(status_code=404, detail="unknown board")
+    test, regions = board_image(board_id)
+    if not 0 <= index < len(regions):
+        raise HTTPException(status_code=404, detail="no such region")
+    return Response(crop(test, regions[index]), media_type="image/jpeg")
+
+
 @app.post("/corrections")
 def correction(body: Correction) -> dict:
     """An inspector's corrected label.
@@ -479,20 +499,29 @@ async def triage(
     return inspect_regions(data, grid_regions(data, grid=2), None, lane, None)
 
 
+def board_image(board_id: str) -> tuple[bytes, list[Region]]:
+    """A dataset board and the cells that differ from its known-good template.
+
+    Deterministic, so a crop can be re-served by region index for whatever a run
+    recorded.
+    """
+    images = DATA_DIR / "images"
+    test_path = images / f"{board_id}_test.jpg"
+    template_path = images / f"{board_id}_temp.jpg"
+    if not test_path.is_file() or not template_path.is_file():
+        raise HTTPException(status_code=404, detail="unknown board")
+    test = test_path.read_bytes()
+    template = template_path.read_bytes()
+    return test, changed_regions(template, test) or grid_regions(test, grid=1)
+
+
 @app.post("/triage/board/{board_id}")
 def triage_board(
     board_id: str,
     lane: Annotated[str, Form()] = "baseline",
 ) -> dict:
     """Inspect the cells that differ from the board's known-good template."""
-    images = DATA_DIR / "images"
-    test_path = images / f"{board_id}_test.jpg"
-    template_path = images / f"{board_id}_temp.jpg"
-    if not test_path.is_file():
-        raise HTTPException(status_code=404, detail="unknown board")
-    test = test_path.read_bytes()
-    template = template_path.read_bytes()
-    regions = changed_regions(template, test) or grid_regions(test, grid=1)
+    test, regions = board_image(board_id)
     return inspect_regions(test, regions, annotations_for(board_id), lane, board_id)
 
 
@@ -532,15 +561,10 @@ def compare(body: Comparison) -> dict:
     boards = []
     per_lane: dict[str, list[dict]] = {lane: [] for lane in body.lanes}
     for board_id in body.board_ids:
-        test_path = DATA_DIR / "images" / f"{board_id}_test.jpg"
-        template_path = DATA_DIR / "images" / f"{board_id}_temp.jpg"
-        if not test_path.is_file():
-            raise HTTPException(status_code=404, detail=f"unknown board {board_id}")
-        test, template = test_path.read_bytes(), template_path.read_bytes()
-        regions = changed_regions(template, test) or grid_regions(test, grid=1)
+        test, regions = board_image(board_id)
         annotations = annotations_for(board_id)
         truth = ground_truth(annotations)
-        verdicts = {}
+        verdicts, crops = {}, {}
         for lane in body.lanes:
             payload = inspect_regions(test, regions, annotations, lane, board_id)
             per_lane[lane].extend(lane_rows(payload))
@@ -551,7 +575,15 @@ def compare(body: Comparison) -> dict:
                 "latency_ms": payload["metrics"]["latency_ms"],
                 "correct": payload["disposition"] == truth["disposition"],
             }
-        boards.append({"id": board_id, "ground_truth": truth, "verdicts": verdicts})
+            crops[lane] = payload["regions"]
+        boards.append(
+            {
+                "id": board_id,
+                "ground_truth": truth,
+                "verdicts": verdicts,
+                "regions": crops,
+            }
+        )
 
     return {
         "boards": boards,

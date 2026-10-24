@@ -16,10 +16,9 @@ Labels:   supported | violation | insufficient_information | inconsistent_contex
 No auth is required for the research-preview endpoint.
 """
 
-import json
 import os
-import urllib.error
-import urllib.request
+
+import httpx
 
 # The research-preview endpoint Mubit published for Night Shift. Overridable so a
 # self-hosted Sapling (the weights are open) can be swapped in without code edits.
@@ -52,13 +51,13 @@ _DEFECT_PHRASE = {
     "pinhole": "pin-hole",
 }
 
-# What the AOI evidence implies the honest disposition should be — used only to
-# phrase the claim the vision model is effectively making ("passes", "needs rework").
-_CLAIM_PHRASE = {
-    "pass": "This board passes quality assurance and is approved to ship as-is.",
-    "rework": "This board does not need to be scrapped; it only needs rework.",
-    "scrap": "This board fails quality assurance and must be scrapped.",
-}
+# The gate verifies one thing: is the board safe to ship as-is? Sapling reads
+# 'violation' as "the evidence shows a disqualifying defect" (it returns violation
+# whether the claim says ship or scrap), so the honest question to put to it is the
+# shippability claim — not the vision model's wording.
+SHIP_CLAIM = (
+    "This board passes quality assurance and is approved to ship to the customer as-is."
+)
 
 
 def default_policy() -> str:
@@ -84,34 +83,33 @@ def build_evidence(defect_types: list[str], confidence: float | None = None) -> 
     return body
 
 
-def build_claim(disposition: str) -> str:
-    """The disposition the vision model proposed, phrased as the claim to verify."""
-    return _CLAIM_PHRASE.get(
-        disposition, f"This board's disposition is '{disposition}'."
-    )
+def build_claim(disposition: str | None = None) -> str:
+    """The claim the gate verifies: that the board is clear to ship as-is.
+
+    Fixed regardless of the vision model's disposition — the gate asks whether it is
+    safe to ship, and Sapling answers supported / violation / unsure against the
+    evidence and policy. The disposition is kept only for the caller's context.
+    """
+    return SHIP_CLAIM
 
 
 def verify(policy: str, evidence: str, claim: str, timeout: float = 30.0) -> dict:
-    """Call Banyan Sapling. Returns the raw response, or an {error} dict on failure."""
-    payload = json.dumps(
-        {"inputs": {"policy": policy, "evidence": evidence, "claim": claim}}
-    ).encode("utf-8")
-    req = urllib.request.Request(
-        BANYAN_ENDPOINT + "/",
-        data=payload,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
+    """Call Banyan Sapling. Returns the raw response, or an {error} dict on failure.
+
+    Uses httpx, which bundles certifi — so the HTTPS call trusts the right CA store
+    even where the Python build can't see the system one.
+    """
+    payload = {"inputs": {"policy": policy, "evidence": evidence, "claim": claim}}
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        return {
-            "error": f"sapling HTTP {exc.code}",
-            "detail": exc.read().decode("utf-8", "ignore")[:500],
-        }
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        resp = httpx.post(BANYAN_ENDPOINT + "/", json=payload, timeout=timeout)
+    except httpx.HTTPError as exc:
         return {"error": "sapling unreachable", "detail": str(exc)}
+    if resp.status_code != 200:
+        return {"error": f"sapling HTTP {resp.status_code}", "detail": resp.text[:500]}
+    try:
+        return resp.json()
+    except ValueError as exc:
+        return {"error": "sapling bad response", "detail": str(exc)}
 
 
 # How a Sapling label turns into an action on the manufacturing line.
@@ -131,9 +129,13 @@ _GATE_BY_LABEL = {
     ),
 }
 
-# Below this top-probability margin we don't trust an automatic SHIP, even if
-# 'supported' won the argmax: a near-tie is exactly when a human should look.
-_SHIP_MARGIN = 0.15
+# Sapling's 'violation' probability is bimodal and separable — ~0.95 when a real
+# defect is present, near zero when the board is clean — while 'supported' tops out
+# modestly even on clean boards (it won't treat "no defect detected" as proof of a
+# good board). So we clear a board to ship only when 'supported' leads AND the
+# residual violation risk is below this bar; any real violation signal routes it to
+# a human instead of auto-shipping.
+_MAX_SHIP_VIOLATION_RISK = 0.15
 
 
 def gate_decision(response: dict) -> dict:
@@ -162,10 +164,13 @@ def gate_decision(response: dict) -> dict:
     action, reason = _GATE_BY_LABEL.get(
         label, ("REVIEW", "Unrecognised verdict — routed to human review.")
     )
-    # A paper-thin win for 'supported' is not a clearance; make the human decide.
-    if action == "SHIP" and margin < _SHIP_MARGIN:
+    # 'Supported' clears a board only when little violation risk remains; otherwise a
+    # human looks. (Sapling's violation signal is sharp, so this rarely blocks a truly
+    # clean board but reliably stops a defective one from auto-shipping.)
+    violation_risk = probs.get("violation", 0.0)
+    if action == "SHIP" and violation_risk >= _MAX_SHIP_VIOLATION_RISK:
         action = "REVIEW"
-        reason = f"'Supported' led by only {margin:.0%} — too close to clear automatically; route to a human inspector."
+        reason = f"Supported, but a {violation_risk:.0%} violation risk remains — route to a human inspector."
 
     return {
         "action": action,

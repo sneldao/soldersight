@@ -84,6 +84,21 @@ def main(argv: list[str]) -> int:
             else ""
         )
     )
+
+    # The full gate range on illustrative evidence, so all three actions are visible.
+    print("\nGate range on illustrative evidence:")
+    for name, types in [
+        ("clean board", ["none"]),
+        ("spur only", ["spur"]),
+        ("open circuit", ["open"]),
+    ]:
+        resp = sapling.verify(
+            sapling.default_policy(),
+            sapling.build_evidence(types),
+            sapling.build_claim(),
+        )
+        gate = sapling.gate_decision(resp)
+        print(f"  {name:14} -> {str(gate['label']):26} {gate['action']}")
     return 0
 
 

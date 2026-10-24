@@ -19,14 +19,31 @@ afterEach(() => {
 
 describe("CorrectionForm", () => {
   it("posts the corrected labels to /corrections and confirms", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(new Response("{}", { status: 200 }));
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ rules: [], defect_types: ["open", "spur"] }), {
+        status: 200,
+      }),
+    );
     vi.stubGlobal("fetch", fetchMock);
+    const onCorrected = vi.fn();
 
-    render(<CorrectionForm boardId="00041000" original={original} />);
+    render(
+      <CorrectionForm
+        boardId="00041000"
+        original={original}
+        rules={null}
+        onCorrected={onCorrected}
+      />,
+    );
     fireEvent.change(screen.getByLabelText("Defect type"), { target: { value: "spur" } });
     fireEvent.click(screen.getByRole("button", { name: "Save correction" }));
 
-    await waitFor(() => expect(screen.getByText(/Saved to Mubit memory/)).toBeInTheDocument());
+    await waitFor(() =>
+      expect(screen.getByText(/Rule added to the adapted task/)).toBeInTheDocument(),
+    );
+    expect(onCorrected).toHaveBeenCalledWith(
+      expect.objectContaining({ defect_types: ["open", "spur"] }),
+    );
     const [url, init] = fetchMock.mock.calls[0];
     expect(url).toBe("/corrections");
     const body = JSON.parse(init.body as string);
@@ -38,7 +55,14 @@ describe("CorrectionForm", () => {
 
   it("shows an error when the save fails", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("", { status: 502 })));
-    render(<CorrectionForm boardId="x" original={original} />);
+    render(
+      <CorrectionForm
+        boardId="x"
+        original={original}
+        rules={null}
+        onCorrected={vi.fn()}
+      />,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Save correction" }));
     await waitFor(() => expect(screen.getByText(/Could not save/)).toBeInTheDocument());
     vi.unstubAllGlobals();
