@@ -93,6 +93,34 @@ def build_claim(disposition: str | None = None) -> str:
     return SHIP_CLAIM
 
 
+def build_trace_evidence(regions: list[dict]) -> str:
+    """The inspection model's OWN per-crop notes, verbatim — no ground truth.
+
+    This is the honest evidence: what the model actually said while it looked, region
+    by region. Auditing a shipping claim against this catches the model contradicting
+    itself (a crop it called a 'short' under a board it would ship) without ever
+    consulting an answer key — the labels never enter the loop.
+    """
+    if not regions:
+        return "The inspection model recorded no observations for this board."
+    lines = [
+        "A vision inspection model examined this board region by region and reported, "
+        "in its own words:"
+    ]
+    for r in regions:
+        reg = r.get("region") or {}
+        loc = f"({reg.get('x1', '?')},{reg.get('y1', '?')})"
+        dtype = r.get("defect_type", "none")
+        sev = r.get("severity", "unspecified")
+        reason = (r.get("reason") or "").strip()
+        conf = r.get("confidence")
+        conf_txt = f" at {round(conf * 100)}% confidence" if conf is not None else ""
+        lines.append(
+            f'- Region {loc}: called it "{dtype}" ({sev}){conf_txt} — "{reason}"'
+        )
+    return "\n".join(lines)
+
+
 def verify(policy: str, evidence: str, claim: str, timeout: float = 30.0) -> dict:
     """Call Banyan Sapling. Returns the raw response, or an {error} dict on failure.
 

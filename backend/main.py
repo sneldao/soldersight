@@ -90,6 +90,18 @@ class Verify(BaseModel):
     policy: str | None = None
 
 
+class TraceVerify(BaseModel):
+    """Audit a shipping claim against the model's OWN per-region notes — no ground truth.
+
+    regions are the triage result's per-crop observations (defect_type, severity,
+    confidence, reason). Sapling checks whether "this board can ship" is supported by
+    what the model itself reported, catching it contradicting its own observations.
+    """
+
+    regions: list[dict]
+    policy: str | None = None
+
+
 def get_client() -> OpenAI:
     return OpenAI(base_url=MUBIT_BASE_URL, api_key=os.environ.get("MUBIT_API_KEY", ""))
 
@@ -629,4 +641,30 @@ def verify_board(board_id: str, body: Verify) -> dict:
     bundle["board_id"] = board_id
     bundle["claimed_disposition"] = body.disposition
     bundle["ground_truth"] = truth
+    return bundle
+
+
+@app.post("/verify/trace")
+def verify_trace(body: TraceVerify) -> dict:
+    """Trace audit: does a shipping claim hold up against the model's own notes?
+
+    No ground truth, no answer key — the evidence is purely what the inspection model
+    itself reported, crop by crop. Sapling checks the claim "this board can ship" and
+    flags a violation when the model's own observations (a 'short' it saw, an 'open' it
+    noted) contradict the decision to ship. This catches the model contradicting
+    itself, the way a trace auditor checks what an agent did against what it saw.
+    """
+    policy = body.policy or sapling.default_policy()
+    evidence = sapling.build_trace_evidence(body.regions)
+    claim = sapling.build_claim()
+    noted = sorted(
+        {
+            r.get("defect_type")
+            for r in body.regions
+            if r.get("defect_type") not in (None, "none")
+        }
+    )
+    bundle = verify_bundle(policy, evidence, claim)
+    bundle["regions_examined"] = len(body.regions)
+    bundle["defects_the_model_noted"] = noted
     return bundle
