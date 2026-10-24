@@ -23,9 +23,9 @@ export const ROWS: [keyof LaneSummary, string, (value: number | null) => string]
 
 export function LaneTable({ lanes }: { lanes: Record<string, LaneSummary> }) {
   return (
-    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
+    <table className="metrics">
       <thead>
-        <tr style={{ textAlign: "left", color: "var(--text-dim)" }}>
+        <tr>
           <th />
           {LANES.map((lane) => (
             <th key={lane}>{lane}</th>
@@ -34,19 +34,19 @@ export function LaneTable({ lanes }: { lanes: Record<string, LaneSummary> }) {
       </thead>
       <tbody>
         {ROWS.map(([key, label, format]) => (
-          <tr key={key} style={{ borderTop: "1px solid var(--panel-border)" }}>
-            <td style={{ padding: "6px 8px" }}>{label}</td>
+          <tr key={key} className="bordered">
+            <td>{label}</td>
             {LANES.map((lane) => (
-              <td key={lane} style={{ padding: "6px 8px", fontFamily: "var(--mono)" }}>
+              <td key={lane} className="mono">
                 {format((lanes[lane]?.[key] ?? null) as number | null)}
               </td>
             ))}
           </tr>
         ))}
-        <tr style={{ borderTop: "1px solid var(--panel-border)" }}>
-          <td style={{ padding: "6px 8px" }}>Crops scored / defect crops</td>
+        <tr className="bordered">
+          <td>Crops scored / defect crops</td>
           {LANES.map((lane) => (
-            <td key={lane} style={{ fontFamily: "var(--mono)" }}>
+            <td key={lane} className="mono">
               {lanes[lane]?.scored ?? "—"} / {lanes[lane]?.defect_regions ?? "—"}
             </td>
           ))}

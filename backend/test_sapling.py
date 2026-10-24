@@ -1,6 +1,8 @@
 """Policy-gate tests. The verdict mapping is pure; the endpoint is tested with
 Sapling stubbed, so nothing here touches the network."""
 
+import json
+
 from fastapi.testclient import TestClient
 
 import main
@@ -100,8 +102,8 @@ def test_claim_is_the_fixed_shippability_question():
     )
 
 
-def test_verify_board_bundles_gate_evidence_and_truth(monkeypatch):
-    # Stub the model so the test is deterministic and offline.
+def test_verify_board_oracle_mode_bundles_gate_evidence_and_truth(monkeypatch):
+    # Oracle mode: the caller explicitly hands the gate the AOI labels.
     monkeypatch.setattr(
         main,
         "annotations_for",
@@ -124,15 +126,103 @@ def test_verify_board_bundles_gate_evidence_and_truth(monkeypatch):
     body = (
         TestClient(main.app)
         .post(
-            "/verify/board/00041000", json={"disposition": "pass", "confidence": 0.85}
+            "/verify/board/00041000",
+            json={
+                "disposition": "pass",
+                "confidence": 0.85,
+                "evidence_types": ["open"],
+            },
         )
         .json()
     )
 
     assert body["gate"]["action"] == "BLOCK"
     assert body["claimed_disposition"] == "pass"
+    assert body["evidence_mode"] == "oracle"
     assert body["ground_truth"]["disposition"] == "scrap"
     assert "open-circuit" in body["evidence"]
+
+
+def test_verify_board_defaults_to_trace_evidence(monkeypatch):
+    # Pass the triage regions and the gate audits the model's own notes — no labels.
+    monkeypatch.setattr(
+        sapling,
+        "verify",
+        lambda *_a, **_k: resp(
+            {
+                "supported": 0.04,
+                "violation": 0.84,
+                "insufficient_information": 0.08,
+                "inconsistent_context": 0.04,
+            },
+            "violation",
+        ),
+    )
+    regions = [
+        {
+            "region": {"x1": 320, "y1": 0},
+            "defect_type": "short",
+            "severity": "major",
+            "confidence": 0.85,
+            "reason": "There is a visible short circuit.",
+        }
+    ]
+
+    body = (
+        TestClient(main.app)
+        .post(
+            "/verify/board/00041000",
+            json={"disposition": "pass", "regions": regions},
+        )
+        .json()
+    )
+
+    assert body["evidence_mode"] == "trace"
+    assert body["gate"]["action"] == "BLOCK"
+    assert "visible short circuit" in body["evidence"]
+    assert "Automated optical inspection detected" not in body["evidence"]
+
+
+def test_verify_board_falls_back_to_recorded_regions(monkeypatch, tmp_path):
+    # No regions in the body: use the board's latest recorded run, still no labels.
+    runs = tmp_path / "runs.jsonl"
+    rows = [
+        {
+            "board_id": "00041000",
+            "defect_type": "open",
+            "severity": "critical",
+            "confidence": 0.9,
+            "reason": "a break in the trace",
+            "region": {"x1": 0, "y1": 0},
+        },
+        # A different board's run must not bleed into the batch.
+        {"board_id": "00041099", "defect_type": "none", "region": {"x1": 0, "y1": 0}},
+        {
+            "board_id": "00041000",
+            "defect_type": "open",
+            "severity": "critical",
+            "confidence": 0.9,
+            "reason": "latest batch",
+            "region": {"x1": 5, "y1": 5},
+        },
+    ]
+    runs.write_text("\n".join(json.dumps(r) for r in rows))
+    monkeypatch.setattr(main, "RUNS_PATH", runs)
+    monkeypatch.setattr(
+        sapling,
+        "verify",
+        lambda *_a, **_k: resp({"supported": 0.9, "violation": 0.02}, "supported"),
+    )
+
+    body = (
+        TestClient(main.app)
+        .post("/verify/board/00041000", json={"disposition": "pass"})
+        .json()
+    )
+
+    assert body["evidence_mode"] == "trace"
+    assert "latest batch" in body["evidence"]
+    assert "a break in the trace" not in body["evidence"]
 
 
 def test_verify_board_unknown_board_404():

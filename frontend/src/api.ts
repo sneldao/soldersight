@@ -24,11 +24,19 @@ async function postForm<T>(url: string, form: FormData): Promise<T> {
   return res.json();
 }
 
-// Sends an image (a board photo or a camera frame) to /triage: four quadrant crops.
-export function triage(image: Blob, filename: string, lane: string): Promise<Inspection> {
+// Sends an image (a board photo or a camera frame) to /triage. With a reference
+// template attached the backend diffs against it; without one it's four quadrant
+// crops.
+export function triage(
+  image: Blob,
+  filename: string,
+  lane: string,
+  template?: File | null,
+): Promise<Inspection> {
   const form = new FormData();
   form.append("image", image, filename);
   form.append("lane", lane);
+  if (template) form.append("template", template);
   return postForm<Inspection>("/triage", form);
 }
 
@@ -71,10 +79,11 @@ export async function fetchBenchmark(): Promise<Benchmark | null> {
 }
 
 // The policy gate: ask Banyan Sapling whether the vision model's proposed
-// disposition is actually allowed, given what inspection found + the policy.
+// disposition is actually allowed. Evidence is the model's own region notes —
+// the trace path needs no answer key.
 export async function verifyBoard(
   boardId: string,
-  result: Classification,
+  result: Inspection,
 ): Promise<VerifyResult> {
   const res = await fetch(`/verify/board/${boardId}`, {
     method: "POST",
@@ -82,6 +91,7 @@ export async function verifyBoard(
     body: JSON.stringify({
       disposition: result.disposition,
       confidence: result.confidence,
+      regions: result.regions,
     }),
   });
   if (!res.ok) {
@@ -112,5 +122,12 @@ export async function sendCorrection(input: CorrectionInput): Promise<Rules> {
     }),
   });
   if (!res.ok) throw new Error(`correction failed (${res.status})`);
+  return res.json();
+}
+
+// Take a rule back out of the adapted task — an appended ledger row, not a delete.
+export async function disableCorrection(index: number): Promise<Rules> {
+  const res = await fetch(`/corrections/${index}/disable`, { method: "POST" });
+  if (!res.ok) throw new Error(`disable failed (${res.status})`);
   return res.json();
 }

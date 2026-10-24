@@ -16,7 +16,7 @@ export function DefectOverlay({
     <svg
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="xMidYMid meet"
-      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+      className="overlay-svg"
       aria-label="Defect annotations"
     >
       {annotations.map((a, i) => {

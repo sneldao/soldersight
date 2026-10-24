@@ -1,14 +1,21 @@
-/* SolderSight design tokens. One source of truth for colour, type and spacing. */
+/* SolderSight design tokens. One source of truth for colour, type and spacing.
+   "Case file" identity — the same paper + hairline + amber language as the
+   iso-glow figures in video/iso-scenes.html: a lab notebook, not a dashboard. */
 :root {
-  --bg: #0b0f14;
-  --panel: #131a22;
-  --panel-border: #222d39;
-  --text: #e6edf3;
-  --text-dim: #8b98a6;
-  --accent: #36d399;
-  --danger: #f87171;
-  --warn: #fbbf24;
-  --info: #60a5fa;
+  --bg: #e9eaea;
+  --panel: #f6f6f5;
+  --panel-border: #c3c6c8;
+  --edge: #d6d8d8;
+  --text: #16181a;
+  --text-dim: #6a6f73;
+  --accent: #d97706;
+  --accent-hi: #f59e0b;
+  --accent-dim: rgba(217, 119, 6, 0.08);
+  --danger: #dc2626;
+  --danger-ink: #b91c1c; /* darker red for small reading text — clears AA (4.5:1) on paper and the danger tint, where --danger (4.47) just misses */
+  --warn: #b45309;
+  --info: #2563eb;
+  --ok: #047857;
 
   --defect-open: #f87171;
   --defect-short: #fb923c;
@@ -33,9 +40,12 @@ body {
   font-family: var(--font);
   font-size: 15px;
   line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1, h2, h3 { margin: 0; font-weight: 600; }
+h1 { font-family: var(--mono); letter-spacing: -0.02em; }
+h1::before { content: "▸ "; color: var(--accent); }
 h2 { font-size: 15px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
 
 button, select, input, textarea {
@@ -43,4 +53,86 @@ button, select, input, textarea {
   color: inherit;
 }
 
+input[type="file"] { font-size: 12px; color: var(--text-dim); }
+
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Panels sit like figure plates on the sheet: hairline edge, paper surface. */
+main section {
+  box-shadow: 0 1px 0 rgba(22, 24, 26, 0.04);
+}
+
+/* Crop images fade in as they load — perceived speed beats raw speed. */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+img { animation: fade-in 0.3s ease; }
+
+/* Loading skeletons pulse in place of the region cards while calls are in flight. */
+@keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+.skeleton {
+  background: var(--edge);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+/* The board picker: a filmstrip of test shots, disposition dot bottom-right. */
+.thumb-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.thumb {
+  flex: 0 0 auto;
+  width: 88px;
+  padding: 4px;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  gap: 3px;
+  text-align: left;
+}
+.thumb.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+.thumb img { width: 100%; border-radius: 5px; display: block; }
+.thumb .id { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+.thumb .row { display: flex; justify-content: space-between; align-items: center; }
+.thumb .dot { width: 7px; height: 7px; border-radius: 999px; }
+
+/* Dismissible error banner. */
+.err-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--danger) 55%, transparent);
+  background: color-mix(in srgb, var(--danger) 9%, var(--panel));
+  color: var(--danger);
+  font-size: 13px;
+}
+.err-panel button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 0 4px;
+}
+
+/* Small stamped verdict chip — the gate's call, inline wherever needed. */
+.gate-chip {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 10px;
+  border-radius: 6px;
+  border: 1.5px solid currentColor;
+  background: var(--panel);
+}
