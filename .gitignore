@@ -29,5 +29,14 @@ build/
 .idea/
 .vscode/
 
-# Downloaded datasets (DeepPCB subset)
-data/
+# DeepPCB: the 30-pair demo subset (images + annotations) and the recorded ledgers are
+# committed, so a fresh clone can run the demo with no download step. Anything else
+# dropped under data/ — the full dataset, archives — stays out.
+data/*
+!data/deeppcb/
+data/deeppcb/*
+!data/deeppcb/images/
+!data/deeppcb/annotations/
+!data/deeppcb/corrections.jsonl
+!data/deeppcb/comparison.json
+!data/deeppcb/runs.jsonl
