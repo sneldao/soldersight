@@ -126,12 +126,17 @@ Plus "none" (clean board → pass).
 - Ground-truth labels from DeepPCB annotations.
 - Bounding boxes for overlay visualization.
 
-## 3-minute demo arc
-1. **(0:00–0:40)** 6 PCB photos land. Closed model (GPT-4o) triages: 2 wrong (cosmetic scratch flagged as defect; dent misclassified as crack). Show latency + token cost + accuracy.
-2. **(0:40–1:20)** Inspector corrects the 2 wrong ones ("cosmetic, not defect"; "dent, not crack"). Corrections route through Mubit. Show the model update landing.
-3. **(1:20–2:10)** 5 new PCB photos. Task-adapted open model triages: all correct. Side-by-side: closed model (2/5 wrong) vs open model (5/5 right), with cost (open 4× cheaper) and latency (open 3× faster).
-4. **(2:10–2:50)** Fast-refresh beat: a brand-new defect type (e.g., "tombstoning") appears → one correction → model adapts. Show the overlay update.
-5. **(2:50–3:00)** "We own our intelligence layer now." Show the QA report template (domain-specific, from fardinhossain007's approach).
+## Demo film — "No Answer Key" (~2:10, rendered)
+
+Superseded the live screen-recording arc. The film is a rendered "case file":
+paper plates, hairline isometric machines, red reserved for defects/verdicts.
+Five plates: **Fig 1** the board (real vectorized `00041003` copper + defect
+callout) → **Fig 2** the testimony (terminal types the model's own words) →
+**Fig 3** the audit (Exhibit A vs B, leader threads, VIOLATION→BLOCK + 14/14) →
+the machine (ROUTE+ADAPT+VERIFY, compare table) → title card.
+
+Full script + assets: `video/script.md`, `video/` · storyboard: `docs/demo_storyboard.md`.
+The same iso figures double as the expo-table interactive and HF Space artifact.
 
 ## 42-hour build plan
 
@@ -169,15 +174,17 @@ Plus "none" (clean board → pass).
 ### Sun 12:30 (if finalist — 5-min stage demo)
 - Full demo with metrics.
 
-## Hugging Face strategy — Gradio Space + interactive agentic experience
+## Hugging Face Space — DEPLOYED
 
-Mubit is launching globally and wants novel, imaginative use cases that demonstrate what their stack actually looks like in practice. A Hugging Face presence gives us:
+**Live:** https://huggingface.co/spaces/Papajams/soldersight-sapling — see
+[`docs/huggingface_strategy.md`](huggingface_strategy.md) for the as-built writeup.
 
-- **Zero-infrastructure demo** — Gradio Spaces are free, CPU-hosted, no server to manage
-- **Discoverability** — HF is where the open-weights / verification-model community lives (Banyan Sapling weights are already on HF)
-- **Shareable link** — one URL for judges, press, and Mubit's team
+Two facts changed the plan below: HF now paywalls **Gradio** Spaces behind PRO (only
+**static** Spaces are free), and the Sapling endpoint allows browser (CORS) calls — so
+the shipped Space is **static + live client-side** (no server, no auth, no spend), with
+real cached verdicts as the fallback. The original plan is kept below for context.
 
-### Proposed: "SolderSight — PCB Defect Triage with Mubit Banyan Sapling"
+### Original plan (superseded): Gradio Space
 
 **Static (always-on, free):**
 - Gradio Space hosting a gallery of DeepPCB boards with ground-truth overlays

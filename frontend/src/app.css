@@ -1,0 +1,243 @@
+/* SolderSight structural layer. Design tokens live in theme.css; this file owns
+   every layout + component class that used to be inline styles. Load it after
+   theme.css (main.tsx) so component classes can override token-file defaults. */
+
+/* ---------- shared utilities ---------- */
+.mono { font-family: var(--mono); }
+.dim { color: var(--text-dim); }
+.small { font-size: 13px; }
+.xs { font-size: 12px; }
+.micro { font-size: 11px; }
+.flush { margin: 0; }
+.grow { flex: 1; }
+.good { color: var(--ok); }
+.bad { color: var(--danger-ink); }
+
+/* horizontal control row */
+.hrow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* generic vertical stacks */
+.stack { display: grid; gap: 12px; }
+.stack-lg { display: grid; gap: 16px; }
+
+/* ---------- app shell (App.tsx) ---------- */
+.shell { max-width: 1400px; margin: 0 auto; padding: 24px; display: grid; gap: 20px; }
+.masthead { display: flex; justify-content: space-between; align-items: baseline; }
+.masthead h1 { font-size: 22px; }
+.tagline { color: var(--text-dim); font-family: var(--mono); font-size: 13px; }
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.main-col { display: grid; gap: 20px; }
+.rail { display: grid; gap: 20px; align-content: start; }
+.elapsed { font-family: var(--mono); font-size: 12px; color: var(--text-dim); }
+.mini-pick { display: flex; gap: 8px; align-items: center; color: var(--text-dim); }
+.warn-line { color: var(--warn); }
+
+/* ---------- UI primitives (components/ui.tsx) ---------- */
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+}
+
+/* Hue rides on the fill via the --badge custom property; ink sits on top.
+   As coloured *text* on paper every defect hue lands at 1.5-2.7:1; as a
+   background they all clear 5.5:1 against --text. */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--badge, var(--edge));
+  border: 1px solid color-mix(in srgb, var(--badge, var(--edge)) 70%, black);
+}
+
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid var(--panel-border);
+}
+.btn-primary { background: var(--accent); color: #04110b; border: none; }
+.btn:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.stat-label { color: var(--text-dim); font-size: 12px; }
+.stat-value { font-family: var(--mono); font-size: 18px; }
+
+/* Stamped SHIP/BLOCK/REVIEW. Solid fill + white: --ok/--danger/--warn as 12px
+   ink text on paper sit at 5.07/4.47/4.64 but as *fills* they clear AA under
+   white (5.48/4.83/5.02) — ink on those hues does not (3.2-3.7). */
+.gate-chip.ship { color: #fff; background: var(--ok); border-color: var(--ok); }
+.gate-chip.block { color: #fff; background: var(--danger); border-color: var(--danger); }
+.gate-chip.review { color: #fff; background: var(--warn); border-color: var(--warn); }
+
+/* ---------- region cards (RegionCards.tsx) ---------- */
+.region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.region-card {
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 10px;
+  display: grid;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--text);
+}
+.region-card.picked { border-color: var(--accent); }
+.region-card.static { cursor: default; }
+.region-card img { width: 100%; border-radius: 6px; }
+.region-card.failed img { opacity: 0.5; }
+.region-skel { aspect-ratio: 1 / 1.2; }
+.region-fail { font-size: 12px; color: var(--danger-ink); }
+.region-meta { font-family: var(--mono); font-size: 11px; color: var(--text-dim); }
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.pivot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ---------- lane record / comparison ---------- */
+.lane-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.lane-block { display: grid; gap: 10px; }
+.lane-head { margin: 0; font-size: 14px; }
+
+.metrics { width: 100%; border-collapse: collapse; font-size: 14px; }
+.metrics.sm { font-size: 13px; }
+.metrics th { text-align: left; color: var(--text-dim); }
+.metrics td { padding: 6px 8px; }
+tr.bordered { border-top: 1px solid var(--panel-border); }
+
+/* ---------- rules panel ---------- */
+.rule-list { margin: 0; padding-left: 18px; display: grid; gap: 8px; }
+.rule-list li { font-size: 13px; }
+.correction-row { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--text-dim); }
+.code-chip {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: var(--text);
+  border: 1px solid var(--panel-border);
+}
+.code-chip.added { background: var(--accent-dim); border-color: var(--accent); }
+.lane-health {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 10px;
+}
+.health-label { font-size: 12px; color: var(--text-dim); }
+.delta { font-size: 12px; color: var(--text-dim); font-family: var(--mono); }
+.prompt-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px; }
+.prompt-pre {
+  margin: 0;
+  font-size: 11px;
+  white-space: pre-wrap;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 10px;
+}
+
+/* ---------- correction form ---------- */
+.form { display: grid; gap: 10px; }
+.label { display: grid; gap: 4px; }
+.mini-label { display: grid; gap: 4px; font-size: 13px; color: var(--text-dim); }
+.field {
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+.field-tall { min-height: 60px; }
+
+/* ---------- camera capture ---------- */
+.cam-stack { display: flex; flex-direction: column; gap: 10px; }
+.cam-video {
+  width: 100%;
+  border-radius: var(--radius);
+  background: #000;
+  display: none;
+}
+.cam-video.on { display: block; }
+
+/* ---------- board view ---------- */
+.board-frame { position: relative; width: 100%; aspect-ratio: 1 / 1; }
+.board-img { width: 100%; display: block; }
+.overlay-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+/* ---------- policy gate (PolicyGate.tsx) ---------- */
+.gate-panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: var(--gap);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.gate-panel.ship { border-color: color-mix(in srgb, var(--ok) 33%, transparent); }
+.gate-panel.block { border-color: color-mix(in srgb, var(--danger) 33%, transparent); }
+.gate-panel.review { border-color: color-mix(in srgb, var(--warn) 33%, transparent); }
+.gate-stamp {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+}
+.gate-panel.ship .gate-stamp {
+  color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 12%, transparent);
+  border: 1px solid var(--ok);
+}
+.gate-panel.block .gate-stamp {
+  color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  border: 1px solid var(--danger);
+}
+.gate-panel.review .gate-stamp {
+  color: var(--warn);
+  background: color-mix(in srgb, var(--warn) 12%, transparent);
+  border: 1px solid var(--warn);
+}
+.gate-title { font-size: 20px; font-weight: 700; }
+.gate-panel.ship .gate-title { color: var(--ok); }
+.gate-panel.block .gate-title { color: var(--danger); }
+.gate-panel.review .gate-title { color: var(--warn); }
+.gate-sub { font-size: 13px; color: var(--text-dim); }
+.gate-evidence { font-size: 11px; font-family: var(--mono); color: var(--text-dim); }
+.spread { display: flex; justify-content: space-between; align-items: baseline; }
+.gate-row { display: flex; gap: 14px; align-items: center; }
+.gate-copy { display: grid; gap: 2px; }
+.prob-stack { display: grid; gap: 6px; }
+.gate-caught {
+  font-size: 12px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: var(--danger-ink);
+  background: color-mix(in srgb, var(--danger) 9%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--danger) 40%, transparent);
+}
+.prob-row { display: grid; grid-template-columns: 140px 1fr 44px; gap: 8px; align-items: center; }
+.prob-name { font-size: 12px; color: var(--text-dim); }
+.prob-name.lead { color: var(--text); }
+.prob-track { height: 8px; background: var(--panel-border); border-radius: 999px; overflow: hidden; }
+.prob-fill { height: 100%; border-radius: 999px; background: var(--text-dim); }
+.prob-fill.lead { background: var(--accent); }
+.prob-pct { font-family: var(--mono); font-size: 12px; text-align: right; color: var(--text-dim); }
+.conformal { margin: 4px 0 0; font-size: 11px; color: var(--text-dim); }
+.gate-detail { font-size: 12px; color: var(--text-dim); }
+.gate-detail b { color: var(--text); }

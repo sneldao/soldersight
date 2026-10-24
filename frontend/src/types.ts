@@ -77,11 +77,13 @@ export interface RegionScore {
 }
 
 // One crop, one Mubit call, and what the DeepPCB labels say was in it.
+// `error` rows are calls that failed: they stay out of the verdict and the scoring.
 export interface RegionResult extends Classification {
   region: Region;
   metrics: CallMetrics;
   ground_truth?: GroundTruth;
   score?: RegionScore;
+  error?: string;
 }
 
 export interface GroundTruth {
@@ -98,12 +100,15 @@ export interface RunMetrics {
   mubit_request_ids: (string | null)[];
 }
 
-// The board verdict is its worst region.
+// The board verdict is its worst confident region; a low-confidence defect claim
+// rides along as a caveat instead.
 export interface Inspection extends Classification {
   board_id: string | null;
   lane: string;
   regions: RegionResult[];
   metrics: RunMetrics;
+  caveat?: string;
+  region_errors?: number | null;
 }
 
 export interface LaneSummary {
@@ -165,6 +170,8 @@ export interface CorrectionRow {
   original: Partial<Classification>;
   corrected: Partial<Classification>;
   reason: string;
+  index: number;
+  enabled: boolean;
 }
 
 export interface Rules {
@@ -172,6 +179,14 @@ export interface Rules {
   rules: string[];
   defect_types: DefectType[];
   lanes: { baseline: string; adapted: string };
+  // What the adapted task buys vs costs on recorded runs (null until both lanes
+  // have scored runs): deltas in rate space, negative missed/false-alarm is better.
+  lane_health: {
+    missed_defect_rate: number | null;
+    false_alarm_rate: number | null;
+    type_accuracy: number | null;
+    board_disposition_accuracy: number | null;
+  } | null;
 }
 
 // Banyan Sapling verdicts for the policy gate.
@@ -203,6 +218,8 @@ export interface VerifyResult {
   policy: string;
   evidence: string;
   claim: string;
+  // "trace" = the model's own region notes (no answer key); "oracle" = AOI labels.
+  evidence_mode: "trace" | "oracle";
   gate: GateDecision;
   ground_truth: { defect_types: DefectType[]; disposition: Disposition; worst: string };
 }

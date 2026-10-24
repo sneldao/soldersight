@@ -52,7 +52,7 @@ verified against two things Sapling takes as inputs:
 | Sapling input | SolderSight source |
 |---------------|--------------------|
 | **policy**   | A written acceptance spec (open/short → scrap; spur/copper/mousebite/pin-hole → rework; clean → pass; ambiguous → human). `sapling.DEFAULT_POLICY`. |
-| **evidence** | What inspection actually found — the DeepPCB / AOI defect labels, rendered to prose by `sapling.build_evidence()`. Independent of the vision model. |
+| **evidence** | **Oracle mode** (opt-in via `evidence_types`): what inspection actually found — the DeepPCB / AOI defect labels, rendered by `sapling.build_evidence()`. This mode is shown here for the ground-truth contrast; `POST /verify/board` *defaults* to the model's own notes (the trace audit above, `sapling.build_trace_evidence()`), which needs no answer key. |
 | **claim**    | The shippability question: *"this board passes QA and is approved to ship as-is."* `sapling.SHIP_CLAIM`. |
 
 Sapling returns one of `supported` / `violation` / `insufficient_information` /

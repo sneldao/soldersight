@@ -4,13 +4,6 @@ import { DEFECT_TYPES, DISPOSITIONS, SEVERITIES } from "../types";
 import type { Classification, DefectType, Disposition, Rules, Severity } from "../types";
 import { Button, Panel } from "./ui";
 
-const field: React.CSSProperties = {
-  background: "var(--bg)",
-  border: "1px solid var(--panel-border)",
-  borderRadius: 8,
-  padding: "6px 10px",
-};
-
 export function CorrectionForm({
   boardId,
   original,
@@ -47,16 +40,16 @@ export function CorrectionForm({
 
   return (
     <Panel title="Correct the model">
-      <p style={{ margin: 0, color: "var(--text-dim)", fontSize: 13 }}>
+      <p className="flush dim small">
         Correcting <code>{boardId}</code> as the model reported it:{" "}
         <strong>{original.defect_type}</strong> / {original.severity} /{" "}
         {original.disposition}.
       </p>
-      <form onSubmit={submit} style={{ display: "grid", gap: 10 }}>
-        <label style={{ display: "grid", gap: 4 }}>
+      <form onSubmit={submit} className="form">
+        <label className="label">
           Defect type
           <input
-            style={field}
+            className="field"
             list="defect-types"
             value={defectType}
             onChange={(e) => setDefectType(e.target.value)}
@@ -67,30 +60,26 @@ export function CorrectionForm({
             ))}
           </datalist>
         </label>
-        <label style={{ display: "grid", gap: 4 }}>
+        <label className="label">
           Severity
-          <select style={field} value={severity} onChange={(e) => setSeverity(e.target.value as Severity)}>
+          <select className="field" value={severity} onChange={(e) => setSeverity(e.target.value as Severity)}>
             {SEVERITIES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
         </label>
-        <label style={{ display: "grid", gap: 4 }}>
+        <label className="label">
           Disposition
-          <select style={field} value={disposition} onChange={(e) => setDisposition(e.target.value as Disposition)}>
+          <select className="field" value={disposition} onChange={(e) => setDisposition(e.target.value as Disposition)}>
             {DISPOSITIONS.map((d) => <option key={d} value={d}>{d}</option>)}
           </select>
         </label>
-        <label style={{ display: "grid", gap: 4 }}>
+        <label className="label">
           Reason the inspector gives
-          <textarea style={{ ...field, minHeight: 60 }} value={reason} onChange={(e) => setReason(e.target.value)} />
+          <textarea className="field field-tall" value={reason} onChange={(e) => setReason(e.target.value)} />
         </label>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div className="hrow">
           <Button type="submit" disabled={status === "saving"}>Save correction</Button>
-          {status === "saved" && (
-            <span style={{ color: "var(--accent)" }}>
-              Rule added to the adapted task.
-            </span>
-          )}
-          {status === "error" && <span style={{ color: "var(--danger)" }}>Could not save. Try again.</span>}
+          {status === "saved" && <span className="good">Rule added to the adapted task.</span>}
+          {status === "error" && <span className="bad">Could not save. Try again.</span>}
         </div>
       </form>
     </Panel>

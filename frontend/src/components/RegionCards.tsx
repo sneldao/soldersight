@@ -14,55 +14,48 @@ export function RegionCards({
   picked?: RegionResult | null;
 }) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
-        gap: 12,
-      }}
-    >
+    <div className="region-grid">
       {regions.map((region, index) => {
         const hit = picked === region;
+        const failed = region.error != null;
+        const inert = !onPick || failed;
         return (
           <button
             key={index}
             type="button"
-            onClick={onPick && (() => onPick(region))}
-            style={{
-              textAlign: "left",
-              background: "var(--bg)",
-              border: `1px solid ${hit ? "var(--accent)" : "var(--panel-border)"}`,
-              borderRadius: "var(--radius)",
-              padding: 10,
-              display: "grid",
-              gap: 6,
-              cursor: onPick ? "pointer" : "default",
-              color: "var(--text)",
-            }}
+            aria-label={
+              failed
+                ? `region ${index}: call failed`
+                : `region ${index}: ${region.defect_type}, ${region.disposition}`
+            }
+            onClick={inert ? undefined : () => onPick(region)}
+            className={`region-card${hit ? " picked" : ""}${inert ? " static" : ""}${failed ? " failed" : ""}`}
           >
-            <img
-              src={`/crop/${boardId}/${index}`}
-              alt={`region ${index}`}
-              style={{ width: "100%", borderRadius: 6 }}
-            />
-            <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-              <Badge type={region.defect_type} />
-              <span style={{ fontFamily: "var(--mono)", fontSize: 12 }}>
-                {region.disposition} · {Math.round(region.confidence * 100)}%
-              </span>
-            </div>
-            <div style={{ fontSize: 12, color: "var(--text-dim)" }}>{region.reason}</div>
-            {region.ground_truth && (
-              <div style={{ fontSize: 12 }}>
-                <span style={{ color: "var(--text-dim)" }}>labels: </span>
-                {region.ground_truth.worst}
-                {" → "}
-                <span style={{ color: region.score?.type_correct ? "var(--accent)" : "var(--danger)" }}>
-                  {region.score?.type_correct ? "correct type" : "wrong type"}
-                </span>
-              </div>
+            <img src={`/crop/${boardId}/${index}`} alt={`region ${index}`} />
+            {failed ? (
+              <div className="region-fail">call failed — {region.error}</div>
+            ) : (
+              <>
+                <div className="hrow">
+                  <Badge type={region.defect_type} />
+                  <span className="mono xs">
+                    {region.disposition} · {Math.round(region.confidence * 100)}%
+                  </span>
+                </div>
+                <div className="xs dim">{region.reason}</div>
+                {region.ground_truth && (
+                  <div className="xs">
+                    <span className="dim">labels: </span>
+                    {region.ground_truth.worst}
+                    {" → "}
+                    <span className={region.score?.type_correct ? "good" : "bad"}>
+                      {region.score?.type_correct ? "correct type" : "wrong type"}
+                    </span>
+                  </div>
+                )}
+              </>
             )}
-            <div style={{ fontFamily: "var(--mono)", fontSize: 11, color: "var(--text-dim)" }}>
+            <div className="region-meta">
               {region.region.x1},{region.region.y1}–{region.region.x2},{region.region.y2} · Δ
               {region.region.delta} · {region.metrics.latency_ms}ms · $
               {region.metrics.cost_usd}

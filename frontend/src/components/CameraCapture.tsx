@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "./ui";
+import { Button, ErrorPanel } from "./ui";
 
 // Live camera input. Captures a still frame and hands it to onCapture as a JPEG blob.
 export function CameraCapture({ onCapture, disabled }: { onCapture: (blob: Blob) => void; disabled?: boolean }) {
@@ -38,20 +38,15 @@ export function CameraCapture({ onCapture, disabled }: { onCapture: (blob: Blob)
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <div className="cam-stack">
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
-        style={{
-          width: "100%",
-          borderRadius: "var(--radius)",
-          background: "#000",
-          display: stream ? "block" : "none",
-        }}
+        className={`cam-video${stream ? " on" : ""}`}
       />
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <div className="hrow">
         {!stream ? (
           <Button variant="ghost" onClick={start}>Start camera</Button>
         ) : (
@@ -61,7 +56,7 @@ export function CameraCapture({ onCapture, disabled }: { onCapture: (blob: Blob)
           </>
         )}
       </div>
-      {error && <p style={{ color: "var(--danger)", margin: 0 }}>Camera error: {error}</p>}
+      {error && <ErrorPanel message={`Camera error: ${error}`} onDismiss={() => setError(null)} />}
     </div>
   );
 }
