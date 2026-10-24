@@ -4,9 +4,11 @@ import time
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
+import httpx
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
+from openai import APIConnectionError, APIStatusError
 from PIL import Image
 
 import main
@@ -600,3 +602,45 @@ def test_triage_template_must_be_an_image(monkeypatch):
         },
     )
     assert res.status_code == 400
+
+
+def test_transient_api_error_is_retried_once(monkeypatch):
+    # One connection blip on attempt 1: sleep once, try again, succeed — and let
+    # nothing behind us stack retries (the client is built with max_retries=0).
+    client = fake_client(json.dumps(VALID))
+    raw = client.chat.completions.with_raw_response.create.return_value
+    flake = APIConnectionError(request=httpx.Request("POST", "https://mubit.invalid"))
+    client.chat.completions.with_raw_response.create = MagicMock(
+        side_effect=[flake, raw]
+    )
+    sleeps = []
+    monkeypatch.setattr(main.time, "sleep", lambda s: sleeps.append(s))
+    monkeypatch.setattr(main, "get_client", lambda: client)
+
+    classification, _metrics = main.classify_image(jpeg(), "instructions")
+
+    assert client.chat.completions.with_raw_response.create.call_count == 2
+    assert sleeps == [0.25]
+    assert classification["defect_type"] == VALID["defect_type"]
+
+
+def test_hard_api_error_is_not_retried(monkeypatch):
+    # A 400 is a bad request, not a blip: raise immediately, never sleep.
+    client = fake_client(json.dumps(VALID))
+    bad = APIStatusError(
+        "bad output",
+        response=httpx.Response(
+            400, request=httpx.Request("POST", "https://mubit.invalid")
+        ),
+        body=None,
+    )
+    client.chat.completions.with_raw_response.create = MagicMock(side_effect=[bad])
+    monkeypatch.setattr(
+        main.time, "sleep", lambda _s: pytest.fail("hard errors must not retry")
+    )
+    monkeypatch.setattr(main, "get_client", lambda: client)
+
+    with pytest.raises(APIStatusError):
+        main.classify_image(jpeg(), "instructions")
+
+    assert client.chat.completions.with_raw_response.create.call_count == 1
