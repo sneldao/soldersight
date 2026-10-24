@@ -44,9 +44,10 @@ A visual quality-inspection agent for PCB manufacturing. **Recurring task:** a P
 ┌──────────────────────▼──────────────────────────────────────┐
 │  FastAPI backend                                            │
 │  - /triage: image → LLM vision classification (via Mubit)   │
-│  - /correct: corrected (input, output) → Mubit feedback     │
-│  - /metrics: accuracy/cost/latency per model                │
-│  - /compare: side-by-side closed vs open                    │
+│  - /corrections: inspector override → corrections.jsonl     │
+│  - /metrics: accuracy/cost/latency per model lane           │
+│  - /compare: baseline vs adapted lanes                      │
+│  - /rules: learned rules + both task prompts                │
 └──────────────────────┬──────────────────────────────────────┘
                        │
 ┌──────────────────────▼──────────────────────────────────────┐
@@ -67,17 +68,22 @@ A visual quality-inspection agent for PCB manufacturing. **Recurring task:** a P
 
 **Model:** `gpt-4o` (vision-capable, via Mubit's OpenAI host).
 
-**Instructions (system prompt, fixed across calls):**
+**Instructions (system prompt template, adapted per lane):**
+
+Baseline lane uses the base taxonomy (`BASE_DEFECT_TYPES`). Adapted lane injects `learned_rules()` — one rule line per correction — and `allowed_types()` which can add brand-new defect types (e.g. `tombstoning`) not in the original taxonomy.
+
 ```
-You are a PCB quality inspector. Given a PCB image, classify it:
-- defect_type: one of [open, short, mousebite, spur, copper, pinhole, none]
+You are a PCB quality inspector. Look at this close-up of a board and classify it:
+- defect_type: one of [{types}]
 - severity: one of [cosmetic, minor, major, critical]
 - disposition: one of [pass, rework, scrap]
 - confidence: 0.0-1.0
 - reason: one sentence
-
+{rules}
 Reply as JSON only: {"defect_type":..., "severity":..., "disposition":..., "confidence":..., "reason":...}
 ```
+
+`{types}` is the current defect taxonomy (base + any types introduced by corrections). `{rules}` is one rule line per distinct correction, latest wording wins. Baseline lane renders `{rules}` as empty; adapted lane renders all learned rules.
 
 **Output format:** JSON (fixed → forms one task).
 
@@ -87,9 +93,20 @@ Reply as JSON only: {"defect_type":..., "severity":..., "disposition":..., "conf
 
 ## Correction → model update mechanism
 
+Two paths:
+
+**Path A — Local learned-rules adaptation (immediate, shipped):**
+1. Inspector corrects a classification in the UI (defect type, severity, disposition, reason).
+2. App stores the correction in `data/deeppcb/corrections.jsonl` via `POST /corrections`.
+3. `learned_rules()` turns each correction into an instruction rule; `allowed_types()` adds any new defect type to the taxonomy.
+4. The adapted lane's system prompt injects these rules + types, so the model immediately stops repeating the same mistake — no adapter training wait.
+5. `GET /rules` exposes corrections, learned rules, defect types, and both task prompts (baseline vs adapted).
+6. `POST /compare` runs the same crops down both lanes to show baseline vs adapted accuracy side by side.
+
+**Path B — Mubit adapter training (pending):**
 1. App sends 25+ triage calls (image → classification) through Mubit → task forms, collects kept examples, trains adapter v1.
 2. Human reviews classifications in the UI. For wrong ones, edits disposition/severity/reason and clicks "Correct."
-3. App re-sends the corrected (image, corrected_classification) pair as a new call for the same task (same instructions/output format) → becomes a new kept example.
+3. App re-sends the corrected (image, corrected_classification) pair as a new call for the same task → becomes a new kept example.
 4. Mubit trains adapter v2 from the corrected examples.
 5. Adapter v2 passes tests → available in Try models.
 6. Demo: compare provider (closed) vs adapter v2 (task-adapted open) on 5 new images → side-by-side accuracy/cost/latency.
@@ -118,26 +135,27 @@ Plus "none" (clean board → pass).
 
 ## 42-hour build plan
 
-### Fri 17:00–22:00 (kickoff + setup)
-- [ ] Create repo `soldersight`, init FastAPI + Vite React scaffold.
-- [ ] Set up Mubit key + provider key (OpenAI) in console. Verify one call routes through Mubit.
-- [ ] Download DeepPCB dataset (or a 30-image curated subset). Prepare ground-truth labels + bounding boxes.
-- [ ] Write the system prompt (instructions) for the classification task.
-- [ ] Send 25+ triage calls through Mubit → task forms, collects kept examples.
+### Fri 17:00–22:00 (kickoff + setup) ✅ done
+- [x] Create repo `soldersight`, init FastAPI + Vite React scaffold.
+- [x] Set up Mubit key + provider key (OpenAI) in console. Verify one call routes through Mubit.
+- [x] Download DeepPCB dataset (30-image curated subset). Prepare ground-truth labels + bounding boxes.
+- [x] Write the system prompt (instructions) for the classification task.
+- [x] Send 25+ triage calls through Mubit → task forms, collects kept examples.
 
-### Sat 08:00–18:00 (core build)
-- [ ] Build triage endpoint: image → LLM vision classification via Mubit.
-- [ ] Build correction endpoint: corrected (image, output) → re-send as new example.
-- [ ] Build React UI: image grid, defect overlay (bounding boxes), triage panel, correction UI.
-- [ ] Build metrics capture: accuracy, cost (tokens), latency per model.
-- [ ] Run closed-model baseline on 6 images → capture errors + metrics.
+### Sat 08:00–18:00 (core build) ✅ done
+- [x] Build triage endpoint: image → LLM vision classification via Mubit.
+- [x] Build correction endpoint: corrected (image, output) → stored locally + learned rules.
+- [x] Build React UI: image grid, defect overlay (bounding boxes), triage panel, correction UI.
+- [x] Build metrics capture: accuracy, cost (tokens), latency per model.
+- [x] Run closed-model baseline on 30 images → capture errors + metrics (recorded in `runs.jsonl`).
 
-### Sat 18:00–Sun 02:00 (correction loop + model update)
-- [ ] Implement correction → feedback → model update wiring.
-- [ ] Trigger adapter training (25+ kept examples). Monitor task status (Reviewing → Training → Testing).
-- [ ] Once adapter passes: test on 5 new images. Capture metrics.
-- [ ] Build side-by-side comparison UI (closed vs open).
-- [ ] Fast-refresh beat: add "tombstoning" defect type, one correction, show adaptation.
+### Sat 18:00–Sun 02:00 (correction loop + model update) ✅ core done / adapter pending
+- [x] Implement correction → feedback → model update wiring (local learned-rules path).
+- [ ] Trigger adapter training (25+ kept examples). Monitor task status (Reviewing → Training → Testing). — pending Mubit re-integration.
+- [ ] Once adapter passes: test on 5 new images. Capture metrics. — pending.
+- [x] Build side-by-side comparison backend (`/compare` baseline vs adapted lanes).
+- [ ] Build side-by-side comparison UI (frontend). — pending.
+- [x] Fast-refresh beat: add "tombstoning" defect type, one correction, show adaptation (backend + tests).
 
 ### Sun 02:00–05:00 (code freeze prep)
 - [ ] Record 3-min MP4 (screen capture + voiceover). Show the full correction→model update arc.
