@@ -57,7 +57,9 @@ BLOCK / REVIEW**.
 By default the evidence is the vision model's **own crop-by-crop notes** — the gate
 needs no answer key (this is the trace audit, below). Passing `evidence_types`
 switches it to **oracle mode**, checking against the AOI/DeepPCB labels — kept for the
-demo's ground-truth contrast.
+demo's ground-truth contrast. With neither `regions` nor `evidence_types` (and no
+recorded run to replay) the gate **fails closed** with a 422 — the labels are the
+answer key, and they enter the loop only when the caller names them.
 
 > Board `00041004`: vision said **pass**; the board has an open + short circuit
 > (**scrap**). Sapling returned **violation @ 96%** → **ship blocked.** The verifier
