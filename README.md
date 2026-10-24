@@ -84,8 +84,10 @@ expo judging 05:30 GMT; finalist stage demos 12:30 GMT; awards 13:30 GMT.
 ## Setup (during the event)
 1. Copy `.env.example` → `.env` and fill in `MUBIT_API_KEY` (your OpenAI key stays in the
    Mubit console under **Provider keys**; the starter credit works too).
-2. Data: `bash scripts/get-data.sh` puts DeepPCB `temp/test/annotation` pairs under
-   `data/deeppcb/` (not committed — they are the dataset's files, not ours).
+2. Data: nothing to download. `data/deeppcb/` carries a committed 30-pair subset of the
+   [DeepPCB](https://github.com/tangsanli5201/DeepPCB) dataset — template/test images plus
+   the dataset's own defect boxes — and the ledgers behind the numbers above
+   (`runs.jsonl`, `comparison.json`, `corrections.jsonl`).
 3. Backend: `cd backend && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && uvicorn main:app --reload`
 4. Frontend: `cd frontend && npm install && npm run dev` → http://localhost:5173
 5. Tests: `backend/.venv/bin/python -m pytest backend` and `cd frontend && npm test`.
@@ -96,7 +98,8 @@ expo judging 05:30 GMT; finalist stage demos 12:30 GMT; awards 13:30 GMT.
 `POST /triage` (upload, quadrant crops) · `POST /triage/board/{board_id}?lane=` ·
 `POST /corrections` · `GET /rules` (what the line has taught, and both task prompts) ·
 `POST /compare` (same crops, both lanes) · `GET /metrics` · `GET /benchmark` (last capture) ·
-`POST /verify/board/{board_id}` (Banyan Sapling policy gate).
+`POST /verify/board/{board_id}` (Banyan Sapling policy gate) ·
+`POST /verify/trace` (Sapling trace audit vs the model's own notes, no ground truth).
 
 ## Pre-commit
 Secrets scanning (gitleaks) + linting (ruff for Python) run via the `pre-commit` framework.
@@ -104,12 +107,17 @@ Install: `pre-commit install`. Run manually: `pre-commit run --all-files`.
 
 ## Status
 
-Core build complete (Oct 24). Backend: `/triage`, `/corrections`, `/compare`, `/metrics`, `/rules` endpoints; region-based inspection (`inspection.py`); learned-rules prompt adaptation; all 17 backend tests pass. Frontend: board grid, before/after compare slider, defect overlays, triage panel, correction form; all 4 frontend tests pass.
+Core build complete (Oct 24). Backend: triage, corrections→instructions adaptation,
+compare, metrics, benchmark, and the Banyan Sapling policy gate + trace audit;
+region-based inspection (`inspection.py`); **29 backend tests pass**. Frontend: board
+grid, compare slider, defect overlays, triage + region cards, correction form, policy
+gate; typecheck clean, frontend tests pass. Demo data (30-pair DeepPCB subset) is
+committed, so a fresh clone runs offline.
 
 Remaining before code freeze (Sun 25 Oct 05:00 GMT):
-- Side-by-side comparison + metrics dashboard UI (frontend)
-- Mubit adapter training re-integration (Path B)
+- Browser click-through of ComparePanel (endpoint proven by curl)
 - 3-min MP4 + PDF deck
+- Mubit console screenshots (baseline vs adapted task) — the strongest "Use of Mubit" evidence
 - Expo demo test
 
 See `docs/plan.md` for the full 42-hour build plan with checklists.

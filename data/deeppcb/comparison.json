@@ -1,0 +1,216 @@
+{
+  "generated_utc": "2026-10-24T11:12:24Z",
+  "model": "gpt-4o-mini",
+  "corrections": 3,
+  "boards": [
+    {
+      "id": "00041000",
+      "ground_truth": {
+        "defect_types": [
+          "open",
+          "short",
+          "mousebite",
+          "copper",
+          "spur",
+          "pinhole"
+        ],
+        "disposition": "scrap",
+        "worst": "open"
+      },
+      "verdicts": {
+        "baseline": {
+          "defect_type": "short",
+          "disposition": "rework",
+          "cost_usd": 0.006587,
+          "latency_ms": 6899.3,
+          "correct": false
+        },
+        "adapted": {
+          "defect_type": "open",
+          "disposition": "scrap",
+          "cost_usd": 0.006673,
+          "latency_ms": 5901.2,
+          "correct": true
+        }
+      }
+    },
+    {
+      "id": "00041002",
+      "ground_truth": {
+        "defect_types": [
+          "short",
+          "copper",
+          "pinhole",
+          "spur"
+        ],
+        "disposition": "scrap",
+        "worst": "short"
+      },
+      "verdicts": {
+        "baseline": {
+          "defect_type": "none",
+          "disposition": "pass",
+          "cost_usd": 0.006584,
+          "latency_ms": 5400.2,
+          "correct": false
+        },
+        "adapted": {
+          "defect_type": "open",
+          "disposition": "scrap",
+          "cost_usd": 0.006661,
+          "latency_ms": 5573.2,
+          "correct": true
+        }
+      }
+    },
+    {
+      "id": "00041005",
+      "ground_truth": {
+        "defect_types": [
+          "open",
+          "short",
+          "copper",
+          "spur",
+          "pinhole"
+        ],
+        "disposition": "scrap",
+        "worst": "open"
+      },
+      "verdicts": {
+        "baseline": {
+          "defect_type": "open",
+          "disposition": "rework",
+          "cost_usd": 0.006587,
+          "latency_ms": 6022.8,
+          "correct": false
+        },
+        "adapted": {
+          "defect_type": "open",
+          "disposition": "scrap",
+          "cost_usd": 0.006658,
+          "latency_ms": 5425.2,
+          "correct": true
+        }
+      }
+    },
+    {
+      "id": "00041009",
+      "ground_truth": {
+        "defect_types": [
+          "open",
+          "short",
+          "mousebite",
+          "copper",
+          "spur"
+        ],
+        "disposition": "scrap",
+        "worst": "open"
+      },
+      "verdicts": {
+        "baseline": {
+          "defect_type": "none",
+          "disposition": "pass",
+          "cost_usd": 0.006584,
+          "latency_ms": 5346.8,
+          "correct": false
+        },
+        "adapted": {
+          "defect_type": "open",
+          "disposition": "scrap",
+          "cost_usd": 0.006662,
+          "latency_ms": 5742.1,
+          "correct": true
+        }
+      }
+    },
+    {
+      "id": "00041015",
+      "ground_truth": {
+        "defect_types": [
+          "open",
+          "mousebite",
+          "copper",
+          "pinhole"
+        ],
+        "disposition": "scrap",
+        "worst": "open"
+      },
+      "verdicts": {
+        "baseline": {
+          "defect_type": "none",
+          "disposition": "pass",
+          "cost_usd": 0.006584,
+          "latency_ms": 5827.8,
+          "correct": false
+        },
+        "adapted": {
+          "defect_type": "open",
+          "disposition": "scrap",
+          "cost_usd": 0.006672,
+          "latency_ms": 6448.4,
+          "correct": true
+        }
+      }
+    },
+    {
+      "id": "00041029",
+      "ground_truth": {
+        "defect_types": [
+          "mousebite",
+          "copper",
+          "pinhole"
+        ],
+        "disposition": "rework",
+        "worst": "mousebite"
+      },
+      "verdicts": {
+        "baseline": {
+          "defect_type": "none",
+          "disposition": "pass",
+          "cost_usd": 0.003949,
+          "latency_ms": 3116.0,
+          "correct": false
+        },
+        "adapted": {
+          "defect_type": "open",
+          "disposition": "scrap",
+          "cost_usd": 0.004,
+          "latency_ms": 3553.6,
+          "correct": false
+        }
+      }
+    }
+  ],
+  "lanes": {
+    "baseline": {
+      "calls": 28,
+      "boards": 6,
+      "scored": 28,
+      "defect_regions": 18,
+      "type_accuracy": 0.056,
+      "disposition_accuracy": 0.0,
+      "missed_defect_rate": 0.889,
+      "false_alarm_rate": 0.0,
+      "board_disposition_accuracy": 0.0,
+      "avg_latency_ms": 1164.7,
+      "total_tokens": 242642,
+      "total_cost_usd": 0.036875,
+      "avg_cost_usd": 0.001317
+    },
+    "adapted": {
+      "calls": 28,
+      "boards": 6,
+      "scored": 28,
+      "defect_regions": 18,
+      "type_accuracy": 0.167,
+      "disposition_accuracy": 0.444,
+      "missed_defect_rate": 0.111,
+      "false_alarm_rate": 0.9,
+      "board_disposition_accuracy": 0.833,
+      "avg_latency_ms": 1165.8,
+      "total_tokens": 245413,
+      "total_cost_usd": 0.037326,
+      "avg_cost_usd": 0.001333
+    }
+  }
+}
