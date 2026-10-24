@@ -23,20 +23,88 @@ def fake_client(content: str) -> MagicMock:
     return client
 
 
-def test_triage_returns_classification(monkeypatch):
+def test_triage_returns_classification(monkeypatch, tmp_path):
     client = fake_client(json.dumps(VALID))
     monkeypatch.setattr(main, "get_client", lambda: client)
+    monkeypatch.setattr(main, "RUNS_PATH", tmp_path / "runs.jsonl")
 
     res = TestClient(main.app).post(
         "/triage", files={"image": ("board.png", b"fakepng", "image/png")}
     )
 
     assert res.status_code == 200
-    assert res.json() == VALID
+    body = res.json()
+    assert {key: body[key] for key in VALID} == VALID
     kwargs = client.chat.completions.create.call_args.kwargs
     assert kwargs["model"] == "gpt-4o-mini"
     image_part = kwargs["messages"][1]["content"][0]
     assert image_part["image_url"]["url"].startswith("data:image/png;base64,")
+
+
+def test_triage_records_metrics_and_scores_against_ground_truth(monkeypatch, tmp_path):
+    runs = tmp_path / "runs.jsonl"
+    monkeypatch.setattr(main, "RUNS_PATH", runs)
+    monkeypatch.setattr(main, "get_client", lambda: fake_client(json.dumps(VALID)))
+
+    board = "mousebite-board"
+    monkeypatch.setattr(
+        main,
+        "annotations_for",
+        lambda _board_id: [
+            {"x1": 0, "y1": 0, "x2": 1, "y2": 1, "code": 3, "type": "mousebite"}
+        ],
+    )
+    res = TestClient(main.app).post(
+        "/triage",
+        files={"image": ("board.png", b"fakepng", "image/png")},
+        data={"board_id": board, "lane": "baseline"},
+    )
+
+    body = res.json()
+    assert body["ground_truth"] == {
+        "defect_types": ["mousebite"],
+        "disposition": "rework",
+        "worst": "mousebite",
+    }
+    assert body["score"] == {"type_correct": True, "disposition_correct": True}
+    assert body["metrics"]["latency_ms"] >= 0
+
+    recorded = json.loads(runs.read_text().strip())
+    assert recorded["board_id"] == board
+    assert recorded["lane"] == "baseline"
+    assert recorded["score"]["type_correct"] is True
+
+
+def test_metrics_aggregates_per_lane(monkeypatch, tmp_path):
+    runs = tmp_path / "runs.jsonl"
+    monkeypatch.setattr(main, "RUNS_PATH", runs)
+    rows = [
+        {
+            "lane": "baseline",
+            "metrics": {"latency_ms": 100.0, "total_tokens": 10, "cost_usd": 0.001},
+            "score": {"type_correct": True, "disposition_correct": False},
+        },
+        {
+            "lane": "baseline",
+            "metrics": {"latency_ms": 300.0, "total_tokens": 20, "cost_usd": 0.002},
+            "score": {"type_correct": False, "disposition_correct": False},
+        },
+        {
+            "lane": "adapted",
+            "metrics": {"latency_ms": 200.0, "total_tokens": 30, "cost_usd": 0.003},
+            "score": {"type_correct": True, "disposition_correct": True},
+        },
+    ]
+    runs.write_text("\n".join(json.dumps(row) for row in rows))
+
+    lanes = TestClient(main.app).get("/metrics").json()["lanes"]
+
+    assert lanes["baseline"]["calls"] == 2
+    assert lanes["baseline"]["type_accuracy"] == 0.5
+    assert lanes["baseline"]["disposition_accuracy"] == 0.0
+    assert lanes["baseline"]["avg_latency_ms"] == 200.0
+    assert lanes["baseline"]["total_cost_usd"] == 0.003
+    assert lanes["adapted"]["type_accuracy"] == 1.0
 
 
 def test_triage_rejects_invalid_model_output(monkeypatch):
