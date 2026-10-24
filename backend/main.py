@@ -5,6 +5,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Annotated
+from uuid import uuid4
 
 from fastapi import FastAPI, File, Form, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
@@ -107,7 +108,14 @@ class TraceVerify(BaseModel):
 
 
 def get_client() -> OpenAI:
-    return OpenAI(base_url=MUBIT_BASE_URL, api_key=os.environ.get("MUBIT_API_KEY", ""))
+    # max_retries=0: retry policy lives in classify_image alone. The SDK's own
+    # default (2) would stack under the manual retry, making one flaky crop hit
+    # the API up to four times.
+    return OpenAI(
+        base_url=MUBIT_BASE_URL,
+        api_key=os.environ.get("MUBIT_API_KEY", ""),
+        max_retries=0,
+    )
 
 
 def read_corrections() -> list[dict]:
@@ -593,6 +601,7 @@ def inspect_regions(
     # crop would let a mid-triage correction change the prompt between crops of the
     # same board.
     instructions = instructions_for(lane)
+    run_id = uuid4().hex[:12]
     with ThreadPoolExecutor(max_workers=min(len(regions), 5) or 1) as pool:
         results = list(
             pool.map(
@@ -609,6 +618,8 @@ def inspect_regions(
         )
 
     # Record after the calls, in region order, so the ledger stays deterministic.
+    # run_id marks the batch: /verify can then replay *this* run's notes without
+    # bleeding into a neighbouring board, lane, or failed-crop boundary.
     for row in results:
         record_run(
             {
@@ -616,6 +627,7 @@ def inspect_regions(
                 "model": MODEL,
                 "board_id": board_id,
                 "lane": lane,
+                "run_id": run_id,
                 **row,
             }
         )
@@ -791,15 +803,21 @@ def verify_bundle(policy: str, evidence: str, claim: str) -> dict:
 
 
 def latest_regions(board_id: str) -> list[dict] | None:
-    """The most recent contiguous run of recorded region rows for a board — the
-    model's own notes from its last triage, for callers that don't pass them in."""
-    batch: list[dict] = []
-    for row in reversed(read_runs()):
-        if row.get("board_id") == board_id and "defect_type" in row:
-            batch.append(row)
-        elif batch:
-            break
-    return list(reversed(batch)) or None
+    """The most recent recorded run's region rows for a board — the model's own
+    notes from its last triage, for callers that don't pass them in.
+
+    Batches carry a shared `run_id`, so a run can't bleed into a neighbouring
+    board, lane, or failed-crop boundary (each crop is its own ledger row:
+    error rows lack a `defect_type`, and /compare writes two lanes side by
+    side). Runs recorded before `run_id` existed stay out of the fallback —
+    pass `regions` explicitly rather than trust a boundary heuristic.
+    """
+    rows = read_runs()
+    for row in reversed(rows):
+        if row.get("board_id") == board_id and row.get("run_id"):
+            batch = [r for r in rows if r.get("run_id") == row["run_id"]]
+            return batch or None
+    return None
 
 
 @app.post("/verify/board/{board_id}")
@@ -807,28 +825,35 @@ def verify_board(board_id: str, body: Verify) -> dict:
     """The policy gate: is the vision model's disposition claim actually allowed?
 
     Default evidence is what the model itself reported, region by region — the
-    gate needs no answer key. Passing `evidence_types` explicitly switches to
-    oracle mode (the AOI labels), kept for the demo's ground-truth contrast.
+    gate needs no answer key, and it fails closed: with neither `regions` nor
+    `evidence_types` (and no recorded run to replay) it returns 422 rather than
+    quietly grading against AOI labels. Passing `evidence_types` explicitly
+    switches to oracle mode, kept for the demo's "gate vs ground truth" contrast.
     """
     if not (DATA_DIR / "images" / f"{board_id}_test.jpg").is_file():
         raise HTTPException(status_code=404, detail="unknown board")
 
     truth = ground_truth(annotations_for(board_id))
     # Precedence: explicit regions > explicit oracle types > the board's recorded
-    # regions > AOI labels as a last resort.
+    # regions. There is no silent last resort: if nothing hands the gate evidence
+    # it fails closed (422), because the labels are the answer key — they enter
+    # the loop only when the caller names them.
     regions = body.regions if body.regions is not None else None
     if regions is None and body.evidence_types is None:
         regions = latest_regions(board_id)
     if regions:
         evidence_mode = "trace"
         evidence = sapling.build_trace_evidence(regions)
-    else:
+    elif body.evidence_types is not None:
         evidence_mode = "oracle"
-        evidence = sapling.build_evidence(
-            body.evidence_types
-            if body.evidence_types is not None
-            else truth["defect_types"],
-            body.confidence,
+        evidence = sapling.build_evidence(body.evidence_types, body.confidence)
+    else:
+        raise HTTPException(
+            status_code=422,
+            detail=(
+                "no evidence to verify against: pass regions (trace mode — the "
+                "model's own notes) or evidence_types (oracle mode — AOI labels)"
+            ),
         )
 
     policy = body.policy or sapling.default_policy()

@@ -185,10 +185,13 @@ def test_verify_board_defaults_to_trace_evidence(monkeypatch):
 
 def test_verify_board_falls_back_to_recorded_regions(monkeypatch, tmp_path):
     # No regions in the body: use the board's latest recorded run, still no labels.
+    # Batches carry a shared run_id, so /compare's two lanes (side by side in the
+    # ledger under one board_id) can't bleed into the batch.
     runs = tmp_path / "runs.jsonl"
     rows = [
         {
             "board_id": "00041000",
+            "run_id": "old",
             "defect_type": "open",
             "severity": "critical",
             "confidence": 0.9,
@@ -196,14 +199,57 @@ def test_verify_board_falls_back_to_recorded_regions(monkeypatch, tmp_path):
             "region": {"x1": 0, "y1": 0},
         },
         # A different board's run must not bleed into the batch.
-        {"board_id": "00041099", "defect_type": "none", "region": {"x1": 0, "y1": 0}},
+        {
+            "board_id": "00041099",
+            "run_id": "other",
+            "defect_type": "none",
+            "region": {"x1": 0, "y1": 0},
+        },
+        # Older recorded run for the same board, under a different run_id.
         {
             "board_id": "00041000",
+            "run_id": "old",
+            "defect_type": "open",
+            "severity": "critical",
+            "confidence": 0.9,
+            "reason": "a break in the trace",
+            "region": {"x1": 0, "y1": 0},
+        },
+        # The compare run: baseline lane, then adapted lane, same board.
+        {
+            "board_id": "00041000",
+            "run_id": "base",
             "defect_type": "open",
             "severity": "critical",
             "confidence": 0.9,
             "reason": "latest batch",
             "region": {"x1": 5, "y1": 5},
+        },
+        {
+            "board_id": "00041000",
+            "run_id": "adap",
+            "defect_type": "open",
+            "severity": "critical",
+            "confidence": 0.9,
+            "reason": "adapted double-count",
+            "region": {"x1": 5, "y1": 5},
+        },
+        # A failed crop inside the latest run: not collectable, but must not end
+        # the batch either.
+        {
+            "board_id": "00041000",
+            "run_id": "base",
+            "error": "502",
+            "region": {"x1": 8, "y1": 0},
+        },
+        {
+            "board_id": "00041000",
+            "run_id": "base",
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "confidence": 0.9,
+            "reason": "still in the same batch",
+            "region": {"x1": 9, "y1": 9},
         },
     ]
     runs.write_text("\n".join(json.dumps(r) for r in rows))
@@ -222,7 +268,26 @@ def test_verify_board_falls_back_to_recorded_regions(monkeypatch, tmp_path):
 
     assert body["evidence_mode"] == "trace"
     assert "latest batch" in body["evidence"]
+    assert "still in the same batch" in body["evidence"]
+    # Failed crops report as failures, not as clean observations.
+    assert "the call failed" in body["evidence"]
+    # Batch isolation: the earlier run, the other board, and the compare lane
+    # that shares the board stay out of the evidence.
     assert "a break in the trace" not in body["evidence"]
+    assert "adapted double-count" not in body["evidence"]
+
+
+def test_verify_board_with_no_evidence_inputs_fails_closed(monkeypatch, tmp_path):
+    # A board never triaged, no regions, no evidence_types: the answer key may
+    # not slide in as a "last resort" — the gate asks for evidence instead.
+    monkeypatch.setattr(main, "RUNS_PATH", tmp_path / "runs.jsonl")
+
+    res = TestClient(main.app).post(
+        "/verify/board/00041000", json={"disposition": "pass"}
+    )
+
+    assert res.status_code == 422
+    assert "evidence_types" in res.json()["detail"]
 
 
 def test_verify_board_unknown_board_404():
