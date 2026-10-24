@@ -12,6 +12,7 @@
   --accent-hi: #f59e0b;
   --accent-dim: rgba(217, 119, 6, 0.08);
   --danger: #dc2626;
+  --danger-ink: #b91c1c; /* darker red for small reading text — clears AA (4.5:1) on paper and the danger tint, where --danger (4.47) just misses */
   --warn: #b45309;
   --info: #2563eb;
   --ok: #047857;

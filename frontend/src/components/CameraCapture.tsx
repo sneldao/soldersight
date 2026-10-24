@@ -38,20 +38,15 @@ export function CameraCapture({ onCapture, disabled }: { onCapture: (blob: Blob)
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+    <div className="cam-stack">
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted
-        style={{
-          width: "100%",
-          borderRadius: "var(--radius)",
-          background: "#000",
-          display: stream ? "block" : "none",
-        }}
+        className={`cam-video${stream ? " on" : ""}`}
       />
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+      <div className="hrow">
         {!stream ? (
           <Button variant="ghost" onClick={start}>Start camera</Button>
         ) : (

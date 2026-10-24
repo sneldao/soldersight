@@ -23,11 +23,7 @@ function Elapsed({ active }: { active: boolean }) {
     return () => clearInterval(id);
   }, [active]);
   if (!active) return null;
-  return (
-    <span style={{ fontFamily: "var(--mono)", fontSize: 12, color: "var(--text-dim)" }}>
-      {t.toFixed(1)}s
-    </span>
-  );
+  return <span className="elapsed">{t.toFixed(1)}s</span>;
 }
 
 // A filmstrip of the dataset boards, each dotted with its labelled disposition.
@@ -73,16 +69,9 @@ function BoardStrip({
 // Pulsing placeholders where the region cards will land.
 function RegionSkeletons({ count }: { count: number }) {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
-        gap: 12,
-      }}
-      aria-label="Classifying regions"
-    >
+    <div className="region-grid" aria-label="Classifying regions">
       {Array.from({ length: count }, (_, i) => (
-        <div key={i} className="skeleton" style={{ aspectRatio: "1 / 1.2" }} />
+        <div key={i} className="skeleton region-skel" />
       ))}
     </div>
   );
@@ -151,18 +140,16 @@ export default function App() {
   }
 
   return (
-    <main style={{ maxWidth: 1400, margin: "0 auto", padding: 24, display: "grid", gap: 20 }}>
-      <header style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <h1 style={{ fontSize: 22 }}>SolderSight</h1>
-        <span style={{ color: "var(--text-dim)", fontFamily: "var(--mono)", fontSize: 13 }}>
-          PCB defect triage · Mubit × Banyan
-        </span>
+    <main className="shell">
+      <header className="masthead">
+        <h1>SolderSight</h1>
+        <span className="tagline">PCB defect triage · Mubit × Banyan</span>
       </header>
 
       {error && <ErrorPanel message={error} onDismiss={() => setError(null)} />}
 
-      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
-        <span style={{ color: "var(--text-dim)", fontSize: 13 }}>Task lane</span>
+      <div className="hrow">
+        <span className="dim small">Task lane</span>
         {LANES.map((name) => (
           <Button
             key={name}
@@ -172,24 +159,15 @@ export default function App() {
             {name}
           </Button>
         ))}
-        <span style={{ color: "var(--text-dim)", fontSize: 13 }}>{LANE_COPY[lane]}</span>
+        <span className="dim small">{LANE_COPY[lane]}</span>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "minmax(0, 2fr) minmax(320px, 1fr)",
-          gap: 20,
-          alignItems: "start",
-        }}
-      >
-        <div style={{ display: "grid", gap: 20 }}>
+      <div className="columns">
+        <div className="main-col">
           <Panel title="Board">
             <BoardStrip boards={boards} selectedId={selectedId} onSelect={setSelectedId} />
             {selected && <BoardView board={selected} showDefects={showDefects} />}
-            <label
-              style={{ display: "flex", gap: 8, alignItems: "center", color: "var(--text-dim)" }}
-            >
+            <label className="mini-pick">
               <input
                 type="checkbox"
                 checked={showDefects}
@@ -201,24 +179,22 @@ export default function App() {
 
           {(busy || result) && selected && (
             <Panel title={`Crops the ${result?.lane ?? lane} task was asked about`}>
-              <div style={{ display: "grid", gap: 12 }}>
+              <div className="stack">
                 {result && (
                   <>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                    <div className="hrow">
                       <Badge type={result.defect_type} />
                       <strong>{result.disposition}</strong>
                       {verifyResult && <GateChip action={verifyResult.gate.action} />}
-                      <span style={{ color: "var(--text-dim)", fontSize: 13 }}>
+                      <span className="dim small">
                         board verdict = its worst confident region
                       </span>
                     </div>
                     {result.caveat && (
-                      <p style={{ margin: 0, color: "var(--warn)", fontSize: 13 }}>
-                        ⚠ {result.caveat}
-                      </p>
+                      <p className="flush warn-line small">⚠ {result.caveat}</p>
                     )}
                     {result.region_errors != null && (
-                      <p style={{ margin: 0, color: "var(--danger)", fontSize: 13 }}>
+                      <p className="flush bad small">
                         {result.region_errors} crop call{result.region_errors > 1 ? "s" : ""} failed —
                         verdict excludes them
                       </p>
@@ -238,7 +214,7 @@ export default function App() {
                   )
                 )}
                 {result && (
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+                  <div className="stat-grid">
                     <Stat label="Mubit calls" value={result.metrics.calls} />
                     <Stat label="Latency" value={`${result.metrics.latency_ms}ms`} />
                     <Stat label="Tokens" value={result.metrics.total_tokens} />
@@ -250,15 +226,15 @@ export default function App() {
           )}
         </div>
 
-        <div style={{ display: "grid", gap: 20, alignContent: "start" }}>
+        <div className="rail">
           <Panel title="Triage">
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <div className="hrow">
               <Button onClick={triageSelected} disabled={!selected || busy}>
                 {busy ? "Classifying…" : `Triage selected board (${lane})`}
               </Button>
               <Elapsed active={busy} />
             </div>
-            <label style={{ display: "grid", gap: 4, fontSize: 13, color: "var(--text-dim)" }}>
+            <label className="mini-label">
               Reference template for camera triage (optional — enables the defect diff)
               <input
                 type="file"
@@ -268,15 +244,15 @@ export default function App() {
             </label>
             <CameraCapture onCapture={capture} disabled={busy} />
             {result && (
-              <div style={{ display: "grid", gap: 12 }}>
+              <div className="stack">
                 <Badge type={result.defect_type} />
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                <div className="pivot-grid">
                   <Stat label="Severity" value={result.severity} />
                   <Stat label="Disposition" value={result.disposition} />
                   <Stat label="Confidence" value={`${Math.round(result.confidence * 100)}%`} />
                   <Stat label="Crops" value={result.regions.length} />
                 </div>
-                <p style={{ margin: 0, color: "var(--text-dim)" }}>{result.reason}</p>
+                <p className="flush dim">{result.reason}</p>
                 {selected && result.board_id && (
                   <Button variant="ghost" onClick={verify} disabled={verifying}>
                     {verifying

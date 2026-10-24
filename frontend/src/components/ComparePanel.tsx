@@ -27,37 +27,26 @@ export function ComparePanel({ boardId }: { boardId: string | null }) {
 
   return (
     <Panel title="Two tasks, one board">
-      <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+      <div className="hrow">
         <Button onClick={run} disabled={!boardId || busy}>
           {busy ? "Calling Mubit on both lanes…" : `Compare lanes on ${boardId ?? "a board"}`}
         </Button>
-        <span style={{ color: "var(--text-dim)", fontSize: 13 }}>
+        <span className="dim small">
           The same crops go down both tasks. Only the instructions differ.
         </span>
       </div>
       {error && <ErrorPanel message={error} onDismiss={() => setError(null)} />}
 
       {board && (
-        <div style={{ display: "grid", gap: 16 }}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-              gap: 16,
-            }}
-          >
+        <div className="stack-lg">
+          <div className="lane-cols">
             {LANES.map((lane) => (
-              <div key={lane} style={{ display: "grid", gap: 10 }}>
-                <h3 style={{ margin: 0, fontSize: 14 }}>{LANE_COPY[lane]}</h3>
-                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+              <div key={lane} className="lane-block">
+                <h3 className="lane-head">{LANE_COPY[lane]}</h3>
+                <div className="hrow">
                   <Badge type={board.verdicts[lane].defect_type} />
                   <strong>{board.verdicts[lane].disposition}</strong>
-                  <span
-                    style={{
-                      color: board.verdicts[lane].correct ? "var(--accent)" : "var(--danger)",
-                      fontSize: 13,
-                    }}
-                  >
+                  <span className={`small ${board.verdicts[lane].correct ? "good" : "bad"}`}>
                     {board.verdicts[lane].correct
                       ? "matches the labels"
                       : `labels say ${board.ground_truth.disposition}`}

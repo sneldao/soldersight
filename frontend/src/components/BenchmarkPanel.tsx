@@ -17,20 +17,18 @@ export function BenchmarkPanel() {
 
   return (
     <Panel title="Recorded comparison">
-      {error && <p style={{ color: "var(--danger)", margin: 0 }}>{error}</p>}
-      {!data && !error && (
-        <p style={{ margin: 0, color: "var(--text-dim)" }}>Loading…</p>
-      )}
+      {error && <p className="flush bad">{error}</p>}
+      {!data && !error && <p className="flush dim">Loading…</p>}
       {data && (
-        <div style={{ display: "grid", gap: 12 }}>
-          <p style={{ margin: 0, color: "var(--text-dim)", fontSize: 13 }}>
+        <div className="stack">
+          <p className="flush dim small">
             {data.model} · {data.boards.length} boards · {data.corrections} inspector
             corrections · captured {data.generated_utc}
           </p>
           <LaneTable lanes={data.lanes} />
-          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <table className="metrics sm">
             <thead>
-              <tr style={{ textAlign: "left", color: "var(--text-dim)" }}>
+              <tr>
                 <th>Board</th>
                 <th>Labels</th>
                 {LANES.map((lane) => (
@@ -40,19 +38,13 @@ export function BenchmarkPanel() {
             </thead>
             <tbody>
               {data.boards.map((board) => (
-                <tr key={board.id} style={{ borderTop: "1px solid var(--panel-border)" }}>
-                  <td style={{ fontFamily: "var(--mono)" }}>{board.id}</td>
+                <tr key={board.id} className="bordered">
+                  <td className="mono">{board.id}</td>
                   <td>{board.ground_truth.disposition}</td>
                   {LANES.map((lane) => {
                     const verdict = board.verdicts[lane];
                     return (
-                      <td
-                        key={lane}
-                        style={{
-                          color: verdict?.correct ? "var(--accent)" : "var(--danger)",
-                          fontFamily: "var(--mono)",
-                        }}
-                      >
+                      <td key={lane} className={`mono ${verdict?.correct ? "good" : "bad"}`}>
                         {verdict ? `${verdict.defect_type} / ${verdict.disposition}` : "—"}
                       </td>
                     );
@@ -61,7 +53,7 @@ export function BenchmarkPanel() {
               ))}
             </tbody>
           </table>
-          <p style={{ margin: 0, color: "var(--text-dim)", fontSize: 12 }}>
+          <p className="flush dim xs">
             Defect crops and clean crops are scored apart, so an untouched board cannot
             inflate the accuracy. Corrections and scoring share these boards: this is the
             loop working, not a held-out benchmark.

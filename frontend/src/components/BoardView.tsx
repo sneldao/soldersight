@@ -7,8 +7,8 @@ const SIZE = 640;
 
 export function BoardView({ board, showDefects }: { board: Board; showDefects: boolean }) {
   const test = (
-    <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1" }}>
-      <img src={board.testUrl} alt={`Test image for board ${board.id}`} style={{ width: "100%", display: "block" }} />
+    <div className="board-frame">
+      <img src={board.testUrl} alt={`Test image for board ${board.id}`} className="board-img" />
       {showDefects && <DefectOverlay annotations={board.annotations} width={SIZE} height={SIZE} />}
     </div>
   );
@@ -18,7 +18,7 @@ export function BoardView({ board, showDefects }: { board: Board; showDefects: b
     <ReactCompareSlider
       itemOne={template}
       itemTwo={test}
-      style={{ borderRadius: "var(--radius)", overflow: "hidden", width: "100%" }}
+      className="board-slider"
     />
   );
 }
