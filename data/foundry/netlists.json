@@ -1,0 +1,107 @@
+{
+  "version": "1.0.0",
+  "defaultPresetId": "rc-power-filter",
+  "presets": [
+    {
+      "id": "rc-power-filter",
+      "title": "3-Stage RC Power Filter",
+      "brief": "3-stage RC power filter, 6 pads",
+      "description": "Low-pass pi/RC supply conditioning stage with dedicated ground return and Kelvin output sense.",
+      "gridWidth": 16,
+      "gridHeight": 12,
+      "netlist": {
+        "pads": [
+          { "id": "j1.vin", "x": 2, "y": 2, "net": "VIN" },
+          { "id": "r1.1", "x": 7, "y": 3, "net": "VIN" },
+          { "id": "r1.2", "x": 9, "y": 5, "net": "VFILT" },
+          { "id": "c1.1", "x": 13, "y": 4, "net": "VFILT" },
+          { "id": "c1.2", "x": 12, "y": 9, "net": "GND" },
+          { "id": "j2.gnd", "x": 3, "y": 9, "net": "GND" }
+        ],
+        "nets": [
+          ["j1.vin", "r1.1"],
+          ["r1.2", "c1.1"],
+          ["c1.2", "j2.gnd"]
+        ]
+      }
+    },
+    {
+      "id": "differential-sensor-bridge",
+      "title": "Differential Sensor Bridge",
+      "brief": "Differential wheatstone sensor bridge + instrumentation amp, 8 pads",
+      "description": "Balanced differential sense pair (SENSE_P / SENSE_N) guarded between quiet VREF and star GND.",
+      "gridWidth": 16,
+      "gridHeight": 12,
+      "netlist": {
+        "pads": [
+          { "id": "u1.vref", "x": 2, "y": 2, "net": "VREF" },
+          { "id": "br1.vref", "x": 13, "y": 2, "net": "VREF" },
+          { "id": "br1.sp", "x": 4, "y": 5, "net": "SENSE_P" },
+          { "id": "u2.inp", "x": 12, "y": 5, "net": "SENSE_P" },
+          { "id": "br1.sn", "x": 4, "y": 7, "net": "SENSE_N" },
+          { "id": "u2.inn", "x": 12, "y": 7, "net": "SENSE_N" },
+          { "id": "br1.gnd", "x": 2, "y": 10, "net": "GND" },
+          { "id": "u2.gnd", "x": 13, "y": 10, "net": "GND" }
+        ],
+        "nets": [
+          ["u1.vref", "br1.vref"],
+          ["br1.sp", "u2.inp"],
+          ["br1.sn", "u2.inn"],
+          ["br1.gnd", "u2.gnd"]
+        ]
+      }
+    },
+    {
+      "id": "buck-regulator-stage",
+      "title": "Synchronous Buck Power Stage",
+      "brief": "Synchronous buck switching stage with gate drive & Kelvin sense, 8 pads",
+      "description": "Tight high-di/dt switching node (SW) isolated from feedback sense (VOUT) and power ground (PGND).",
+      "gridWidth": 16,
+      "gridHeight": 12,
+      "netlist": {
+        "pads": [
+          { "id": "cin.1", "x": 2, "y": 2, "net": "VIN" },
+          { "id": "q1.d", "x": 6, "y": 2, "net": "VIN" },
+          { "id": "q1.s", "x": 7, "y": 5, "net": "SW" },
+          { "id": "l1.1", "x": 10, "y": 5, "net": "SW" },
+          { "id": "l1.2", "x": 13, "y": 4, "net": "VOUT" },
+          { "id": "cout.1", "x": 14, "y": 8, "net": "VOUT" },
+          { "id": "cin.2", "x": 2, "y": 9, "net": "PGND" },
+          { "id": "cout.2", "x": 11, "y": 10, "net": "PGND" }
+        ],
+        "nets": [
+          ["cin.1", "q1.d"],
+          ["q1.s", "l1.1"],
+          ["l1.2", "cout.1"],
+          ["cin.2", "cout.2"]
+        ]
+      }
+    },
+    {
+      "id": "usb-esd-front-end",
+      "title": "High-Speed USB ESD Front-End",
+      "brief": "High-speed USB D+/D- ESD protection array, 8 pads",
+      "description": "Matched USB D+/D- pair routed through a TVS diode array with low-inductance chassis shield return.",
+      "gridWidth": 16,
+      "gridHeight": 12,
+      "netlist": {
+        "pads": [
+          { "id": "j1.vbus", "x": 1, "y": 2, "net": "VBUS" },
+          { "id": "tvs.vbus", "x": 8, "y": 2, "net": "VBUS" },
+          { "id": "j1.dp", "x": 2, "y": 5, "net": "DP" },
+          { "id": "mcu.dp", "x": 13, "y": 5, "net": "DP" },
+          { "id": "j1.dm", "x": 2, "y": 7, "net": "DM" },
+          { "id": "mcu.dm", "x": 13, "y": 7, "net": "DM" },
+          { "id": "j1.shld", "x": 1, "y": 10, "net": "GND" },
+          { "id": "tvs.gnd", "x": 9, "y": 10, "net": "GND" }
+        ],
+        "nets": [
+          ["j1.vbus", "tvs.vbus"],
+          ["j1.dp", "mcu.dp"],
+          ["j1.dm", "mcu.dm"],
+          ["j1.shld", "tvs.gnd"]
+        ]
+      }
+    }
+  ]
+}
