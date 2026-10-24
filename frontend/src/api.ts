@@ -1,4 +1,11 @@
-import type { Board, Classification, DefectType, Disposition, Severity } from "./types";
+import type {
+  Board,
+  Classification,
+  DefectType,
+  Disposition,
+  Severity,
+  VerifyResult,
+} from "./types";
 
 export async function fetchBoards(): Promise<Board[]> {
   const res = await fetch("/boards");
@@ -14,6 +21,27 @@ export async function triage(image: Blob, filename: string): Promise<Classificat
   if (!res.ok) {
     const detail = await res.text();
     throw new Error(`triage failed (${res.status}): ${detail}`);
+  }
+  return res.json();
+}
+
+// The policy gate: ask Banyan Sapling whether the vision model's proposed
+// disposition is actually allowed, given what inspection found + the policy.
+export async function verifyBoard(
+  boardId: string,
+  result: Classification,
+): Promise<VerifyResult> {
+  const res = await fetch(`/verify/board/${boardId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      disposition: result.disposition,
+      confidence: result.confidence,
+    }),
+  });
+  if (!res.ok) {
+    const detail = await res.text();
+    throw new Error(`verify failed (${res.status}): ${detail}`);
   }
   return res.json();
 }

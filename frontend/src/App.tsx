@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
-import { fetchBoards, triage } from "./api";
+import { fetchBoards, triage, verifyBoard } from "./api";
 import { BoardView } from "./components/BoardView";
 import { CameraCapture } from "./components/CameraCapture";
 import { CorrectionForm } from "./components/CorrectionForm";
+import { PolicyGate } from "./components/PolicyGate";
 import { Badge, Button, Panel, Stat } from "./components/ui";
-import type { Board, Classification } from "./types";
+import type { Board, Classification, VerifyResult } from "./types";
 
 export default function App() {
   const [boards, setBoards] = useState<Board[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [showDefects, setShowDefects] = useState(true);
   const [result, setResult] = useState<Classification | null>(null);
+  const [verifyResult, setVerifyResult] = useState<VerifyResult | null>(null);
   const [busy, setBusy] = useState(false);
+  const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -28,6 +31,7 @@ export default function App() {
   async function run(image: Blob, filename: string) {
     setBusy(true);
     setError(null);
+    setVerifyResult(null);
     try {
       setResult(await triage(image, filename));
     } catch (err) {
@@ -41,6 +45,19 @@ export default function App() {
     if (!selected) return;
     const res = await fetch(selected.testUrl);
     await run(await res.blob(), `${selected.id}_test.jpg`);
+  }
+
+  async function verify() {
+    if (!selected || !result) return;
+    setVerifying(true);
+    setError(null);
+    try {
+      setVerifyResult(await verifyBoard(selected.id, result));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "verify failed");
+    } finally {
+      setVerifying(false);
+    }
   }
 
   return (
@@ -87,9 +104,16 @@ export default function App() {
                   <Stat label="Confidence" value={`${Math.round(result.confidence * 100)}%`} />
                 </div>
                 <p style={{ margin: 0, color: "var(--text-dim)" }}>{result.reason}</p>
+                {selected && (
+                  <Button variant="ghost" onClick={verify} disabled={verifying}>
+                    {verifying ? "Verifying against policy…" : "Verify against policy gate →"}
+                  </Button>
+                )}
               </div>
             )}
           </Panel>
+
+          {verifyResult && <PolicyGate result={verifyResult} />}
 
           {result && selected && <CorrectionForm boardId={selected.id} original={result} />}
         </div>

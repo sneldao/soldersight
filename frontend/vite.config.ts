@@ -8,6 +8,9 @@ export default defineConfig({
     proxy: {
       "/triage": "http://localhost:8000",
       "/corrections": "http://localhost:8000",
+      "/verify": "http://localhost:8000",
+      "/boards": "http://localhost:8000",
+      "/assets": "http://localhost:8000",
     },
   },
   test: {

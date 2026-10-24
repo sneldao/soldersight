@@ -49,3 +49,36 @@ export interface Board {
   testUrl: string;
   annotations: Annotation[];
 }
+
+// Banyan Sapling verdicts for the policy gate.
+export const SAPLING_LABELS = [
+  "supported",
+  "violation",
+  "insufficient_information",
+  "inconsistent_context",
+] as const;
+export type SaplingLabel = (typeof SAPLING_LABELS)[number];
+
+export type GateAction = "SHIP" | "BLOCK" | "REVIEW";
+
+export interface GateDecision {
+  action: GateAction;
+  label: SaplingLabel | null;
+  reason: string;
+  confidence: number | null;
+  margin: number | null;
+  unsure: boolean;
+  probabilities?: Record<SaplingLabel, number>;
+  prediction_set?: SaplingLabel[];
+  error?: string;
+}
+
+export interface VerifyResult {
+  board_id: string;
+  claimed_disposition: Disposition;
+  policy: string;
+  evidence: string;
+  claim: string;
+  gate: GateDecision;
+  ground_truth: { defect_types: DefectType[]; disposition: Disposition; worst: string };
+}

@@ -1,7 +1,8 @@
 fastapi
 uvicorn
 openai
-mubit-sdk
+numpy
+pillow
 python-multipart
 pytest
 httpx
