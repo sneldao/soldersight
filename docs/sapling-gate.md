@@ -2,6 +2,35 @@
 
 **Side Quest: The "Policy" Challenge.** Sapling doing the hard part, on a realistic input.
 
+## Trace audit — the model's own words vs the decision to ship (no answer key)
+
+The strongest version uses **no ground truth at all**. A vision model inspects a board
+crop by crop and writes a note on each. Separately, a shipping decision is made. Sapling
+audits that decision against the model's **own notes** — never the dataset labels — and
+flags it when the model already said, in its own words, that it saw a short or open
+circuit. The catch is the model *contradicting itself*.
+
+- Evidence = `sapling.build_trace_evidence(regions)` — the model's verbatim per-crop
+  observations (`defect_type`, `severity`, `confidence`, `reason`).
+- Claim = `sapling.SHIP_CLAIM` ("this board can ship as-is").
+- Endpoint = `POST /verify/trace` (regions in body; no board/label lookup).
+- Demo = `python backend/trace_demo.py`:
+
+```
+lane      board      crops model noted            sapling     gate
+baseline  00041003       6 open,pinhole,short     violation   BLOCK
+...
+14/14 shipping claims blocked — each a board the model's own notes said not to ship.
+No ground truth was consulted.
+```
+
+Board `00041003`: the model wrote *"there is a visible short circuit potentially
+affecting the functionality"* on a crop. Sapling scored the ship claim a **violation
+(~0.84)** on the strength of that sentence alone. This is trace auditing — what the
+agent concluded, checked against what it actually observed.
+
+The policy gate below is the second, independent check (claim vs an AOI sensor + spec).
+
 ## The problem
 
 SolderSight's vision model (gpt-4o-mini, routed through Mubit) is cheap and fast —

@@ -142,3 +142,66 @@ def test_verify_board_unknown_board_404():
         .status_code
         == 404
     )
+
+
+def test_trace_evidence_quotes_the_models_own_notes():
+    regions = [
+        {
+            "region": {"x1": 320, "y1": 0},
+            "defect_type": "short",
+            "severity": "major",
+            "confidence": 0.85,
+            "reason": "There is a visible short circuit.",
+        },
+        {
+            "region": {"x1": 0, "y1": 0},
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "confidence": 0.9,
+            "reason": "No visible defects.",
+        },
+    ]
+    text = sapling.build_trace_evidence(regions)
+    # The model's own words, not the dataset labels, are the evidence.
+    assert "visible short circuit" in text
+    assert "short" in text and "(320,0)" in text
+
+
+def test_verify_trace_blocks_a_self_contradicting_ship(monkeypatch):
+    # The model noted a short in one crop; auditing the ship claim must not need labels.
+    monkeypatch.setattr(
+        sapling,
+        "verify",
+        lambda *_a, **_k: resp(
+            {
+                "supported": 0.04,
+                "violation": 0.84,
+                "insufficient_information": 0.08,
+                "inconsistent_context": 0.04,
+            },
+            "violation",
+        ),
+    )
+    regions = [
+        {
+            "region": {"x1": 320, "y1": 0},
+            "defect_type": "short",
+            "severity": "major",
+            "confidence": 0.85,
+            "reason": "There is a visible short circuit.",
+        },
+        {
+            "region": {"x1": 0, "y1": 0},
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "confidence": 0.9,
+            "reason": "No visible defects.",
+        },
+    ]
+
+    body = TestClient(main.app).post("/verify/trace", json={"regions": regions}).json()
+
+    assert body["gate"]["action"] == "BLOCK"
+    assert body["regions_examined"] == 2
+    assert body["defects_the_model_noted"] == ["short"]
+    assert "ground_truth" not in body  # no answer key in the trace audit
