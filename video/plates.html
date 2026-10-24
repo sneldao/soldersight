@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SolderSight — editorial plates</title>
+<style>
+  :root {
+    --paper: #f6f6f5; --ink: #16181a; --dim: #6a6f73;
+    --line: #c3c6c8; --hair: #8e9397;
+    --red: #dc2626; --amber: #d97706; --green: #15803d;
+    --mono: "DM Mono", "Menlo", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .frame {
+    display: none; width: 1920px; height: 1080px; position: relative;
+    overflow: hidden; background: var(--paper); color: var(--ink);
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+  .frame:target { display: block; }
+  .plate-tag {
+    position: absolute; top: 64px; left: 0; right: 0; text-align: center; z-index: 10;
+    font-family: var(--mono); font-size: 16px; letter-spacing: .35em; color: var(--dim);
+    text-transform: uppercase;
+  }
+  .plate-tag b { color: var(--red); font-weight: 400; }
+  .rule { width: 120px; height: 1px; background: var(--hair); margin: 0 auto; }
+
+  /* ============ P1 — THE CONTRADICTION (asymmetric exhibit spread) ============ */
+  #p1 .exhibit {
+    position: absolute; z-index: 10; border-radius: 6px; padding: 34px 40px;
+    background: #fff; border: 1px solid var(--line);
+    font-family: var(--mono); box-shadow: 0 1px 0 rgba(0,0,0,.03);
+  }
+  #p1 .exhibit .tag {
+    font-size: 14px; letter-spacing: .28em; text-transform: uppercase; color: var(--dim);
+    margin-bottom: 18px;
+  }
+  #p1 .exA { left: 90px; top: 270px; width: 900px; }
+  #p1 .exA .said { font-size: 30px; line-height: 1.55; }
+  #p1 .exA .said em { font-style: normal; color: var(--red); }
+  #p1 .exA .attr { margin-top: 20px; font-size: 15px; color: var(--dim); letter-spacing: .06em; }
+  #p1 .exB { left: 90px; top: 620px; width: 560px; }
+  #p1 .exB .said { font-size: 30px; color: var(--green); }
+  #p1 .thread { position: absolute; inset: 0; z-index: 5; }
+  #p1 .verdict {
+    position: absolute; z-index: 20; right: 120px; top: 330px; text-align: center;
+  }
+  #p1 .verdict .vchip {
+    font-family: var(--mono); font-size: 22px; color: var(--red); letter-spacing: .18em;
+    border: 1.5px solid var(--red); border-radius: 999px; padding: 12px 30px;
+    display: inline-block; margin-bottom: 40px; background: rgba(220,38,38,.05);
+  }
+  #p1 .verdict .block {
+    font-family: var(--mono); font-size: 90px; font-weight: 500; color: var(--red);
+    border: 5px solid var(--red); border-radius: 8px; padding: 4px 42px;
+    transform: rotate(4deg); display: inline-block; letter-spacing: .06em;
+  }
+  #p1 .verdict .by { margin-top: 26px; font-family: var(--mono); font-size: 15px; color: var(--dim); letter-spacing: .1em; }
+  #p1 .nokey {
+    position: absolute; left: 94px; bottom: 110px; z-index: 10;
+    font-family: var(--mono); font-size: 20px; color: var(--dim); letter-spacing: .08em;
+  }
+  #p1 .nokey b { color: var(--ink); font-weight: 400; }
+
+  /* ============ P2 — 14/14 + numbers ============ */
+  #p2 .big { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #p2 .num { font-size: 380px; font-weight: 800; letter-spacing: -.03em; line-height: .9; }
+  #p2 .num em { font-style: normal; color: var(--red); }
+  #p2 .line { margin-top: 40px; font-family: var(--mono); font-size: 26px; color: var(--dim); letter-spacing: .1em; }
+  #p2 .line b { color: var(--ink); font-weight: 400; }
+  #p2 .rule { margin-top: 50px; }
+  #p2 .sub { margin-top: 26px; font-family: var(--mono); font-size: 17px; color: var(--hair); letter-spacing: .14em; }
+
+  /* ============ P3 — THE MACHINE / compare ============ */
+  #p3 .pillars {
+    position: absolute; top: 190px; left: 0; right: 0; z-index: 10;
+    display: flex; justify-content: center; gap: 70px; align-items: center;
+  }
+  #p3 .pillar { text-align: center; }
+  #p3 .pillar .p { font-size: 46px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; }
+  #p3 .pillar .d { margin-top: 10px; font-family: var(--mono); font-size: 16px; color: var(--dim); letter-spacing: .08em; }
+  #p3 .pillar:nth-child(3) .p { color: var(--amber); }
+  #p3 .plus { font-size: 50px; color: var(--hair); font-weight: 300; }
+  #p3 .table {
+    position: absolute; left: 50%; transform: translateX(-50%); bottom: 130px; z-index: 10;
+    font-family: var(--mono); font-size: 22px; border-collapse: collapse;
+  }
+  #p3 .table th, #p3 .table td { padding: 16px 42px; text-align: left; }
+  #p3 .table th { color: var(--dim); font-weight: 400; font-size: 15px; letter-spacing: .2em; text-transform: uppercase; border-bottom: 1px solid var(--hair); }
+  #p3 .table td { border-bottom: 1px solid var(--line); color: var(--dim); }
+  #p3 .table td.good { color: var(--green); }
+  #p3 .table td.bad { color: var(--red); }
+  #p3 .table td b { color: var(--ink); font-weight: 500; }
+
+  /* ============ P4 — TITLE CARD ============ */
+  #p4 .wrap { position: absolute; inset: 0; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  #p4 .kicker { font-family: var(--mono); font-size: 18px; letter-spacing: .4em; color: var(--red); text-transform: uppercase; margin-bottom: 44px; }
+  #p4 .title { font-size: 190px; font-weight: 800; letter-spacing: -.02em; line-height: .95; text-transform: uppercase; }
+  #p4 .title em { font-style: normal; color: transparent; -webkit-text-stroke: 2.5px var(--ink); }
+  #p4 .sub { margin-top: 56px; font-family: var(--mono); font-size: 22px; color: var(--dim); letter-spacing: .12em; line-height: 1.9; }
+  #p4 .sub b { color: var(--ink); font-weight: 400; }
+  #p4 .rule { margin-top: 44px; }
+</style>
+</head>
+<body>
+
+<!-- P1 · THE CONTRADICTION -->
+<section class="frame" id="p1">
+  <div class="plate-tag">Fig 3 · The audit — <b>no answer key</b></div>
+  <svg class="thread" viewBox="0 0 1920 1080" fill="none">
+    <path d="M 890 350 C 1220 350, 1280 420, 1400 460" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="8 7"/>
+    <path d="M 650 680 C 1000 700, 1250 640, 1400 600" stroke="#dc2626" stroke-width="1.6" stroke-dasharray="8 7"/>
+    <circle cx="890" cy="350" r="6" fill="#dc2626"/><circle cx="650" cy="680" r="6" fill="#dc2626"/>
+  </svg>
+  <div class="exhibit exA">
+    <div class="tag">Exhibit A · the model's note, crop 03</div>
+    <div class="said">"There is a <em>visible short circuit</em> potentially affecting the functionality of the PCB."</div>
+    <div class="attr">gpt-4o-mini · via mubit · mreq_… · $0.0013 · 1,165 ms</div>
+  </div>
+  <div class="exhibit exB">
+    <div class="tag">Exhibit B · the model's verdict</div>
+    <div class="said">disposition: ship as-is</div>
+  </div>
+  <div class="verdict">
+    <div class="vchip">VIOLATION · 0.84</div><br>
+    <div class="block">BLOCK</div>
+    <div class="by">banyan sapling · semantic verification</div>
+  </div>
+  <div class="nokey">no ground truth consulted — <b>the only evidence was the model's own testimony</b></div>
+</section>
+
+<!-- P2 · 14/14 -->
+<section class="frame" id="p2">
+  <div class="plate-tag">Trace audit · recorded inspection runs</div>
+  <div class="big">
+    <div class="num">14<em>/14</em></div>
+    <div class="line">boards condemned by <b>their own notes</b> — every one stopped</div>
+    <div class="rule"></div>
+    <div class="sub">banyan sapling · open weights · calibrated uncertainty</div>
+  </div>
+</section>
+
+<!-- P3 · THE MACHINE -->
+<section class="frame" id="p3">
+  <div class="plate-tag">One pipeline · the whole mubit stack</div>
+  <div class="pillars">
+    <div class="pillar"><div class="p">Route</div><div class="d">every call through mubit</div></div>
+    <div class="plus">+</div>
+    <div class="pillar"><div class="p">Adapt</div><div class="d">corrections become task rules</div></div>
+    <div class="plus">+</div>
+    <div class="pillar"><div class="p">Verify</div><div class="d">sapling audits every ship call</div></div>
+  </div>
+  <table class="table">
+    <tr><th></th><th>baseline task</th><th>adapted task</th></tr>
+    <tr><td>board disposition right</td><td class="bad">0%</td><td class="good"><b>83%</b></td></tr>
+    <tr><td>defects missed</td><td class="bad">89%</td><td class="good">11%</td></tr>
+    <tr><td>cost per crop</td><td>$0.001317</td><td>$0.001333</td></tr>
+    <tr><td>latency per crop</td><td>1,165 ms</td><td>1,166 ms</td></tr>
+  </table>
+</section>
+
+<!-- P4 · TITLE CARD -->
+<section class="frame" id="p4">
+  <div class="wrap">
+    <div class="kicker">Night Shift · Mubit Hackathon · London 2026</div>
+    <div class="title">No<br><em>Answer Key</em></div>
+    <div class="sub">
+      <b>SolderSight</b> — visual PCB triage where the model's own words are the evidence<br>
+      github.com/sneldao/soldersight
+    </div>
+    <div class="rule"></div>
+  </div>
+</section>
+
+</body>
+</html>

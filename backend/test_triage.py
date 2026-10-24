@@ -1,9 +1,11 @@
 import io
 import json
+import time
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
+from fastapi import HTTPException
 from fastapi.testclient import TestClient
 from PIL import Image
 
@@ -344,9 +346,13 @@ def test_compare_runs_the_same_crops_down_both_lanes(monkeypatch, tmp_path):
         ],
     )
 
-    def fake_classify(_data, lane):
+    # classify_image takes the instructions string; key lanes off it directly so
+    # the test still says "same crops, only the instructions differ".
+    monkeypatch.setattr(main, "instructions_for", lambda lane: lane)
+
+    def fake_classify(_data, instructions):
         # The baseline walks past the break; the corrected rules call it an open.
-        if lane == "adapted":
+        if instructions == "adapted":
             return (
                 dict(
                     VALID, defect_type="open", severity="critical", disposition="scrap"
@@ -394,3 +400,203 @@ def test_compare_rejects_unknown_board(monkeypatch, tmp_path):
     monkeypatch.setattr(main, "RUNS_PATH", tmp_path / "runs.jsonl")
     res = TestClient(main.app).post("/compare", json={"board_ids": ["nope"]})
     assert res.status_code == 404
+
+
+def test_regions_classify_concurrently_and_keep_order(monkeypatch, tmp_path):
+    monkeypatch.setattr(main, "RUNS_PATH", tmp_path / "runs.jsonl")
+    regions = [main.Region(8 * i, 0, 8 * i + 8, 8, 9.0) for i in range(4)]
+    monkeypatch.setattr(main, "changed_regions", lambda *_a: regions)
+    monkeypatch.setattr(main, "annotations_for", lambda _b: [])
+
+    def slow(_data, _instructions):
+        time.sleep(0.25)
+        return dict(VALID), dict(CALL_METRICS)
+
+    monkeypatch.setattr(main, "classify_image", slow)
+    started = time.perf_counter()
+    body = TestClient(main.app).post("/triage/board/00041000").json()
+    elapsed = time.perf_counter() - started
+
+    # Concurrent: the wall time is one call's time, not four calls in a row.
+    assert elapsed < 0.25 * 4
+    # pool.map keeps region order, so /crop/{board}/{index} still re-serves the
+    # exact crop each verdict came from.
+    assert [r["region"]["x1"] for r in body["regions"]] == [0, 8, 16, 24]
+
+
+def test_a_failed_region_is_an_error_row_not_a_dead_board(monkeypatch, tmp_path):
+    monkeypatch.setattr(main, "RUNS_PATH", tmp_path / "runs.jsonl")
+    monkeypatch.setattr(
+        main,
+        "changed_regions",
+        lambda *_a: [main.Region(0, 0, 8, 8, 9.0), main.Region(8, 0, 16, 8, 9.0)],
+    )
+    monkeypatch.setattr(main, "annotations_for", lambda _b: [])
+
+    calls = {"n": 0}
+
+    def flaky(_data, _instructions):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise HTTPException(status_code=502, detail="model returned bad output")
+        return dict(VALID), dict(CALL_METRICS)
+
+    monkeypatch.setattr(main, "classify_image", flaky)
+    body = TestClient(main.app).post("/triage/board/00041000").json()
+
+    assert body["region_errors"] == 1
+    assert body["metrics"]["calls"] == 1  # only successful calls count
+    errors = [r for r in body["regions"] if "error" in r]
+    ok = [r for r in body["regions"] if "error" not in r]
+    assert len(errors) == 1 and len(ok) == 1
+    # The verdict comes from the surviving region, not the failed one.
+    assert body["disposition"] == VALID["disposition"]
+    # The failure is still in the ledger for audit.
+    rows = [
+        json.loads(line) for line in (tmp_path / "runs.jsonl").read_text().splitlines()
+    ]
+    assert any("error" in r for r in rows)
+
+
+def test_low_confidence_scrap_claim_becomes_a_caveat(monkeypatch, tmp_path):
+    monkeypatch.setattr(main, "RUNS_PATH", tmp_path / "runs.jsonl")
+    monkeypatch.setattr(
+        main,
+        "changed_regions",
+        lambda *_a: [main.Region(0, 0, 8, 8, 9.0), main.Region(8, 0, 16, 8, 9.0)],
+    )
+    monkeypatch.setattr(main, "annotations_for", lambda _b: [])
+    # Tag each crop by its region so the stub can answer differently per region.
+    monkeypatch.setattr(
+        main, "crop", lambda _img, region, pad=12: f"crop:{region.x1}".encode()
+    )
+    answers = {
+        b"crop:0": (
+            dict(
+                VALID,
+                defect_type="open",
+                severity="critical",
+                disposition="scrap",
+                confidence=0.3,
+            ),
+            dict(CALL_METRICS),
+        ),
+        b"crop:8": (
+            dict(
+                VALID,
+                defect_type="none",
+                severity="cosmetic",
+                disposition="pass",
+                confidence=0.9,
+            ),
+            dict(CALL_METRICS),
+        ),
+    }
+    monkeypatch.setattr(main, "classify_image", lambda data, _i: answers[data])
+
+    body = TestClient(main.app).post("/triage/board/00041000").json()
+
+    # A shaky scrap claim can't condemn the board: verdict falls back to the
+    # worst confident region, and the claim survives as a caveat.
+    assert body["disposition"] == "pass"
+    assert "caveat" in body
+    assert "open" in body["caveat"]
+
+
+def test_confident_scrap_still_wins_the_verdict(monkeypatch, tmp_path):
+    monkeypatch.setattr(main, "RUNS_PATH", tmp_path / "runs.jsonl")
+    monkeypatch.setattr(
+        main,
+        "changed_regions",
+        lambda *_a: [main.Region(0, 0, 8, 8, 9.0), main.Region(8, 0, 16, 8, 9.0)],
+    )
+    monkeypatch.setattr(main, "annotations_for", lambda _b: [])
+    monkeypatch.setattr(
+        main, "crop", lambda _img, region, pad=12: f"crop:{region.x1}".encode()
+    )
+    answers = {
+        b"crop:0": (
+            dict(VALID, defect_type="short", disposition="scrap", confidence=0.9),
+            dict(CALL_METRICS),
+        ),
+        b"crop:8": (
+            dict(VALID, defect_type="none", disposition="pass", confidence=0.9),
+            dict(CALL_METRICS),
+        ),
+    }
+    monkeypatch.setattr(main, "classify_image", lambda data, _i: answers[data])
+
+    body = TestClient(main.app).post("/triage/board/00041000").json()
+
+    assert body["disposition"] == "scrap"
+    assert "caveat" not in body
+
+
+def test_disabling_a_correction_removes_its_rule_and_type(monkeypatch, tmp_path):
+    monkeypatch.setattr(main, "CORRECTIONS_PATH", tmp_path / "corrections.jsonl")
+    client = TestClient(main.app)
+    res = client.post(
+        "/corrections",
+        json={
+            "board_id": "00041000",
+            "original": {"defect_type": "spur"},
+            "corrected": {
+                "defect_type": "tombstoning",
+                "severity": "major",
+                "disposition": "rework",
+            },
+            "reason": "component on one end",
+        },
+    )
+    index = res.json()["corrections"][0]["index"]
+
+    body = client.post(f"/corrections/{index}/disable").json()
+
+    assert body["rules"] == []
+    assert "tombstoning" not in body["defect_types"]
+    assert "tombstoning" not in body["adapted_instructions"]
+    assert body["corrections"][0]["enabled"] is False
+    # The ledger stays append-only: disable is a new row, history is intact.
+    assert client.post(f"/corrections/{index}/disable").status_code == 200  # idempotent
+
+
+def test_disable_unknown_correction_404s(monkeypatch, tmp_path):
+    monkeypatch.setattr(main, "CORRECTIONS_PATH", tmp_path / "corrections.jsonl")
+    res = TestClient(main.app).post("/corrections/7/disable")
+    assert res.status_code == 404
+
+
+def test_triage_with_template_uses_the_diff_regions(monkeypatch, tmp_path):
+    monkeypatch.setattr(main, "RUNS_PATH", tmp_path / "runs.jsonl")
+    monkeypatch.setattr(main, "get_client", lambda: fake_client(json.dumps(VALID)))
+    seen = {}
+
+    def fake_diff(_template, _test, grid=8):
+        seen["called"] = True
+        return [main.Region(0, 0, 32, 32, 9.0)]
+
+    monkeypatch.setattr(main, "changed_regions", fake_diff)
+
+    res = TestClient(main.app).post(
+        "/triage",
+        files={
+            "image": ("board.jpg", jpeg(), "image/jpeg"),
+            "template": ("temp.jpg", jpeg(), "image/jpeg"),
+        },
+        data={"lane": "baseline"},
+    )
+
+    assert res.status_code == 200
+    assert seen.get("called")
+    assert len(res.json()["regions"]) == 1  # the diff found one region, not 4 quadrants
+
+
+def test_triage_template_must_be_an_image(monkeypatch):
+    res = TestClient(main.app).post(
+        "/triage",
+        files={
+            "image": ("board.jpg", jpeg(), "image/jpeg"),
+            "template": ("notes.txt", b"hello", "text/plain"),
+        },
+    )
+    assert res.status_code == 400

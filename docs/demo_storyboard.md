@@ -1,60 +1,47 @@
-# SolderSight — 3-Min Demo Storyboard + Spoken Narration
+# SolderSight — "No Answer Key" demo film
 
 **Code freeze:** Sun 25 Oct 05:00 GMT
 **Repo:** https://github.com/sneldao/soldersight
+**Script:** [`video/script.md`](../video/script.md) — five plates, ~2:10
 
----
+> Supersedes the earlier screen-recording storyboard. The film is now a
+> rendered "case file": paper plates, hairline isometric machines, red
+> reserved for defects and verdicts. Assets live in `video/`.
 
-## Demo arc (3:00 max)
+## Visual system (locked)
 
-| Time | Beat | Screen | Spoken narration |
-|------|------|--------|------------------|
-| 0:00–0:20 | Hook | Whole-board view of `00041004` — looks clean at 640px | "This board looks fine. A human inspector, a cheap vision model — they'd both say pass. But there's a broken trace here." |
-| 0:20–0:45 | The crops | Zoom into region crops — the model sees what a whole board hides | "At 640px the defect is 30px. Invisible. So we diff the board against its known-good template, isolate the changed cells, and upscale them 8x. Suddenly the break is obvious." |
-| 0:45–1:10 | Baseline fails | Vision model triages `00041004` → says **pass**, confidence 0.95 | "The cheap model clears it. Pass. It confidently rubber-stamps a defective board — the exact miss that ships a dead board to a customer." |
-| 1:10–1:30 | Correction | Inspector overrides: open circuit → scrap | "We correct it. That correction feeds back into the task's instructions — the model learns your defect rules." |
-| 1:30–2:00 | Trace audit (headline) | `python backend/trace_demo.py` — 14/14 self-contradicting boards blocked | "And here's the part no answer key was consulted: Sapling audits the 'ship it' decision against the model's **own crop-by-crop notes**. Board `00041003`: the model wrote 'visible short circuit' yet cleared it for shipping. Violation ~0.84 → blocked. The model contradicted itself." |
-| 2:00–2:20 | Policy gate | `python backend/gate_demo.py` — AOI evidence vs policy, SHIP/BLOCK/REVIEW | "A second, independent check: AOI sensor evidence plus a written spec. Clean boards ship. Ambiguous ones go to review. Defective ones are blocked — fail-safe if the verifier is down." |
-| 2:20–2:40 | Measured table | `/compare` output — baseline vs adapted lane, accuracy/cost/latency | "Same crops down both lanes. The baseline misses the break; the adapted lane catches it. Better accuracy, lower cost, lower latency." |
-| 2:40–3:00 | Close | "We own our intelligence layer now" | "We stopped paying GPT-4 for PCB triage. Corrections become model updates. We own our intelligence layer — better, cheaper, faster." |
+- **Paper theme** iso-glow figures — hairline ink, `Fig N` plate chrome
+- **Red (`#dc2626`)** = defect / violation / verdict only; amber = live/scanning
+- **Editorial spreads** for connective tissue — mono captions, hairline rules
+- Real data everywhere: vectorized DeepPCB copper, real model quotes, real metrics
 
----
+## The five plates
 
-## Spoken narration (single take, ~180 words)
+| Plate | Scene | Asset |
+|-------|-------|-------|
+| Fig 1 · The board | Hi-spec iso PCB — real `00041003` copper vectorized to outlines, meander/via densification, defect callout at true coords | `video/board2.js` → `board2.html` |
+| Fig 2 · The testimony | Iso terminal types the model's own words, then `ship as-is` | `video/figs.js` (`testimony`) → `iso-scenes.html` |
+| Fig 3 · The audit | Exhibit A vs Exhibit B, red leader threads, VIOLATION 0.84 → BLOCK | `video/plates.html#p1` |
+| Stat beat | 14/14 condemned by their own notes | `video/plates.html#p2` |
+| The machine | ROUTE + ADAPT + VERIFY + compare table | `video/plates.html#p3` + `gate` figure |
+| Title | NO ANSWER KEY + repo + HF link | `video/plates.html#p4` |
 
-> This board looks fine. A human inspector, a cheap vision model — they'd both say pass. But there's a broken trace here.
->
-> At 640 pixels the defect is 30 pixels wide — invisible. So we diff the board against its known-good template, isolate the changed cells, and upscale them eight times. Suddenly the break is obvious.
->
-> The cheap model clears it anyway. Pass, confidence 95 percent. It confidently rubber-stamps a defective board — the exact miss that ships a dead board to a customer.
->
-> We correct it. That correction feeds back into the task's instructions — the model learns your defect rules.
->
-> And here's the part where no answer key was consulted: we audit the 'ship it' decision against the model's **own** crop-by-crop notes. Board zero-zero-zero-four-one-zero-zero-three: the model wrote 'visible short circuit' yet cleared it for shipping. Violation point-eight-four → blocked. The model contradicted itself.
->
-> A second, independent check: AOI sensor evidence plus a written spec. Clean boards ship. Ambiguous ones go to review. Defective ones are blocked — fail-safe if the verifier is down.
->
-> Same crops down both lanes. The baseline misses the break; the adapted lane catches it. Better accuracy, lower cost, lower latency.
->
-> We stopped paying GPT-4 for PCB triage. Corrections become model updates. We own our intelligence layer — better, cheaper, faster.
+## Pipeline
 
----
+- `video/traces.json` / `tracepath.txt` — DeepPCB bitmap → RLE-merged SVG rects
+  (551 regions), reusable for any board.
+- Figures: `figs.js` + `board2.js` → assembled via iso-glow `gallery.html`
+  (palette: `Signal` red + `Ember` amber).
+- Editorial plates: `plates.html` (`#p1`…`#p4`, `:target`-selected, 1920×1080).
+- Capture: `agent-browser` at 1920×1080, `?demo` triggers figure state sequences.
 
-## What to record
+## Sound
 
-1. **Terminal:** `python backend/trace_demo.py` (deterministic, no API flakiness) — capture the 14/14 blocked line and the `00041003` row.
-2. **Terminal:** `python backend/gate_demo.py` — capture the `00041004` BLOCK row (violation 96%).
-3. **Browser:** `/compare` — baseline vs adapted side-by-side on one board.
-4. **Browser:** Correction form — override a disposition, show `/rules` updating.
+- Voice: ElevenLabs v4, low documentary register (script in `video/script.md`)
+- Stamps/arm land with a thunk; one full second of silence after "ship"
+- Optional subtle music bed under voice
 
-Edit these four clips together with the narration above. Total target: ~180 seconds.
+## Live artifact reuse
 
----
-
-## Assets ready in repo
-
-- `backend/trace_demo.py` — the no-answer-key catch (headline)
-- `backend/gate_demo.py` — the policy gate (secondary)
-- `data/deeppcb/runs.jsonl` — recorded traces, 30 boards
-- `backend/demo_render.html` — screenshotable dashboard of gate results
-- Repo: https://github.com/sneldao/soldersight (main has demo data committed)
+The same HTML figures are the HF Space / expo-table interactive —
+`?demo` autoplays; click/space drives them manually. Zero network needed.

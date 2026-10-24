@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-24T11:12:24Z",
+  "generated_utc": "2026-10-24T19:46:06Z",
   "model": "gpt-4o-mini",
   "corrections": 3,
   "boards": [
@@ -7,31 +7,369 @@
       "id": "00041000",
       "ground_truth": {
         "defect_types": [
-          "open",
           "short",
+          "open",
           "mousebite",
           "copper",
           "spur",
           "pinhole"
         ],
         "disposition": "scrap",
-        "worst": "open"
+        "worst": "short"
       },
       "verdicts": {
         "baseline": {
-          "defect_type": "short",
-          "disposition": "rework",
-          "cost_usd": 0.006587,
-          "latency_ms": 6899.3,
+          "defect_type": "none",
+          "disposition": "pass",
+          "cost_usd": 0.00658,
+          "latency_ms": 16082.3,
           "correct": false
         },
         "adapted": {
           "defect_type": "open",
           "disposition": "scrap",
-          "cost_usd": 0.006673,
-          "latency_ms": 5901.2,
+          "cost_usd": 0.00666,
+          "latency_ms": 13906.5,
           "correct": true
         }
+      },
+      "regions": {
+        "baseline": [
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows no identifiable defects on the PCB.",
+            "region": {
+              "x1": 560,
+              "y1": 240,
+              "x2": 640,
+              "y2": 320,
+              "delta": 18.17
+            },
+            "metrics": {
+              "latency_ms": 3009.5,
+              "prompt_tokens": 8628,
+              "completion_tokens": 36,
+              "total_tokens": 8664,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f7286147f229c18b6fba824b52b"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "open"
+              ],
+              "disposition": "scrap",
+              "worst": "open"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows a PCB area without visible defects.",
+            "region": {
+              "x1": 400,
+              "y1": 320,
+              "x2": 480,
+              "y2": 400,
+              "delta": 9.99
+            },
+            "metrics": {
+              "latency_ms": 2971.1,
+              "prompt_tokens": 8628,
+              "completion_tokens": 36,
+              "total_tokens": 8664,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72862d7373b8500d93f15c7d23"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 1.0,
+            "reason": "The image does not show a PCB or any identifiable defects.",
+            "region": {
+              "x1": 480,
+              "y1": 240,
+              "x2": 560,
+              "y2": 320,
+              "delta": 8.09
+            },
+            "metrics": {
+              "latency_ms": 2492.3,
+              "prompt_tokens": 8628,
+              "completion_tokens": 38,
+              "total_tokens": 8666,
+              "cost_usd": 0.001317,
+              "mubit_request_id": "mreq_01a16f72811975b2a5e70a3a0fa5ba4f"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short",
+                "open"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "No visible defects detected in the close-up image.",
+            "region": {
+              "x1": 400,
+              "y1": 480,
+              "x2": 480,
+              "y2": 560,
+              "delta": 6.53
+            },
+            "metrics": {
+              "latency_ms": 3726.8,
+              "prompt_tokens": 8628,
+              "completion_tokens": 36,
+              "total_tokens": 8664,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72844a7ee0b187bdedda9f708e"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.85,
+            "reason": "No visible defects are present in the image.",
+            "region": {
+              "x1": 160,
+              "y1": 320,
+              "x2": 240,
+              "y2": 400,
+              "delta": 6.51
+            },
+            "metrics": {
+              "latency_ms": 3882.6,
+              "prompt_tokens": 8628,
+              "completion_tokens": 35,
+              "total_tokens": 8663,
+              "cost_usd": 0.001315,
+              "mubit_request_id": "mreq_01a16f72844a7ee0b187bdd9af7b99f7"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "spur"
+              ],
+              "disposition": "rework",
+              "worst": "spur"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          }
+        ],
+        "adapted": [
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A bright gap in the copper trace indicates a broken circuit.",
+            "region": {
+              "x1": 560,
+              "y1": 240,
+              "x2": 640,
+              "y2": 320,
+              "delta": 18.17
+            },
+            "metrics": {
+              "latency_ms": 2640.8,
+              "prompt_tokens": 8724,
+              "completion_tokens": 38,
+              "total_tokens": 8762,
+              "cost_usd": 0.001331,
+              "mubit_request_id": "mreq_01a16f72938e7483b29afdf67ba14c71"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "open"
+              ],
+              "disposition": "scrap",
+              "worst": "open"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a visible break in the copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 400,
+              "y1": 320,
+              "x2": 480,
+              "y2": 400,
+              "delta": 9.99
+            },
+            "metrics": {
+              "latency_ms": 2071.9,
+              "prompt_tokens": 8724,
+              "completion_tokens": 41,
+              "total_tokens": 8765,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72908b71139aa05ad31cc978e7"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A bright gap breaking a dark copper trace indicates a broken circuit.",
+            "region": {
+              "x1": 480,
+              "y1": 240,
+              "x2": 560,
+              "y2": 320,
+              "delta": 8.09
+            },
+            "metrics": {
+              "latency_ms": 3324.1,
+              "prompt_tokens": 8724,
+              "completion_tokens": 39,
+              "total_tokens": 8763,
+              "cost_usd": 0.001332,
+              "mubit_request_id": "mreq_01a16f72905e7e61b04dcb24464227af"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short",
+                "open"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a bright gap breaking a dark copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 400,
+              "y1": 480,
+              "x2": 480,
+              "y2": 560,
+              "delta": 6.53
+            },
+            "metrics": {
+              "latency_ms": 2538.8,
+              "prompt_tokens": 8724,
+              "completion_tokens": 42,
+              "total_tokens": 8766,
+              "cost_usd": 0.001334,
+              "mubit_request_id": "mreq_01a16f72905c71e19a7e516f9fd9f8e7"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "The bright gap indicates a broken circuit trace.",
+            "region": {
+              "x1": 160,
+              "y1": 320,
+              "x2": 240,
+              "y2": 400,
+              "delta": 6.51
+            },
+            "metrics": {
+              "latency_ms": 3330.9,
+              "prompt_tokens": 8724,
+              "completion_tokens": 35,
+              "total_tokens": 8759,
+              "cost_usd": 0.00133,
+              "mubit_request_id": "mreq_01a16f7291f77ac189a276140c3046a3"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "spur"
+              ],
+              "disposition": "rework",
+              "worst": "spur"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          }
+        ]
       }
     },
     {
@@ -40,7 +378,726 @@
         "defect_types": [
           "short",
           "copper",
-          "pinhole",
+          "spur",
+          "pinhole"
+        ],
+        "disposition": "scrap",
+        "worst": "short"
+      },
+      "verdicts": {
+        "baseline": {
+          "defect_type": "none",
+          "disposition": "pass",
+          "cost_usd": 0.006586,
+          "latency_ms": 7800.6,
+          "correct": false
+        },
+        "adapted": {
+          "defect_type": "open",
+          "disposition": "scrap",
+          "cost_usd": 0.006668,
+          "latency_ms": 9687.9,
+          "correct": true
+        }
+      },
+      "regions": {
+        "baseline": [
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image does not show any visible defects or issues on the PCB.",
+            "region": {
+              "x1": 160,
+              "y1": 560,
+              "x2": 240,
+              "y2": 640,
+              "delta": 23.31
+            },
+            "metrics": {
+              "latency_ms": 1672.0,
+              "prompt_tokens": 8628,
+              "completion_tokens": 40,
+              "total_tokens": 8668,
+              "cost_usd": 0.001318,
+              "mubit_request_id": "mreq_01a16f729c01708083018937c56b6253"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The board appears visually acceptable with no identifiable defects.",
+            "region": {
+              "x1": 240,
+              "y1": 560,
+              "x2": 320,
+              "y2": 640,
+              "delta": 18.34
+            },
+            "metrics": {
+              "latency_ms": 1394.6,
+              "prompt_tokens": 8628,
+              "completion_tokens": 36,
+              "total_tokens": 8664,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f729c1376f1b3a6d912844cf9b0"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image appears to show a clean PCB without visible defects.",
+            "region": {
+              "x1": 320,
+              "y1": 560,
+              "x2": 400,
+              "y2": 640,
+              "delta": 12.82
+            },
+            "metrics": {
+              "latency_ms": 1223.8,
+              "prompt_tokens": 8628,
+              "completion_tokens": 38,
+              "total_tokens": 8666,
+              "cost_usd": 0.001317,
+              "mubit_request_id": "mreq_01a16f729c087413aa23e91fadaa1543"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows no visible defects or issues on the PCB.",
+            "region": {
+              "x1": 400,
+              "y1": 560,
+              "x2": 480,
+              "y2": 640,
+              "delta": 11.76
+            },
+            "metrics": {
+              "latency_ms": 1763.5,
+              "prompt_tokens": 8628,
+              "completion_tokens": 38,
+              "total_tokens": 8666,
+              "cost_usd": 0.001317,
+              "mubit_request_id": "mreq_01a16f729d9a73529b1081291d267824"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The PCB appears to be in good condition without any visible defects.",
+            "region": {
+              "x1": 160,
+              "y1": 400,
+              "x2": 240,
+              "y2": 480,
+              "delta": 7.56
+            },
+            "metrics": {
+              "latency_ms": 1746.7,
+              "prompt_tokens": 8628,
+              "completion_tokens": 39,
+              "total_tokens": 8667,
+              "cost_usd": 0.001318,
+              "mubit_request_id": "mreq_01a16f729daa7ea08790d37f254e5c40"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "spur"
+              ],
+              "disposition": "rework",
+              "worst": "spur"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          }
+        ],
+        "adapted": [
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A bright gap is present breaking a dark copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 160,
+              "y1": 560,
+              "x2": 240,
+              "y2": 640,
+              "delta": 23.31
+            },
+            "metrics": {
+              "latency_ms": 1937.1,
+              "prompt_tokens": 8724,
+              "completion_tokens": 42,
+              "total_tokens": 8766,
+              "cost_usd": 0.001334,
+              "mubit_request_id": "mreq_01a16f72a2f879e0913187f86b77eccc"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a visible break in the copper trace indicating an open circuit.",
+            "region": {
+              "x1": 240,
+              "y1": 560,
+              "x2": 320,
+              "y2": 640,
+              "delta": 18.34
+            },
+            "metrics": {
+              "latency_ms": 1747.4,
+              "prompt_tokens": 8724,
+              "completion_tokens": 40,
+              "total_tokens": 8764,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72a4ae75c08ca89a08dea0e5f6"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a noticeable gap breaking a copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 320,
+              "y1": 560,
+              "x2": 400,
+              "y2": 640,
+              "delta": 12.82
+            },
+            "metrics": {
+              "latency_ms": 1813.3,
+              "prompt_tokens": 8724,
+              "completion_tokens": 41,
+              "total_tokens": 8765,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72a4bb74729be71b19b0445d46"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a bright gap breaking a dark copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 400,
+              "y1": 560,
+              "x2": 480,
+              "y2": 640,
+              "delta": 11.76
+            },
+            "metrics": {
+              "latency_ms": 1964.5,
+              "prompt_tokens": 8724,
+              "completion_tokens": 42,
+              "total_tokens": 8766,
+              "cost_usd": 0.001334,
+              "mubit_request_id": "mreq_01a16f72a49073b2822f23abf8080e98"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a bright gap breaking the dark copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 160,
+              "y1": 400,
+              "x2": 240,
+              "y2": 480,
+              "delta": 7.56
+            },
+            "metrics": {
+              "latency_ms": 2225.6,
+              "prompt_tokens": 8724,
+              "completion_tokens": 42,
+              "total_tokens": 8766,
+              "cost_usd": 0.001334,
+              "mubit_request_id": "mreq_01a16f72a4c37191bd63a3b6416d98e7"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "spur"
+              ],
+              "disposition": "rework",
+              "worst": "spur"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "00041005",
+      "ground_truth": {
+        "defect_types": [
+          "short",
+          "open",
+          "copper",
+          "spur",
+          "pinhole"
+        ],
+        "disposition": "scrap",
+        "worst": "short"
+      },
+      "verdicts": {
+        "baseline": {
+          "defect_type": "none",
+          "disposition": "pass",
+          "cost_usd": 0.006592,
+          "latency_ms": 7058.2,
+          "correct": false
+        },
+        "adapted": {
+          "defect_type": "open",
+          "disposition": "scrap",
+          "cost_usd": 0.005327,
+          "latency_ms": 13916.3,
+          "correct": true
+        }
+      },
+      "regions": {
+        "baseline": [
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image does not display any noticeable defects on the PCB.",
+            "region": {
+              "x1": 0,
+              "y1": 0,
+              "x2": 80,
+              "y2": 80,
+              "delta": 33.9
+            },
+            "metrics": {
+              "latency_ms": 1307.7,
+              "prompt_tokens": 8628,
+              "completion_tokens": 38,
+              "total_tokens": 8666,
+              "cost_usd": 0.001317,
+              "mubit_request_id": "mreq_01a16f72abd37f92be3f4cac104a8c03"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image does not show any visible defects on the PCB.",
+            "region": {
+              "x1": 320,
+              "y1": 480,
+              "x2": 400,
+              "y2": 560,
+              "delta": 24.73
+            },
+            "metrics": {
+              "latency_ms": 1405.1,
+              "prompt_tokens": 8628,
+              "completion_tokens": 38,
+              "total_tokens": 8666,
+              "cost_usd": 0.001317,
+              "mubit_request_id": "mreq_01a16f72abd47dc28a2a07c6b48f268f"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "spur",
+                "pinhole"
+              ],
+              "disposition": "rework",
+              "worst": "spur"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image does not show any apparent defects on the PCB.",
+            "region": {
+              "x1": 0,
+              "y1": 80,
+              "x2": 80,
+              "y2": 160,
+              "delta": 21.96
+            },
+            "metrics": {
+              "latency_ms": 1404.7,
+              "prompt_tokens": 8628,
+              "completion_tokens": 38,
+              "total_tokens": 8666,
+              "cost_usd": 0.001317,
+              "mubit_request_id": "mreq_01a16f72abcf7631b6017c63311091e7"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The board appears to be without any visible defects.",
+            "region": {
+              "x1": 480,
+              "y1": 400,
+              "x2": 560,
+              "y2": 480,
+              "delta": 16.25
+            },
+            "metrics": {
+              "latency_ms": 1453.0,
+              "prompt_tokens": 8628,
+              "completion_tokens": 51,
+              "total_tokens": 8679,
+              "cost_usd": 0.001325,
+              "mubit_request_id": "mreq_01a16f72abd470109e9400f8eb1f9bdd"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "open"
+              ],
+              "disposition": "scrap",
+              "worst": "open"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image does not show any defects on the PCB.",
+            "region": {
+              "x1": 320,
+              "y1": 240,
+              "x2": 400,
+              "y2": 320,
+              "delta": 16.07
+            },
+            "metrics": {
+              "latency_ms": 1487.7,
+              "prompt_tokens": 8628,
+              "completion_tokens": 37,
+              "total_tokens": 8665,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72abd477e0873985d62007bdff"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          }
+        ],
+        "adapted": [
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A visible gap in the copper trace indicates a broken circuit.",
+            "region": {
+              "x1": 0,
+              "y1": 0,
+              "x2": 80,
+              "y2": 80,
+              "delta": 33.9
+            },
+            "metrics": {
+              "latency_ms": 2237.9,
+              "prompt_tokens": 8724,
+              "completion_tokens": 38,
+              "total_tokens": 8762,
+              "cost_usd": 0.001331,
+              "mubit_request_id": "mreq_01a16f72b35779e199808bfdb0ffbb78"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A visible gap in the copper trace indicates a broken circuit.",
+            "region": {
+              "x1": 320,
+              "y1": 480,
+              "x2": 400,
+              "y2": 560,
+              "delta": 24.73
+            },
+            "metrics": {
+              "latency_ms": 3269.5,
+              "prompt_tokens": 8724,
+              "completion_tokens": 38,
+              "total_tokens": 8762,
+              "cost_usd": 0.001331,
+              "mubit_request_id": "mreq_01a16f72b4647383a95cbb981c3c0d0e"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "spur",
+                "pinhole"
+              ],
+              "disposition": "rework",
+              "worst": "spur"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a clear break in the trace, indicating a broken circuit.",
+            "region": {
+              "x1": 0,
+              "y1": 80,
+              "x2": 80,
+              "y2": 160,
+              "delta": 21.96
+            },
+            "metrics": {
+              "latency_ms": 3931.5,
+              "prompt_tokens": 8724,
+              "completion_tokens": 40,
+              "total_tokens": 8764,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72b4627143adfc26e13855f9c6"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "The bright gap breaking the dark copper trace indicates a broken circuit.",
+            "region": {
+              "x1": 480,
+              "y1": 400,
+              "x2": 560,
+              "y2": 480,
+              "delta": 16.25
+            },
+            "metrics": {
+              "latency_ms": 2241.2,
+              "prompt_tokens": 8724,
+              "completion_tokens": 39,
+              "total_tokens": 8763,
+              "cost_usd": 0.001332,
+              "mubit_request_id": "mreq_01a16f72b3537f50bbba773591786ca8"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "open"
+              ],
+              "disposition": "scrap",
+              "worst": "open"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "region": {
+              "x1": 320,
+              "y1": 240,
+              "x2": 400,
+              "y2": 320,
+              "delta": 16.07
+            },
+            "error": "model returned invalid output: invalid severity: open",
+            "metrics": {
+              "latency_ms": 2236.2,
+              "prompt_tokens": 0,
+              "completion_tokens": 0,
+              "total_tokens": 0,
+              "cost_usd": 0.0,
+              "mubit_request_id": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "00041009",
+      "ground_truth": {
+        "defect_types": [
+          "short",
+          "open",
+          "mousebite",
+          "copper",
           "spur"
         ],
         "disposition": "scrap",
@@ -50,77 +1107,357 @@
         "baseline": {
           "defect_type": "none",
           "disposition": "pass",
-          "cost_usd": 0.006584,
-          "latency_ms": 5400.2,
+          "cost_usd": 0.006588,
+          "latency_ms": 10159.2,
           "correct": false
         },
         "adapted": {
           "defect_type": "open",
           "disposition": "scrap",
-          "cost_usd": 0.006661,
-          "latency_ms": 5573.2,
+          "cost_usd": 0.006666,
+          "latency_ms": 10847.5,
           "correct": true
         }
-      }
-    },
-    {
-      "id": "00041005",
-      "ground_truth": {
-        "defect_types": [
-          "open",
-          "short",
-          "copper",
-          "spur",
-          "pinhole"
-        ],
-        "disposition": "scrap",
-        "worst": "open"
       },
-      "verdicts": {
-        "baseline": {
-          "defect_type": "open",
-          "disposition": "rework",
-          "cost_usd": 0.006587,
-          "latency_ms": 6022.8,
-          "correct": false
-        },
-        "adapted": {
-          "defect_type": "open",
-          "disposition": "scrap",
-          "cost_usd": 0.006658,
-          "latency_ms": 5425.2,
-          "correct": true
-        }
-      }
-    },
-    {
-      "id": "00041009",
-      "ground_truth": {
-        "defect_types": [
-          "open",
-          "short",
-          "mousebite",
-          "copper",
-          "spur"
+      "regions": {
+        "baseline": [
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image does not show any identifiable defects on the PCB.",
+            "region": {
+              "x1": 80,
+              "y1": 400,
+              "x2": 160,
+              "y2": 480,
+              "delta": 20.73
+            },
+            "metrics": {
+              "latency_ms": 2223.8,
+              "prompt_tokens": 8628,
+              "completion_tokens": 38,
+              "total_tokens": 8666,
+              "cost_usd": 0.001317,
+              "mubit_request_id": "mreq_01a16f72c28f75909f5744b5aa49d47b"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "spur"
+              ],
+              "disposition": "rework",
+              "worst": "spur"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows no visible defects in the PCB layout.",
+            "region": {
+              "x1": 560,
+              "y1": 560,
+              "x2": 640,
+              "y2": 640,
+              "delta": 19.13
+            },
+            "metrics": {
+              "latency_ms": 2015.2,
+              "prompt_tokens": 8628,
+              "completion_tokens": 37,
+              "total_tokens": 8665,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72c0ee7d23873c589b5d136bca"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows a close-up of a PCB with no visible defects or issues.",
+            "region": {
+              "x1": 160,
+              "y1": 400,
+              "x2": 240,
+              "y2": 480,
+              "delta": 17.25
+            },
+            "metrics": {
+              "latency_ms": 2032.1,
+              "prompt_tokens": 8628,
+              "completion_tokens": 42,
+              "total_tokens": 8670,
+              "cost_usd": 0.001319,
+              "mubit_request_id": "mreq_01a16f72c29072738b0f66dcb5a19a48"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "mousebite",
+                "spur"
+              ],
+              "disposition": "rework",
+              "worst": "mousebite"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image appears to be a simple design and does not show any defects.",
+            "region": {
+              "x1": 80,
+              "y1": 480,
+              "x2": 160,
+              "y2": 560,
+              "delta": 16.51
+            },
+            "metrics": {
+              "latency_ms": 2284.7,
+              "prompt_tokens": 8628,
+              "completion_tokens": 41,
+              "total_tokens": 8669,
+              "cost_usd": 0.001319,
+              "mubit_request_id": "mreq_01a16f72c28d7e43ad4ccd915ca0e924"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short",
+                "spur"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image does not show any identifiable defects on the PCB.",
+            "region": {
+              "x1": 80,
+              "y1": 320,
+              "x2": 160,
+              "y2": 400,
+              "delta": 16.34
+            },
+            "metrics": {
+              "latency_ms": 1603.4,
+              "prompt_tokens": 8628,
+              "completion_tokens": 38,
+              "total_tokens": 8666,
+              "cost_usd": 0.001317,
+              "mubit_request_id": "mreq_01a16f72c0ee7ea2a93ae54a545ca61e"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          }
         ],
-        "disposition": "scrap",
-        "worst": "open"
-      },
-      "verdicts": {
-        "baseline": {
-          "defect_type": "none",
-          "disposition": "pass",
-          "cost_usd": 0.006584,
-          "latency_ms": 5346.8,
-          "correct": false
-        },
-        "adapted": {
-          "defect_type": "open",
-          "disposition": "scrap",
-          "cost_usd": 0.006662,
-          "latency_ms": 5742.1,
-          "correct": true
-        }
+        "adapted": [
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A visible gap disrupting a copper trace indicates a broken circuit, necessitating scrapping.",
+            "region": {
+              "x1": 80,
+              "y1": 400,
+              "x2": 160,
+              "y2": 480,
+              "delta": 20.73
+            },
+            "metrics": {
+              "latency_ms": 1634.6,
+              "prompt_tokens": 8724,
+              "completion_tokens": 43,
+              "total_tokens": 8767,
+              "cost_usd": 0.001334,
+              "mubit_request_id": "mreq_01a16f72c9eb7ae2b23917480a427445"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "spur"
+              ],
+              "disposition": "rework",
+              "worst": "spur"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a bright gap breaking the dark copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 560,
+              "y1": 560,
+              "x2": 640,
+              "y2": 640,
+              "delta": 19.13
+            },
+            "metrics": {
+              "latency_ms": 2470.4,
+              "prompt_tokens": 8724,
+              "completion_tokens": 42,
+              "total_tokens": 8766,
+              "cost_usd": 0.001334,
+              "mubit_request_id": "mreq_01a16f72cb8d77c1ae7b5c3a413a9480"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A bright gap breaking a dark copper trace indicates a broken circuit.",
+            "region": {
+              "x1": 160,
+              "y1": 400,
+              "x2": 240,
+              "y2": 480,
+              "delta": 17.25
+            },
+            "metrics": {
+              "latency_ms": 2468.0,
+              "prompt_tokens": 8724,
+              "completion_tokens": 39,
+              "total_tokens": 8763,
+              "cost_usd": 0.001332,
+              "mubit_request_id": "mreq_01a16f72c9f37c71b6c0b70cdc824bb2"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "mousebite",
+                "spur"
+              ],
+              "disposition": "rework",
+              "worst": "mousebite"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a visible break in the copper trace indicating an open circuit.",
+            "region": {
+              "x1": 80,
+              "y1": 480,
+              "x2": 160,
+              "y2": 560,
+              "delta": 16.51
+            },
+            "metrics": {
+              "latency_ms": 1574.4,
+              "prompt_tokens": 8724,
+              "completion_tokens": 40,
+              "total_tokens": 8764,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72c9ef7bc0b9d7e6aa91b911c8"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "short",
+                "spur"
+              ],
+              "disposition": "scrap",
+              "worst": "short"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a visible break in the copper trace, indicating a disrupted circuit.",
+            "region": {
+              "x1": 80,
+              "y1": 320,
+              "x2": 160,
+              "y2": 400,
+              "delta": 16.34
+            },
+            "metrics": {
+              "latency_ms": 2700.1,
+              "prompt_tokens": 8724,
+              "completion_tokens": 41,
+              "total_tokens": 8765,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72cb8d75d1a1a87275fe79f868"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          }
+        ]
       }
     },
     {
@@ -140,16 +1477,352 @@
           "defect_type": "none",
           "disposition": "pass",
           "cost_usd": 0.006584,
-          "latency_ms": 5827.8,
+          "latency_ms": 9836.7,
           "correct": false
         },
         "adapted": {
           "defect_type": "open",
           "disposition": "scrap",
-          "cost_usd": 0.006672,
-          "latency_ms": 6448.4,
+          "cost_usd": 0.006664,
+          "latency_ms": 9900.7,
           "correct": true
         }
+      },
+      "regions": {
+        "baseline": [
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows clean traces with no visible defects.",
+            "region": {
+              "x1": 560,
+              "y1": 80,
+              "x2": 640,
+              "y2": 160,
+              "delta": 8.41
+            },
+            "metrics": {
+              "latency_ms": 2115.4,
+              "prompt_tokens": 8628,
+              "completion_tokens": 36,
+              "total_tokens": 8664,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72d4b3740083785dd7e27c6cab"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "open"
+              ],
+              "disposition": "scrap",
+              "worst": "open"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows no significant defects on the board.",
+            "region": {
+              "x1": 160,
+              "y1": 320,
+              "x2": 240,
+              "y2": 400,
+              "delta": 7.68
+            },
+            "metrics": {
+              "latency_ms": 2139.0,
+              "prompt_tokens": 8628,
+              "completion_tokens": 36,
+              "total_tokens": 8664,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72d652782289bb2f3b7b5afbe6"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "copper"
+              ],
+              "disposition": "rework",
+              "worst": "copper"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows a clean PCB trace with no discernible defects.",
+            "region": {
+              "x1": 480,
+              "y1": 0,
+              "x2": 560,
+              "y2": 80,
+              "delta": 6.65
+            },
+            "metrics": {
+              "latency_ms": 2137.1,
+              "prompt_tokens": 8628,
+              "completion_tokens": 39,
+              "total_tokens": 8667,
+              "cost_usd": 0.001318,
+              "mubit_request_id": "mreq_01a16f72d65074239e8e618b86c24541"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows no identifiable defects in the PCB design.",
+            "region": {
+              "x1": 320,
+              "y1": 160,
+              "x2": 400,
+              "y2": 240,
+              "delta": 6.34
+            },
+            "metrics": {
+              "latency_ms": 1745.8,
+              "prompt_tokens": 8628,
+              "completion_tokens": 37,
+              "total_tokens": 8665,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72d4b679728b73539db14fe7f8"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "mousebite"
+              ],
+              "disposition": "rework",
+              "worst": "mousebite"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image does not show any visible defects on the PCB surface.",
+            "region": {
+              "x1": 560,
+              "y1": 160,
+              "x2": 640,
+              "y2": 240,
+              "delta": 6.33
+            },
+            "metrics": {
+              "latency_ms": 1699.4,
+              "prompt_tokens": 8628,
+              "completion_tokens": 39,
+              "total_tokens": 8667,
+              "cost_usd": 0.001318,
+              "mubit_request_id": "mreq_01a16f72d4b47fb1a7bd100dc1eeda9b"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          }
+        ],
+        "adapted": [
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a bright gap breaking a dark copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 560,
+              "y1": 80,
+              "x2": 640,
+              "y2": 160,
+              "delta": 8.41
+            },
+            "metrics": {
+              "latency_ms": 1633.1,
+              "prompt_tokens": 8724,
+              "completion_tokens": 42,
+              "total_tokens": 8766,
+              "cost_usd": 0.001334,
+              "mubit_request_id": "mreq_01a16f72dd027110b9cf1ca6dbc355f9"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "open"
+              ],
+              "disposition": "scrap",
+              "worst": "open"
+            },
+            "score": {
+              "type_correct": true,
+              "disposition_correct": true
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "The bright gap in the copper trace indicates a broken circuit.",
+            "region": {
+              "x1": 160,
+              "y1": 320,
+              "x2": 240,
+              "y2": 400,
+              "delta": 7.68
+            },
+            "metrics": {
+              "latency_ms": 1514.2,
+              "prompt_tokens": 8724,
+              "completion_tokens": 38,
+              "total_tokens": 8762,
+              "cost_usd": 0.001331,
+              "mubit_request_id": "mreq_01a16f72de9c796083224e6051b33452"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "copper"
+              ],
+              "disposition": "rework",
+              "worst": "copper"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a bright gap breaking the dark copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 480,
+              "y1": 0,
+              "x2": 560,
+              "y2": 80,
+              "delta": 6.65
+            },
+            "metrics": {
+              "latency_ms": 2156.3,
+              "prompt_tokens": 8724,
+              "completion_tokens": 42,
+              "total_tokens": 8766,
+              "cost_usd": 0.001334,
+              "mubit_request_id": "mreq_01a16f72de9c796083224e5f1898b1ba"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A bright gap breaking a dark copper trace indicates a broken circuit.",
+            "region": {
+              "x1": 320,
+              "y1": 160,
+              "x2": 400,
+              "y2": 240,
+              "delta": 6.34
+            },
+            "metrics": {
+              "latency_ms": 2499.6,
+              "prompt_tokens": 8724,
+              "completion_tokens": 39,
+              "total_tokens": 8763,
+              "cost_usd": 0.001332,
+              "mubit_request_id": "mreq_01a16f72deb8715391f55eb4d6e1b4a5"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "mousebite"
+              ],
+              "disposition": "rework",
+              "worst": "mousebite"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A bright gap is present in the copper trace indicating a broken circuit.",
+            "region": {
+              "x1": 560,
+              "y1": 160,
+              "x2": 640,
+              "y2": 240,
+              "delta": 6.33
+            },
+            "metrics": {
+              "latency_ms": 2097.5,
+              "prompt_tokens": 8724,
+              "completion_tokens": 40,
+              "total_tokens": 8764,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72de9b7d01a0fe924a1ad1b2d1"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "none"
+              ],
+              "disposition": "pass",
+              "worst": "none"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          }
+        ]
       }
     },
     {
@@ -167,17 +1840,221 @@
         "baseline": {
           "defect_type": "none",
           "disposition": "pass",
-          "cost_usd": 0.003949,
-          "latency_ms": 3116.0,
+          "cost_usd": 0.003947,
+          "latency_ms": 4269.7,
           "correct": false
         },
         "adapted": {
           "defect_type": "open",
           "disposition": "scrap",
-          "cost_usd": 0.004,
-          "latency_ms": 3553.6,
+          "cost_usd": 0.003998,
+          "latency_ms": 5436.3,
           "correct": false
         }
+      },
+      "regions": {
+        "baseline": [
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows no discernible defects on the PCB.",
+            "region": {
+              "x1": 240,
+              "y1": 320,
+              "x2": 320,
+              "y2": 400,
+              "delta": 6.7
+            },
+            "metrics": {
+              "latency_ms": 1194.0,
+              "prompt_tokens": 8628,
+              "completion_tokens": 37,
+              "total_tokens": 8665,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72e72f7db19c432c8471bdd8b3"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "copper"
+              ],
+              "disposition": "rework",
+              "worst": "copper"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows no visible defects in the PCB.",
+            "region": {
+              "x1": 0,
+              "y1": 560,
+              "x2": 80,
+              "y2": 640,
+              "delta": 6.06
+            },
+            "metrics": {
+              "latency_ms": 1286.4,
+              "prompt_tokens": 8628,
+              "completion_tokens": 36,
+              "total_tokens": 8664,
+              "cost_usd": 0.001316,
+              "mubit_request_id": "mreq_01a16f72e6e27ea39f33d30aecbb7e50"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "mousebite"
+              ],
+              "disposition": "rework",
+              "worst": "mousebite"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "none",
+            "severity": "cosmetic",
+            "disposition": "pass",
+            "confidence": 0.9,
+            "reason": "The image shows no visible defects or issues.",
+            "region": {
+              "x1": 80,
+              "y1": 560,
+              "x2": 160,
+              "y2": 640,
+              "delta": 5.86
+            },
+            "metrics": {
+              "latency_ms": 1789.3,
+              "prompt_tokens": 8628,
+              "completion_tokens": 35,
+              "total_tokens": 8663,
+              "cost_usd": 0.001315,
+              "mubit_request_id": "mreq_01a16f72e8677c11a69a5668963150b1"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "pinhole"
+              ],
+              "disposition": "rework",
+              "worst": "pinhole"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          }
+        ],
+        "adapted": [
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "There is a visible break in the trace causing an open circuit.",
+            "region": {
+              "x1": 240,
+              "y1": 320,
+              "x2": 320,
+              "y2": 400,
+              "delta": 6.7
+            },
+            "metrics": {
+              "latency_ms": 1831.4,
+              "prompt_tokens": 8724,
+              "completion_tokens": 39,
+              "total_tokens": 8763,
+              "cost_usd": 0.001332,
+              "mubit_request_id": "mreq_01a16f72f05e7ea18ff3f2cd16af8e9e"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "copper"
+              ],
+              "disposition": "rework",
+              "worst": "copper"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A bright gap is breaking the copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 0,
+              "y1": 560,
+              "x2": 80,
+              "y2": 640,
+              "delta": 6.06
+            },
+            "metrics": {
+              "latency_ms": 1833.7,
+              "prompt_tokens": 8724,
+              "completion_tokens": 40,
+              "total_tokens": 8764,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72efa77aa380c4ecd1c58a4714"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "mousebite"
+              ],
+              "disposition": "rework",
+              "worst": "mousebite"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          },
+          {
+            "defect_type": "open",
+            "severity": "critical",
+            "disposition": "scrap",
+            "confidence": 1.0,
+            "reason": "A bright gap is breaking a dark copper trace, indicating a broken circuit.",
+            "region": {
+              "x1": 80,
+              "y1": 560,
+              "x2": 160,
+              "y2": 640,
+              "delta": 5.86
+            },
+            "metrics": {
+              "latency_ms": 1771.2,
+              "prompt_tokens": 8724,
+              "completion_tokens": 41,
+              "total_tokens": 8765,
+              "cost_usd": 0.001333,
+              "mubit_request_id": "mreq_01a16f72ef717fa190439c970d60ffba"
+            },
+            "ground_truth": {
+              "defect_types": [
+                "pinhole"
+              ],
+              "disposition": "rework",
+              "worst": "pinhole"
+            },
+            "score": {
+              "type_correct": false,
+              "disposition_correct": false
+            }
+          }
+        ]
       }
     }
   ],
@@ -187,30 +2064,30 @@
       "boards": 6,
       "scored": 28,
       "defect_regions": 18,
-      "type_accuracy": 0.056,
+      "type_accuracy": 0.0,
       "disposition_accuracy": 0.0,
-      "missed_defect_rate": 0.889,
+      "missed_defect_rate": 1.0,
       "false_alarm_rate": 0.0,
       "board_disposition_accuracy": 0.0,
-      "avg_latency_ms": 1164.7,
-      "total_tokens": 242642,
-      "total_cost_usd": 0.036875,
+      "avg_latency_ms": 1971.7,
+      "total_tokens": 242649,
+      "total_cost_usd": 0.036877,
       "avg_cost_usd": 0.001317
     },
     "adapted": {
       "calls": 28,
       "boards": 6,
-      "scored": 28,
+      "scored": 27,
       "defect_regions": 18,
       "type_accuracy": 0.167,
       "disposition_accuracy": 0.444,
-      "missed_defect_rate": 0.111,
-      "false_alarm_rate": 0.9,
+      "missed_defect_rate": 0.167,
+      "false_alarm_rate": 1.0,
       "board_disposition_accuracy": 0.833,
-      "avg_latency_ms": 1165.8,
-      "total_tokens": 245413,
-      "total_cost_usd": 0.037326,
-      "avg_cost_usd": 0.001333
+      "avg_latency_ms": 2274.8,
+      "total_tokens": 236631,
+      "total_cost_usd": 0.035983,
+      "avg_cost_usd": 0.001285
     }
   }
 }

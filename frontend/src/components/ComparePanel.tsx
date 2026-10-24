@@ -3,7 +3,7 @@ import { compare } from "../api";
 import type { Comparison } from "../types";
 import { LANES, LANE_COPY, LaneTable } from "../laneTable";
 import { RegionCards } from "./RegionCards";
-import { Badge, Button, Panel } from "./ui";
+import { Badge, Button, ErrorPanel, Panel } from "./ui";
 
 export function ComparePanel({ boardId }: { boardId: string | null }) {
   const [data, setData] = useState<Comparison | null>(null);
@@ -35,7 +35,7 @@ export function ComparePanel({ boardId }: { boardId: string | null }) {
           The same crops go down both tasks. Only the instructions differ.
         </span>
       </div>
-      {error && <p style={{ color: "var(--danger)", margin: 0 }}>{error}</p>}
+      {error && <ErrorPanel message={error} onDismiss={() => setError(null)} />}
 
       {board && (
         <div style={{ display: "grid", gap: 16 }}>

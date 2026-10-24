@@ -1,9 +1,9 @@
 import type { GateAction, SaplingLabel, VerifyResult } from "../types";
 
 const ACTION_STYLE: Record<GateAction, { color: string; glyph: string; title: string }> = {
-  SHIP: { color: "#34d399", glyph: "✓", title: "Cleared to ship" },
-  BLOCK: { color: "#f87171", glyph: "✕", title: "Ship blocked" },
-  REVIEW: { color: "#fbbf24", glyph: "⚠", title: "Human review" },
+  SHIP: { color: "#047857", glyph: "✓", title: "Cleared to ship" },
+  BLOCK: { color: "#dc2626", glyph: "✕", title: "Ship blocked" },
+  REVIEW: { color: "#b45309", glyph: "⚠", title: "Human review" },
 };
 
 const LABEL_TEXT: Record<SaplingLabel, string> = {
@@ -101,15 +101,22 @@ export function PolicyGate({ result }: { result: VerifyResult }) {
 
       <p style={{ margin: 0, color: "var(--text-dim)", fontSize: 13 }}>{gate.reason}</p>
 
+      <div style={{ fontSize: 11, fontFamily: "var(--mono)", color: "var(--text-dim)" }}>
+        evidence:{" "}
+        {result.evidence_mode === "trace"
+          ? "the model's own region notes — no answer key"
+          : "AOI labels (oracle mode)"}
+      </div>
+
       {caught && (
         <div
           style={{
             fontSize: 12,
             padding: "8px 10px",
             borderRadius: 8,
-            color: "#f87171",
-            background: "#f871711f",
-            border: "1px solid #f8717155",
+            color: "var(--danger)",
+            background: "color-mix(in srgb, var(--danger) 9%, var(--panel))",
+            border: "1px solid color-mix(in srgb, var(--danger) 40%, transparent)",
           }}
         >
           Caught it. The vision model claimed <b>pass</b>, but the board truly needs{" "}
