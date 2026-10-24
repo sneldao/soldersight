@@ -1,0 +1,46 @@
+/* SolderSight design tokens. One source of truth for colour, type and spacing. */
+:root {
+  --bg: #0b0f14;
+  --panel: #131a22;
+  --panel-border: #222d39;
+  --text: #e6edf3;
+  --text-dim: #8b98a6;
+  --accent: #36d399;
+  --danger: #f87171;
+  --warn: #fbbf24;
+  --info: #60a5fa;
+
+  --defect-open: #f87171;
+  --defect-short: #fb923c;
+  --defect-mousebite: #fbbf24;
+  --defect-spur: #a78bfa;
+  --defect-copper: #34d399;
+  --defect-pinhole: #60a5fa;
+  --defect-none: #8b98a6;
+
+  --radius: 10px;
+  --gap: 16px;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 600; }
+h2 { font-size: 15px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+
+button, select, input, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

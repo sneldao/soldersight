@@ -18,6 +18,7 @@ dist/
 build/
 .next/
 .vite/
+*.tsbuildinfo
 
 # Cloudflare / wrangler
 .wrangler/
@@ -27,3 +28,6 @@ build/
 *.log
 .idea/
 .vscode/
+
+# Downloaded datasets (DeepPCB subset)
+data/

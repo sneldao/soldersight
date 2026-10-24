@@ -1,6 +1,8 @@
 fastapi
 uvicorn
 openai
+numpy
+pillow
 python-multipart
 pytest
 httpx
