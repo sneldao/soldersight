@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SolderSight — Policy Gate Demo</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f8fafc;
+    margin: 0; padding: 40px 20px;
+    line-height: 1.6;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  header {
+    text-align: center; margin-bottom: 48px;
+  }
+  h1 { font-size: 2rem; margin: 0 0 8px; letter-spacing: -0.5px; }
+  .subtitle { color: #94a3b8; font-size: 0.95rem; }
+
+  .card {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-radius: 12px;
+    padding: 24px; margin-bottom: 24px;
+    backdrop-filter: blur(8px);
+  }
+
+  .badge {
+    display: inline-block; padding: 4px 10px; border-radius: 6px;
+    font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .badge-block { background: #fee2e2; color: #991b1b; border: 1px solid rgba(153,27,27,0.2); }
+  .badge-ship { background: #dcfce7; color: #14532d; border: 1px solid rgba(20,83,45,0.2); }
+  .badge-review { background: #fef9c3; color: #713f12; border: 1px solid rgba(113,63,18,0.2); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  th { text-align: left; color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; padding: 12px; border-bottom: 1px solid rgba(148,163,184,0.2); }
+  td { padding: 14px 12px; border-bottom: 1px solid rgba(148,163,184,0.1); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr.caught td { background: rgba(239, 68, 68, 0.08); }
+
+  .mono { font-family: 'Menlo', 'Monaco', 'Consolas', monospace; }
+  .conf-96 { color: #fbbf24; }
+  .conf-97 { color: #fbbf24; }
+  .conf-77 { color: #f59e0b; }
+
+  .catch-banner {
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+    border: 1px solid #ef4444;
+    border-radius: 10px; padding: 20px; margin-top: 24px;
+    position: relative; overflow: hidden;
+  }
+  .catch-banner::before {
+    content: "⚡ CAUGHT"; position: absolute; top: 12px; right: 16px;
+    font-size: 0.85rem; font-weight: 800; letter-spacing: 2px;
+    color: #fecaca; text-transform: uppercase;
+  }
+  .catch-banner h2 { margin: 0 0 8px; font-size: 1.1rem; }
+  .catch-banner p { margin: 0; color: #fecaca; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-top: 32px; }
+  .stat-card {
+    background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(148,163,184,0.15);
+    border-radius: 10px; padding: 20px; text-align: center;
+  }
+  .stat-value { font-size: 1.75rem; font-weight: 800; margin-bottom: 4px; }
+  .stat-label { color: #94a3b8; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .verdict-row { display: flex; gap: 8px; align-items: center; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .dot-red { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+  .dot-green { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+  .dot-yellow { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+
+  .footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(148,163,184,0.2); color: #64748b; font-size: 0.8rem; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>SolderSight · Policy Gate</h1>
+    <div class="subtitle">Banyan Sapling verifies vision-model claims against AOI inspection evidence</div>
+  </header>
+
+  <div class="card">
+    <h2 style="margin-top:0; font-size: 1.1rem;">Batch Verification — Recorded Vision Verdicts vs Policy Gate</h2>
+    <p style="color:#94a3b8; margin: 0 0 16px;">Each row: the cheap vision model proposed a disposition → Sapling checks it against AOI evidence + acceptance policy.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Board</th><th>Truth (AOI)</th><th>Worst Defect</th><th>Vision Model Said</th><th>Sapling Verdict</th><th>Confidence</th><th>Gate</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="caught">
+          <td class="mono">00041000</td><td>scrap</td><td class="mono">short</td><td><span class="badge badge-block">scrap</span></td><td>violation</td><td class="conf-96 mono">96%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+        <tr class="caught">
+          <td class="mono">00041001</td><td>scrap</td><td class="mono">open</td><td><span class="badge badge-block">scrap</span></td><td>violation</td><td class="conf-96 mono">96%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+        <tr class="caught">
+          <td class="mono">00041002</td><td>scrap</td><td class="mono">short</td><td><span class="badge badge-block">scrap</span></td><td>violation</td><td class="conf-97 mono">97%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+        <tr class="caught">
+          <td class="mono">00041003</td><td>scrap</td><td class="mono">open</td><td><span class="badge badge-block">scrap</span></td><td>violation</td><td class="conf-96 mono">96%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+        <tr class="caught">
+          <td class="mono">00041004</td><td>scrap</td><td class="mono">short</td><td><span class="badge badge-block">pass</span> ⚠️ wrong</td><td>violation</td><td class="conf-96 mono">96%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+        <tr class="caught">
+          <td class="mono">00041005</td><td>scrap</td><td class="mono">short</td><td><span class="badge badge-block">scrap</span></td><td>violation</td><td class="conf-96 mono">96%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+        <tr class="caught">
+          <td class="mono">00041009</td><td>scrap</td><td class="mono">short</td><td><span class="badge badge-block">scrap</span></td><td>violation</td><td class="conf-96 mono">96%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+        <tr class="caught">
+          <td class="mono">00041015</td><td>scrap</td><td class="mono">open</td><td><span class="badge badge-block">scrap</span></td><td>violation</td><td class="conf-96 mono">96%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+        <tr>
+          <td class="mono">00041029</td><td>rework</td><td class="mono">mousebite</td><td><span class="badge badge-block">scrap</span></td><td>violation</td><td class="conf-77 mono">77%</td><td><span class="badge badge-block">BLOCK</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="catch-banner">
+    <h2>The Catch — Board 00041004</h2>
+    <p><strong>Vision model:</strong> "pass" (cleared to ship)</p>
+    <p><strong>AOI evidence:</strong> open circuit + short circuit → scrap</p>
+    <p><strong>Sapling:</strong> violation at 96% → <strong>BLOCK — ship stopped</strong></p>
+    <p style="margin-top:12px; font-size:0.85rem; opacity:0.9;">The cheap classifier rubber-stamped a defective board. Sapling caught it before it left the line.</p>
+  </div>
+
+  <div class="grid">
+    <div class="stat-card">
+      <div class="stat-value">1/1</div>
+      <div class="stat-label">defective board the vision model would have shipped — blocked</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">96%</div>
+      <div class="stat-label">Sapling violation confidence on board 00041004</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">3</div>
+      <div class="stat-label">gate actions: BLOCK · REVIEW · SHIP</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:32px;">
+    <h3 style="margin-top:0; font-size:0.9rem;">Gate Range — All Three Actions Visible</h3>
+    <table style="margin-top:12px;">
+      <tr><td><span class="dot dot-green"></span> Clean board</td><td>supported</td><td class="mono" style="color:#22c55e">→ SHIP</td></tr>
+      <tr><td><span class="dot dot-yellow"></span> Spur only</td><td>insufficient_information</td><td class="mono" style="color:#f59e0b">→ REVIEW</td></tr>
+      <tr><td><span class="dot dot-red"></span> Open circuit</td><td>violation</td><td class="mono" style="color:#ef4444">→ BLOCK</td></tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    SolderSight · Mubit Night Shift Hackathon · Policy Challenge — Banyan Sapling as independent QA gate
+  </div>
+</div>
+
+</body>
+</html>
