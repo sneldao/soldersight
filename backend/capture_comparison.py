@@ -53,7 +53,7 @@ def main_run(boards: list[str]) -> None:
         "lanes": {lane: main.summarize(by_lane[lane]) for lane in LANES},
     }
     out = main.DATA_DIR / "comparison.json"
-    out.write_text(json.dumps(snapshot, indent=2), encoding="utf-8")
+    out.write_text(json.dumps(snapshot, indent=2) + "\n", encoding="utf-8")
 
     print(f"\nwrote {out}")
     for lane in LANES:
