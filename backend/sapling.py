@@ -110,6 +110,13 @@ def build_trace_evidence(regions: list[dict]) -> str:
     for r in regions:
         reg = r.get("region") or {}
         loc = f"({reg.get('x1', '?')},{reg.get('y1', '?')})"
+        if r.get("error") is not None:
+            # A failed call is not an observation — it must not read as a clean one.
+            lines.append(
+                f"- Region {loc}: the call failed ({r.get('error')}) — excluded "
+                "from the verdict"
+            )
+            continue
         dtype = r.get("defect_type", "none")
         sev = r.get("severity", "unspecified")
         reason = (r.get("reason") or "").strip()
