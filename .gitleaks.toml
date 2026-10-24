@@ -1,0 +1,10 @@
+# gitleaks config — allow example/placeholder values in .env.example
+[allowlist]
+  description = "Allow placeholder values in example env file"
+  paths = [
+    '''\.env\.example''',
+  ]
+  regexes = [
+    '''mbt_\.\.\.''',
+    '''sk-\.\.\.''',
+  ]
