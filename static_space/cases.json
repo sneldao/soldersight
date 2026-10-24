@@ -1,0 +1,280 @@
+{
+  "endpoint": "https://6adbee0669a00298cd4774c9.endpoints.huggingface.cloud",
+  "ship_margin": 0.15,
+  "policy_cases": [
+    {
+      "id": "00041004",
+      "title": "Board 00041004 \u2014 the catch",
+      "image": "images/00041004_test.jpg",
+      "vision": {
+        "disposition": "pass",
+        "reason": "The PCB appears to be free of defects.",
+        "confidence": 0.9
+      },
+      "truth": {
+        "disposition": "scrap",
+        "worst": "open"
+      },
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "Automated optical inspection detected: 1 open-circuit (broken trace); 1 short-circuit (bridged traces); 1 mousebite (notched trace edge); 1 spurious copper; 1 spur (excess copper protrusion); 1 pin-hole.",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "violation",
+        "action": "BLOCK",
+        "confidence": 0.964,
+        "probabilities": {
+          "supported": 0.01145831268748015,
+          "violation": 0.9635042592886295,
+          "insufficient_information": 0.02190121240781838,
+          "inconsistent_context": 0.003136215616072007
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information"
+        ],
+        "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+        "unsure": true
+      }
+    },
+    {
+      "id": "00041000",
+      "title": "Board 00041000",
+      "image": "images/00041000_test.jpg",
+      "vision": {
+        "disposition": "scrap",
+        "reason": "There is a bright gap breaking a dark copper trace, indicating a broken circuit.",
+        "confidence": 1.0
+      },
+      "truth": {
+        "disposition": "scrap",
+        "worst": "open"
+      },
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "Automated optical inspection detected: 1 open-circuit (broken trace); 1 short-circuit (bridged traces); 1 mousebite (notched trace edge); 1 spurious copper; 1 spur (excess copper protrusion); 1 pin-hole.",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "violation",
+        "action": "BLOCK",
+        "confidence": 0.964,
+        "probabilities": {
+          "supported": 0.01145831268748015,
+          "violation": 0.9635042592886295,
+          "insufficient_information": 0.02190121240781838,
+          "inconsistent_context": 0.003136215616072007
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information"
+        ],
+        "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+        "unsure": true
+      }
+    },
+    {
+      "id": "00041009",
+      "title": "Board 00041009",
+      "image": "images/00041009_test.jpg",
+      "vision": {
+        "disposition": "scrap",
+        "reason": "A bright gap breaking a dark copper trace indicates a broken circuit.",
+        "confidence": 1.0
+      },
+      "truth": {
+        "disposition": "rework",
+        "worst": "spur"
+      },
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "Automated optical inspection detected: 1 spur (excess copper protrusion).",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "insufficient_information",
+        "action": "REVIEW",
+        "confidence": 0.452,
+        "probabilities": {
+          "supported": 0.15922673186531217,
+          "violation": 0.35291347662025063,
+          "insufficient_information": 0.4516086159867232,
+          "inconsistent_context": 0.036251175527713946
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information",
+          "inconsistent_context"
+        ],
+        "reason": "Not enough evidence to clear automatically \u2014 route to a human inspector.",
+        "unsure": true
+      }
+    },
+    {
+      "id": "illus-clean",
+      "title": "Clean board (no defects)",
+      "image": null,
+      "vision": null,
+      "truth": null,
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "Automated optical inspection found no defects on this board; it matches the reference template.",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "supported",
+        "action": "SHIP",
+        "confidence": 0.459,
+        "probabilities": {
+          "supported": 0.45890333252733495,
+          "violation": 0.08435625056665041,
+          "insufficient_information": 0.43603876025778476,
+          "inconsistent_context": 0.02070165664822999
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information",
+          "inconsistent_context"
+        ],
+        "reason": "Claim supported by evidence and policy \u2014 cleared to ship.",
+        "unsure": true
+      }
+    },
+    {
+      "id": "illus-spur",
+      "title": "Spur only (rework-class)",
+      "image": null,
+      "vision": null,
+      "truth": null,
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "Automated optical inspection detected: 1 spur (excess copper protrusion).",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "insufficient_information",
+        "action": "REVIEW",
+        "confidence": 0.452,
+        "probabilities": {
+          "supported": 0.15922673186531217,
+          "violation": 0.35291347662025063,
+          "insufficient_information": 0.4516086159867232,
+          "inconsistent_context": 0.036251175527713946
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information",
+          "inconsistent_context"
+        ],
+        "reason": "Not enough evidence to clear automatically \u2014 route to a human inspector.",
+        "unsure": true
+      }
+    },
+    {
+      "id": "illus-open",
+      "title": "Open circuit",
+      "image": null,
+      "vision": null,
+      "truth": null,
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "Automated optical inspection detected: 1 open-circuit (broken trace).",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "violation",
+        "action": "BLOCK",
+        "confidence": 0.961,
+        "probabilities": {
+          "supported": 0.012171740235737673,
+          "violation": 0.9609869259846118,
+          "insufficient_information": 0.024243675171232427,
+          "inconsistent_context": 0.002597658608418223
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information"
+        ],
+        "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+        "unsure": true
+      }
+    }
+  ],
+  "trace_cases": [
+    {
+      "id": "00041003",
+      "title": "Board 00041003 \u2014 wrote \u201cvisible short circuit\u201d",
+      "image": "images/00041003_test.jpg",
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "A vision inspection model examined this board region by region and reported, in its own words:\n- Region (320,0): called it \"open\" (critical) at 100% confidence \u2014 \"A bright gap breaking a dark copper trace indicates a broken circuit.\"\n- Region (400,0): called it \"open\" (critical) at 100% confidence \u2014 \"There is a visible gap in the trace indicating a break in the circuit.\"\n- Region (240,0): called it \"open\" (critical) at 100% confidence \u2014 \"A bright gap breaking a dark copper trace indicates a broken circuit.\"\n- Region (320,240): called it \"open\" (critical) at 100% confidence \u2014 \"A bright gap breaking the dark copper trace indicates a broken circuit.\"\n- Region (480,80): called it \"open\" (critical) at 100% confidence \u2014 \"A bright gap breaking a dark copper trace indicates a broken circuit.\"",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "violation",
+        "action": "BLOCK",
+        "confidence": 0.952,
+        "probabilities": {
+          "supported": 0.014810688419377866,
+          "violation": 0.9518442891375908,
+          "insufficient_information": 0.02893376689114189,
+          "inconsistent_context": 0.004411255551889561
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information"
+        ],
+        "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+        "unsure": true
+      }
+    },
+    {
+      "id": "00041005",
+      "title": "Board 00041005",
+      "image": "images/00041005_test.jpg",
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "A vision inspection model examined this board region by region and reported, in its own words:\n- Region (0,0): called it \"open\" (critical) at 100% confidence \u2014 \"A bright gap in the copper trace indicates a broken circuit.\"\n- Region (320,480): called it \"open\" (critical) at 100% confidence \u2014 \"A bright gap is present in the copper trace indicating a broken circuit.\"\n- Region (0,80): called it \"short\" (critical) at 100% confidence \u2014 \"Extra copper is bridging two traces where the template has a gap.\"\n- Region (480,400): called it \"open\" (critical) at 100% confidence \u2014 \"There is a clear gap breaking the copper trace.\"\n- Region (320,240): called it \"none\" (critical) at 100% confidence \u2014 \"A bright gap breaking the dark copper trace indicates a broken circuit.\"",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "violation",
+        "action": "BLOCK",
+        "confidence": 0.922,
+        "probabilities": {
+          "supported": 0.022563925215140578,
+          "violation": 0.921840081482242,
+          "insufficient_information": 0.04640880578334049,
+          "inconsistent_context": 0.00918718751927676
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information",
+          "inconsistent_context"
+        ],
+        "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+        "unsure": true
+      }
+    },
+    {
+      "id": "00041000",
+      "title": "Board 00041000",
+      "image": "images/00041000_test.jpg",
+      "policy": "PCB acceptance policy (IPC-style). A board FAILS and must be scrapped if any open-circuit or short-circuit defect is present; these are critical and cannot be reworked. A board with a mousebite, spur, spurious-copper, or pin-hole defect \u2014 and no open or short \u2014 must be sent for REWORK, not shipped as-is and not scrapped. A board with no detected defects PASSES and may ship. If the inspection evidence is missing, ambiguous, or low-confidence, the board must not be cleared automatically; route it to a human inspector.",
+      "evidence": "A vision inspection model examined this board region by region and reported, in its own words:\n- Region (560,240): called it \"open\" (critical) at 100% confidence \u2014 \"There is a bright gap breaking a dark copper trace, indicating a broken circuit.\"\n- Region (400,320): called it \"open\" (critical) at 100% confidence \u2014 \"A bright gap breaking a dark copper trace indicates a broken circuit.\"\n- Region (480,240): called it \"none\" (critical) at 100% confidence \u2014 \"A bright gap breaking a dark copper trace indicates a broken circuit.\"\n- Region (400,480): called it \"open\" (critical) at 100% confidence \u2014 \"There is a visible gap breaking the copper trace, indicating a broken circuit.\"\n- Region (160,320): called it \"open\" (critical) at 100% confidence \u2014 \"There is a visible bright gap in the copper trace, indicating a broken circuit.\"\n- Region (560,240): called it \"open\" (critical) at 100% confidence \u2014 \"There is a visible gap in the copper trace indicating a broken circuit.\"\n- Region (400,320): called it \"open\" (critical) at 100% confidence \u2014 \"A visible break in the copper trace indicates an open circuit.\"\n- Region (480,240): called it \"none\" (critical) at 100% confidence \u2014 \"There is a bright gap breaking a dark copper trace, indicating a broken circuit.\"\n- Region (400,480): called it \"open\" (critical) at 100% confidence \u2014 \"There is a visible break in the copper trace indicating a broken circuit.\"\n- Region (160,320): called it \"open\" (critical) at 100% confidence \u2014 \"A bright gap is breaking the copper trace, indicating a broken circuit.\"",
+      "claim": "This board passes quality assurance and is approved to ship to the customer as-is.",
+      "cached": {
+        "label": "violation",
+        "action": "BLOCK",
+        "confidence": 0.803,
+        "probabilities": {
+          "supported": 0.05035173928869431,
+          "violation": 0.8025690190209774,
+          "insufficient_information": 0.12599087305444268,
+          "inconsistent_context": 0.021088368635885608
+        },
+        "prediction_set": [
+          "supported",
+          "violation",
+          "insufficient_information",
+          "inconsistent_context"
+        ],
+        "reason": "Claim conflicts with the acceptance policy \u2014 ship blocked.",
+        "unsure": true
+      }
+    }
+  ]
+}

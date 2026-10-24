@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SolderSight × Banyan Sapling — PCB ship-gate</title>
+<style>
+  :root{
+    --bg:#070b14; --panel:#0b1220; --border:#1e293b; --text:#e2e8f0; --dim:#94a3b8;
+    --accent:#60a5fa; --ship:#22c55e; --block:#ef4444; --review:#f59e0b; --insuf:#f59e0b; --incon:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+  .wrap{max-width:1000px;margin:0 auto;padding:24px}
+  .hero{background:linear-gradient(135deg,#0f172a,#1e293b);border:1px solid var(--border);
+    border-radius:16px;padding:26px 28px;margin-bottom:18px}
+  .hero h1{margin:0 0 6px;font-size:1.55rem;letter-spacing:-.3px;color:#f8fafc}
+  .hero p{margin:0;color:var(--dim);font-size:.95rem}
+  .tabs{display:flex;gap:8px;margin:16px 0}
+  .tab{padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:transparent;
+    color:var(--dim);cursor:pointer;font-weight:600;font-size:.85rem}
+  .tab.active{background:var(--accent);color:#04110b;border-color:var(--accent)}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:18px;align-items:start}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:18px}
+  select,button{font:inherit}
+  select{width:100%;background:#0b1220;color:var(--text);border:1px solid var(--border);
+    border-radius:10px;padding:9px 10px;margin-bottom:12px}
+  .board-img{width:100%;border-radius:10px;border:1px solid var(--border);display:block;background:#0b1220}
+  .noimg{height:200px;display:flex;align-items:center;justify-content:center;color:var(--dim);
+    border:1px dashed var(--border);border-radius:10px;font-size:.85rem}
+  .btn{width:100%;margin-top:12px;padding:10px 14px;border-radius:10px;border:none;cursor:pointer;
+    background:var(--accent);color:#04110b;font-weight:700}
+  .btn:disabled{opacity:.6;cursor:progress}
+  .chip{padding:2px 10px;border-radius:999px;font-size:11px;font-weight:600}
+  .chip.live{background:#064e3b;color:#6ee7b7}
+  .chip.cached{background:#1e3a5f;color:#93c5fd}
+  .chip.unavail{background:#4c1d1d;color:#fca5a5}
+  .verdict-head{display:flex;align-items:center;gap:14px}
+  .glyph{font-size:26px;font-weight:800}
+  .bars{margin-top:12px}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 44px;gap:10px;align-items:center;margin:6px 0}
+  .bar-row .lbl{font-size:12px;color:var(--dim)}
+  .bar-track{height:8px;background:#1e293b;border-radius:999px;overflow:hidden}
+  .bar-fill{height:100%;border-radius:999px}
+  .bar-row .pct{font-size:12px;color:#cbd5e1;text-align:right;font-variant-numeric:tabular-nums}
+  .reason{margin:12px 0 6px;font-size:13px;color:#cbd5e1}
+  .banner{border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px}
+  .banner.caught{background:#2a0f12;border:1px solid var(--block);color:#fca5a5}
+  .banner.note{background:#0b1220;border:1px solid var(--border);color:#93c5fd;font-size:12px}
+  .kv{font-size:12px;color:var(--dim);line-height:1.6;white-space:pre-wrap;margin-top:8px}
+  .kv b{color:#cbd5e1}
+  details summary{cursor:pointer;color:#93c5fd;font-size:13px;margin-top:12px}
+  a{color:var(--accent)}
+  .foot{color:var(--dim);font-size:12px;margin-top:22px;text-align:center}
+  .vision{font-size:13px;color:#cbd5e1;margin-bottom:12px}
+  .vision .d{font-weight:700;text-transform:uppercase}
+  h2.sec{font-size:1rem;margin:0 0 4px}
+  .sub{color:var(--dim);font-size:.85rem;margin:0 0 14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <h1>SolderSight — PCB ship-gate, verified by Banyan Sapling</h1>
+    <p>A cheap vision model decides if a circuit board can ship. Mubit's Banyan Sapling checks that
+       decision — against the model's own notes, and against policy — and blocks the bad ones.
+       Verdicts are <b>live from the model</b> (your browser calls it directly); cached real verdicts load instantly.</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="trace">Trace audit — no answer key</button>
+    <button class="tab" data-tab="policy">Policy gate</button>
+    <button class="tab" data-tab="about">About</button>
+  </div>
+
+  <!-- TRACE -->
+  <div id="trace" class="panel">
+    <h2 class="sec">Does the ship decision survive the model's own notes?</h2>
+    <p class="sub">Evidence is the vision model's <b>own</b> crop-by-crop notes — no dataset labels. On
+       <code>00041003</code> the model wrote <i>"visible short circuit"</i>, then the board was up for shipping.</p>
+    <div class="grid">
+      <div class="card">
+        <select id="trace-select"></select>
+        <div id="trace-img-wrap"></div>
+        <button class="btn" id="trace-run">Run live via Banyan Sapling ↻</button>
+      </div>
+      <div class="card" id="trace-out"></div>
+    </div>
+  </div>
+
+  <!-- POLICY -->
+  <div id="policy" class="panel" style="display:none">
+    <h2 class="sec">Is the proposed disposition actually allowed?</h2>
+    <p class="sub">The vision model proposes a disposition; Sapling verifies it against an independent
+       inspection (AOI) reading + a written policy → <b>SHIP / BLOCK / REVIEW</b>. Start on the catch.</p>
+    <div class="grid">
+      <div class="card">
+        <select id="policy-select"></select>
+        <div id="policy-img-wrap"></div>
+        <button class="btn" id="policy-run">Run live via Banyan Sapling ↻</button>
+      </div>
+      <div class="card" id="policy-out"></div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="about" class="panel" style="display:none">
+    <div class="card">
+      <h2 class="sec">What this is</h2>
+      <p style="font-size:.92rem;color:#cbd5e1">A vision model (gpt-4o-mini, via <b>Mubit</b>) triages PCB
+      photos — but cheap models are confidently wrong, clearing defective boards as <i>pass</i>.
+      <b>Banyan Sapling</b> is the check that catches them, two ways:</p>
+      <ul style="font-size:.9rem;color:#cbd5e1">
+        <li><b>Trace audit</b> — the ship claim vs the model's own notes. No answer key; the catch is self-contradiction.</li>
+        <li><b>Policy gate</b> — the claim vs an independent AOI reading + a written spec. SHIP / BLOCK / REVIEW, fail-safe to human.</li>
+      </ul>
+      <p style="font-size:.9rem;color:#cbd5e1">Sapling is <b>open-weight</b> (Apache-2.0):
+        <a href="https://huggingface.co/MubitLabs/banyan-sapling" target="_blank">MubitLabs/banyan-sapling</a>.
+        This page calls its research-preview endpoint live from your browser (no auth); if it's cold-starting,
+        it shows a <b>cached real verdict</b> — never a fabricated one.</p>
+      <p style="font-size:.9rem;color:#cbd5e1">Full app (FastAPI + React), tests, and the
+        <code>trace_demo.py</code> / <code>gate_demo.py</code> runs:
+        <a href="https://github.com/sneldao/soldersight" target="_blank">github.com/sneldao/soldersight</a>.</p>
+    </div>
+  </div>
+
+  <div class="foot">Built for Mubit Night Shift (London, Oct 2026) · verdicts by Banyan Sapling</div>
+</div>
+
+<script>
+const LABEL_TEXT = {supported:"Supported", violation:"Policy violation",
+  insufficient_information:"Insufficient information", inconsistent_context:"Inconsistent context"};
+const LABEL_COLOR = {supported:"var(--ship)", violation:"var(--block)",
+  insufficient_information:"var(--insuf)", inconsistent_context:"var(--incon)"};
+const ACTION = {SHIP:["✅ SHIP","var(--ship)","cleared to ship"],
+  BLOCK:["🛑 BLOCK","var(--block)","ship blocked"], REVIEW:["⚠️ REVIEW","var(--review)","route to a human"]};
+
+let DATA=null, SHIP_MARGIN=0.15;
+
+function argmax(probs){return Object.keys(probs).reduce((a,b)=>probs[b]>probs[a]?b:a);}
+
+// Port of backend sapling.gate_decision — violation→BLOCK, supported(low vio risk)→SHIP, else REVIEW.
+function gateDecision(resp){
+  if(!resp || !resp.probabilities){
+    return {action:"REVIEW",label:null,confidence:null,probabilities:null,prediction_set:[],
+      unsure:true,reason:"Verifier unavailable — fail-safe to human review.",source:"unavail"};
+  }
+  const probs=resp.probabilities;
+  const label=resp.raw_label || argmax(probs);
+  const ranked=Object.values(probs).sort((a,b)=>b-a);
+  const top=ranked[0], conformal=resp.prediction_set||[];
+  const unsure = resp.status==="unsure" || conformal.length>1;
+  let action, reason;
+  if(label==="violation"){action="BLOCK"; reason="Claim conflicts with the acceptance policy — ship blocked.";}
+  else if(label==="supported"){action="SHIP"; reason="Supported by evidence and policy — cleared to ship.";}
+  else if(label==="insufficient_information"){action="REVIEW"; reason="Not enough evidence to clear automatically — route to a human inspector.";}
+  else {action="REVIEW"; reason="Evidence conflicts with itself — route to a human inspector.";}
+  const vio = probs.violation||0;
+  if(action==="SHIP" && vio>=SHIP_MARGIN){action="REVIEW"; reason=`Supported, but a ${Math.round(vio*100)}% violation risk remains — route to a human inspector.`;}
+  return {action,label,confidence:top,probabilities:probs,prediction_set:conformal,unsure,reason,source:"live"};
+}
+
+function chip(source){
+  if(source==="live") return '<span class="chip live">● live via Banyan Sapling</span>';
+  if(source==="cached") return '<span class="chip cached">● cached real verdict (endpoint warming)</span>';
+  return '<span class="chip unavail">● verifier unavailable — fail-safe to review</span>';
+}
+function bars(probs){
+  if(!probs) return "";
+  return Object.keys(probs).sort((a,b)=>probs[b]-probs[a]).map(k=>{
+    const pct=Math.round(probs[k]*100);
+    return `<div class="bar-row"><span class="lbl">${LABEL_TEXT[k]||k}</span>
+      <span class="bar-track"><span class="bar-fill" style="width:${pct}%;background:${LABEL_COLOR[k]||'#64748b'}"></span></span>
+      <span class="pct">${pct}%</span></div>`;
+  }).join("");
+}
+function esc(s){return (s||"").replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+
+function verdictHTML(v, c, banner){
+  const [glyph,color,sub]=ACTION[v.action]||ACTION.REVIEW;
+  const conf = v.confidence!=null ? ` · ${Math.round(v.confidence*100)}% calibrated` : "";
+  const unsureNote = (v.prediction_set && v.prediction_set.length>1)
+    ? `<p style="margin:10px 0 0;font-size:12px;color:var(--dim)">Conformal set keeps ${v.prediction_set.length} labels in play — calibrated uncertainty, not a guess.</p>` : "";
+  return `${banner||""}
+    <div class="verdict-head">
+      <div class="glyph" style="color:${color}">${glyph}</div>
+      <div><div style="font-size:15px;font-weight:600">${sub.charAt(0).toUpperCase()+sub.slice(1)}</div>
+        <div style="font-size:13px;color:var(--dim)">Verdict: ${LABEL_TEXT[v.label]||v.label||'unavailable'}${conf}</div></div>
+      <div style="margin-left:auto">${chip(v.source)}</div>
+    </div>
+    <p class="reason">${esc(v.reason)}</p>
+    <div class="bars">${bars(v.probabilities)}</div>${unsureNote}
+    <details><summary>What Sapling was given</summary>
+      <div class="kv"><b>Claim:</b> ${esc(c.claim)}\n\n<b>Evidence:</b> ${esc(c.evidence)}\n\n<b>Policy:</b> ${esc(c.policy)}</div>
+    </details>`;
+}
+
+function imgHTML(src){
+  return src ? `<img class="board-img" src="${src}" alt="inspected board"/>`
+             : `<div class="noimg">illustrative evidence — no board photo</div>`;
+}
+
+function policyBanner(c, v){
+  if(c.vision && c.truth && c.vision.disposition==="pass" && c.truth.disposition
+     && c.truth.disposition!=="pass" && c.truth.disposition!=="unknown" && v.action!=="SHIP"){
+    return `<div class="banner caught"><b>Caught it.</b> The vision model cleared this board as
+      <b>pass</b> (${Math.round((c.vision.confidence||0)*100)}%), but it truly needs
+      <b>${c.truth.disposition}</b> (${c.truth.worst}). Sapling blocked the ship.</div>`;
+  }
+  return "";
+}
+
+async function callLive(c){
+  const r = await fetch(DATA.endpoint.replace(/\/$/,"")+"/", {
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({inputs:{policy:c.policy, evidence:c.evidence, claim:c.claim}})
+  });
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  return r.json();
+}
+
+function cachedVerdict(c){
+  const v = Object.assign({}, c.cached); v.source="cached"; return v;
+}
+
+function renderPolicy(c, v){
+  const vis = c.vision ? `<div class="vision">Vision model (gpt-4o-mini via Mubit) proposed
+     <span class="d">${c.vision.disposition}</span> — ${esc(c.vision.reason)}</div>` : "";
+  document.getElementById("policy-out").innerHTML = vis + verdictHTML(v, c, policyBanner(c, v));
+  document.getElementById("policy-img-wrap").innerHTML = imgHTML(c.image);
+}
+function renderTrace(c, v){
+  const note = `<div class="banner note">No ground truth is used here. The evidence is the model's
+    <b>own</b> crop-by-crop notes; the catch is the model contradicting itself.</div>`;
+  document.getElementById("trace-out").innerHTML = note + verdictHTML(v, c, "");
+  document.getElementById("trace-img-wrap").innerHTML = imgHTML(c.image);
+}
+
+function current(kind){
+  const id = document.getElementById(kind+"-select").value;
+  const list = kind==="policy"?DATA.policy_cases:DATA.trace_cases;
+  return list.find(c=>c.id===id);
+}
+async function runLive(kind){
+  const c = current(kind), btn=document.getElementById(kind+"-run");
+  btn.disabled=true; const old=btn.textContent; btn.textContent="Verifying live…";
+  try{ const v=gateDecision(await callLive(c)); (kind==="policy"?renderPolicy:renderTrace)(c,v); }
+  catch(e){ const v=cachedVerdict(c); v.source="cached"; (kind==="policy"?renderPolicy:renderTrace)(c,v);
+    btn.textContent="Endpoint warming — showed cached"; setTimeout(()=>btn.textContent=old,2200); btn.disabled=false; return; }
+  btn.textContent=old; btn.disabled=false;
+}
+
+function fillSelect(kind){
+  const sel=document.getElementById(kind+"-select");
+  const list=kind==="policy"?DATA.policy_cases:DATA.trace_cases;
+  sel.innerHTML=list.map(c=>`<option value="${c.id}">${c.title}</option>`).join("");
+  sel.onchange=()=>{const c=current(kind);(kind==="policy"?renderPolicy:renderTrace)(c,cachedVerdict(c));};
+}
+
+function switchTab(name){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.tab===name));
+  ["trace","policy","about"].forEach(p=>document.getElementById(p).style.display=p===name?"":"none");
+}
+
+(async function(){
+  DATA = await (await fetch("cases.json")).json();
+  SHIP_MARGIN = DATA.ship_margin ?? 0.15;
+  document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>switchTab(t.dataset.tab));
+  document.getElementById("policy-run").onclick=()=>runLive("policy");
+  document.getElementById("trace-run").onclick=()=>runLive("trace");
+  fillSelect("policy"); fillSelect("trace");
+  // Instant first paint from cached-real verdicts.
+  const t=DATA.trace_cases[0]; renderTrace(t, cachedVerdict(t));
+  const p=DATA.policy_cases[0]; renderPolicy(p, cachedVerdict(p));
+})();
+</script>
+</body>
+</html>
