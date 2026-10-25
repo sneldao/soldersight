@@ -116,11 +116,11 @@ Deliverable: real netlists + commentary flow through the contract; golden run gu
 - **MVP cut (if short on time): ship B (Heal) only** — it reuses the real boards + existing overlay infra and is the lowest-risk guaranteed-clean visual. Evolve (A) is the stretch/wow.
 - **Hard fallback:** the golden-run JSON means even with zero live calls at demo time, both modes play perfectly from disk.
 
-## Verification (per lane, before the wiring PR)
-- L1: `vitest` unit tests green; `evolve` scores non-decreasing; `heal` zeroes planted defects.
-- L2: renders the golden run with no console errors; AA contrast holds; `tsc` clean; build OK.
-- L3: netlist + commentary validate against schema; golden.json replays; Sapling judge returns a real verdict.
-- Integration: the Foundry tab runs both modes from golden.json offline, and "Run live" works when a key/endpoint is up.
+## Verification (per lane, before the wiring PR) — ✅ ALL LANES COMPLETE & MERGED
+- **L1 (`foundry/core`) ✅:** `vitest` unit tests green; `evolve` scores non-decreasing; `heal` zeroes planted defects.
+- **L2 (`foundry/ui` + `App.tsx`) ✅:** `BoardCanvas`, `EvolveView`, `HealView`, `Sparkline`, `SaplingGateCard`, and `FoundryView` render the golden run and live engine streams with zero console errors; AA contrast holds; `tsc --noEmit` & `vite build` clean.
+- **L3 (`foundry/intel` + `data/foundry/`) ✅:** netlist + commentary validate against schema; `golden.json` replays 8 Evolve generations + 3 Heal steps; Sapling judge returns calibrated verdicts.
+- **Integration ✅:** the `Foundry` tab in `App.tsx` runs Mode A (Evolve), Mode B (Heal on Board `00041004`), and Split View (A + B) offline from `golden.json` by default, and "Run Live Engine" executes live A\* + Mubit + Sapling calls in the browser.
 
 ## Why this wins where the Roblox demo does
 Their loop self-evolves a game; ours self-evolves **circuit designs** — same autonomous,

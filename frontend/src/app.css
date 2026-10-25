@@ -241,3 +241,355 @@ tr.bordered { border-top: 1px solid var(--panel-border); }
 .conformal { margin: 4px 0 0; font-size: 11px; color: var(--text-dim); }
 .gate-detail { font-size: 12px; color: var(--text-dim); }
 .gate-detail b { color: var(--text); }
+
+/* ---------- foundry (foundry/ui/*) ---------- */
+@keyframes foundry-trace-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes foundry-defect-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.92;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+.foundry-root {
+  display: grid;
+  gap: 20px;
+}
+
+.foundry-header-panel {
+  gap: 14px;
+}
+
+.foundry-beat-bar {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid var(--panel-border);
+  padding-top: 12px;
+}
+
+.foundry-cue-card {
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.foundry-mode-shell {
+  display: grid;
+  gap: 20px;
+}
+
+.foundry-split-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(560px, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+.foundry-preset-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.foundry-preset-chip {
+  cursor: pointer;
+  background: var(--bg);
+}
+
+.foundry-control-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.foundry-brief-field {
+  display: grid;
+  gap: 4px;
+  min-width: 260px;
+}
+
+.foundry-meta-bar {
+  border-top: 1px solid var(--panel-border);
+  padding-top: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.foundry-meta-bar .code-chip {
+  cursor: pointer;
+  background: var(--bg);
+}
+
+.foundry-kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+  gap: 12px;
+  align-items: center;
+}
+
+.foundry-stamp-card {
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: grid;
+  gap: 2px;
+}
+
+.foundry-stamp-card.highlight {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.foundry-stamp-card.ok-stamp {
+  border-color: var(--ok);
+  background: color-mix(in srgb, var(--ok) 10%, var(--panel));
+}
+
+.foundry-note-banner {
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.foundry-note-banner .code-chip {
+  cursor: pointer;
+  background: var(--panel);
+}
+
+.foundry-canvas-wrap {
+  display: grid;
+  gap: 10px;
+}
+
+.foundry-board-stage {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--panel);
+}
+
+.foundry-underlay-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: contrast(1.05) brightness(0.82);
+}
+
+.foundry-svg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.foundry-coord-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  user-select: none;
+}
+
+.foundry-trace-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: foundry-trace-draw 0.55s ease-out;
+}
+
+.foundry-net-tag {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.foundry-pad-group {
+  cursor: pointer;
+}
+
+.foundry-pad-label {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  font-weight: 600;
+}
+
+.foundry-callout-text {
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.foundry-pulse-ring {
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: foundry-defect-pulse 1.3s ease-in-out infinite;
+}
+
+.foundry-legend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 6px 10px;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+}
+
+.foundry-net-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  cursor: pointer;
+}
+
+.foundry-net-pill.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.foundry-net-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.foundry-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.foundry-status-dot.danger {
+  background: var(--danger);
+}
+
+.foundry-status-dot.ok {
+  background: var(--ok);
+}
+
+.foundry-scrubber {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.foundry-step-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--panel-border);
+  background: var(--bg);
+  cursor: pointer;
+}
+
+.foundry-step-pill.active {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.foundry-step-pill.ok {
+  border-color: color-mix(in srgb, var(--ok) 45%, var(--panel-border));
+}
+
+.foundry-sparkline-box {
+  display: grid;
+  gap: 8px;
+}
+
+.foundry-sparkline-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+}
+
+.foundry-spark-axis {
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.foundry-spark-node.clickable {
+  cursor: pointer;
+}
+
+.foundry-log-list {
+  display: grid;
+  gap: 8px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.foundry-log-item {
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: grid;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.foundry-log-item.selected {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.foundry-action-tag {
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.foundry-action-tag.ship {
+  background: var(--ok);
+}
+
+.foundry-action-tag.block {
+  background: var(--danger);
+}
+
+.foundry-action-tag.review {
+  background: var(--warn);
+}
