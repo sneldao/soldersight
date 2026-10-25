@@ -44,3 +44,6 @@ data/deeppcb/*
 !data/deeppcb/corrections.jsonl
 !data/deeppcb/comparison.json
 !data/deeppcb/runs.jsonl
+# Foundry (Lane 3): netlists, golden replay, demo script — committed so the autonomous
+# demo runs offline from a fresh clone.
+!data/foundry/
