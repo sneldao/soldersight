@@ -58,7 +58,10 @@ CUTS = [
 ]
 
 SFX = [  # (file, at_seconds)
-    ("stamp.mp3", 10.8),  # BLOCK lands in cold open
+    (
+        "stamp.mp3",
+        11.9,
+    ),  # BLOCK lands just after "ship" (new vo01: ship@11.14-11.44+0.6)
     ("whoosh.mp3", 13.0),
     ("ship.mp3", 76.2),  # SURVIVE lands in evolve (clip 11.2 @ seg start 66.0)
     ("stamp.mp3", 59.62),  # "Blocked" (04 @49.6 + 10.02)
@@ -123,6 +126,8 @@ def build_captions(capd=None, capdir=None):
     events = []  # (abs_start, abs_end, path, w, h)
     n = 0
     for seg, off in VO_OFF.items():
+        if seg == "07":  # end card already spells these words
+            continue
         for ch in chunks(seg):
             fixed = [
                 (

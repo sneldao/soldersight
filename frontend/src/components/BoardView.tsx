@@ -15,10 +15,8 @@ export function BoardView({ board, showDefects }: { board: Board; showDefects: b
   const template = <ReactCompareSliderImage src={board.templateUrl} alt={`Template for board ${board.id}`} />;
 
   return (
-    <ReactCompareSlider
-      itemOne={template}
-      itemTwo={test}
-      className="board-slider"
-    />
+    <div className="board-slider">
+      <ReactCompareSlider itemOne={template} itemTwo={test} />
+    </div>
   );
 }

@@ -20,7 +20,7 @@ Built for **Night Shift: $65K Mubit Hackathon** (London, Oct 23–25, 2026).
 The MP4 is a build artefact kept out of git (the repo caps files at 500 KB); rebuild it with
 `python3 video/demo/stage.py` (cut list: [`video/demo/edl.md`](video/demo/edl.md), voice-over:
 [`video/demo/narration.md`](video/demo/narration.md)). The submitted copy is the one uploaded
-with the entry.
+with the entry. Public copy: https://youtu.be/mDsO856kxaU.
 
 Every shot is the real app (Triage + Foundry tabs) on real DeepPCB boards — no mock-ups. When
 the live APIs were overloaded we used the same recorded paths the app ships with

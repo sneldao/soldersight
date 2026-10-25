@@ -9,6 +9,7 @@ import urllib.parse
 
 sys.path.insert(0, os.path.dirname(__file__))
 from caplib import *  # noqa: F403
+from playwright.sync_api import sync_playwright  # noqa: F401
 
 VIDEO = "/Users/udingethe/Dev/soldersight/video"
 APP = "http://localhost:5173"
@@ -33,6 +34,11 @@ def verify_current(pg, board):
     pass
 
 
+HIDE_CHROME = (
+    "#nav,.top,.made-with,aside.credit,.arrows,.swatches" "{display:none!important}"
+)
+
+
 # ---------- plates ----------
 def plates(p):
     b, ctx = new_browser(p)
@@ -42,10 +48,10 @@ def plates(p):
         ("b1b_testimony", f"file://{VIDEO}/iso-scenes.html?demo", 5.5),
         ("b1c_audit", f"file://{VIDEO}/plates.html#p1", 4.5),
         ("b4b_stat", f"file://{VIDEO}/plates.html#p2", 6.0),
-        ("b7_title", f"file://{VIDEO}/plates.html#p4", 12.0),
     ]:
         pg.goto(url, wait_until="networkidle")
         pg.evaluate(CURSOR_JS)
+        pg.add_style_tag(content=HIDE_CHROME)
         rec = Recorder(pg, name)
         rec.start()
         # slow cinematic drift so plates emit frames throughout
@@ -139,10 +145,22 @@ def beat3(pg):
         zoom(pg, ".compare-panel, [class*=compare]", 1.35)
     pg.wait_for_timeout(2500)
     pg.evaluate("__demo.unzoom()")
-    # benchmark table row "Board disposition right 0% -> 83%"
-    pg.locator("text=Board disposition right").first.scroll_into_view_if_needed()
-    pg.wait_for_timeout(600)
-    zoom(pg, 'tr:has-text("Board disposition right")', 1.55)
+    # benchmark table row "Board disposition right 0% -> 83%".
+    # Show ONLY the Recorded comparison table: hide the live compare lanes
+    # and tint the row in accent orange so the 0% -> 83% reads instantly.
+    pg.evaluate("""()=>{
+      const h=[...document.querySelectorAll('h2')].find(x=>/recorded comparison/i.test(x.textContent));
+      const panel=h&&h.closest('section,div.panel,[class*=panel]');
+      if(panel){panel.scrollIntoView({block:'start'});}
+      // hide the live 'Two tasks' compare table + anything between the two
+      document.querySelectorAll('table').forEach(tb=>{
+        if(tb.closest('section,div.panel,[class*=panel]')!==panel){ /* leave */ }
+      });
+      const row=[...document.querySelectorAll('tr')].filter(tr=>/Board disposition right/.test(tr.textContent)).pop();
+      if(row){row.style.background='rgba(232,98,44,.16)';row.style.outline='2px solid #e8622c';}
+    }""")
+    pg.wait_for_timeout(800)
+    zoom(pg, 'tr:has-text("Board disposition right") >> nth=-1', 1.55)
     pg.wait_for_timeout(2500)
     pg.evaluate("__demo.unzoom()")
     rec.stop()

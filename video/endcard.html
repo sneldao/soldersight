@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SolderSight — end card</title>
+<style>
+  :root {
+    --paper: #f6f6f5; --ink: #16181a; --dim: #6a6f73;
+    --line: #c3c6c8; --hair: #8e9397;
+    --red: #dc2626; --mono: "DM Mono", "Menlo", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+    position: relative;
+  }
+  .plate-tag {
+    position: absolute; top: 64px; left: 0; right: 0; text-align: center;
+    font-family: var(--mono); font-size: 16px; letter-spacing: .35em;
+    color: var(--dim); text-transform: uppercase;
+  }
+  .plate-tag b { color: var(--red); font-weight: 400; }
+  .wrap { position: absolute; inset: 0; display: flex; flex-direction: column;
+          align-items: center; justify-content: center; text-align: center; }
+  .kicker { font-family: var(--mono); font-size: 19px; letter-spacing: .42em;
+            color: var(--dim); text-transform: uppercase; margin-bottom: 52px; }
+  .verbs { font-family: var(--mono); font-size: 30px; letter-spacing: .16em;
+           color: var(--dim); margin-bottom: 60px; height: 44px; }
+  .verbs span { display: inline-block; opacity: 0; transform: translateY(14px);
+                transition: opacity .45s ease, transform .45s ease; margin: 0 14px; }
+  .verbs span.on { opacity: 1; transform: translateY(0); color: var(--ink); }
+  .verbs em { font-style: normal; color: var(--red); margin: 0 2px; }
+  .title { font-size: 190px; font-weight: 800; letter-spacing: -.02em;
+           line-height: .95; text-transform: uppercase;
+           opacity: 0; transform: scale(.96); transition: opacity .7s ease, transform .7s ease; }
+  .title.on { opacity: 1; transform: scale(1); }
+  .title em { font-style: normal; color: transparent; -webkit-text-stroke: 2.5px var(--ink); }
+  .rule { width: 120px; height: 1px; background: var(--hair); margin: 48px auto 40px;
+          opacity: 0; transition: opacity .5s ease; }
+  .rule.on { opacity: 1; }
+  .sub { font-family: var(--mono); font-size: 24px; color: var(--dim);
+         letter-spacing: .12em; opacity: 0; transform: translateY(10px);
+         transition: opacity .5s ease, transform .5s ease; }
+  .sub.on { opacity: 1; transform: translateY(0); }
+  .sub b { color: var(--ink); font-weight: 400; }
+  .urls { font-family: var(--mono); font-size: 17px; color: var(--hair);
+          letter-spacing: .1em; margin-top: 26px; opacity: 0;
+          transition: opacity .6s ease; }
+  .urls.on { opacity: 1; }
+</style>
+</head>
+<body>
+  <div class="plate-tag">SolderSight <b>·</b> demo</div>
+  <div class="wrap">
+    <div class="kicker">Night Shift · Mubit Hackathon · London 2026</div>
+    <div class="verbs">
+      <span id="v0">Catch it</span><em>·</em><span id="v1">Teach it</span><em>·</em><span id="v2">Verify it</span><em>·</em><span id="v3">Fix it</span>
+    </div>
+    <div class="title" id="title">Solder<em>Sight</em></div>
+    <div class="rule" id="rule"></div>
+    <div class="sub" id="sub"><b>Built in London, on Mubit</b> · Banyan Sapling</div>
+    <div class="urls" id="urls">github.com/sneldao/soldersight &nbsp;·&nbsp; huggingface.co/spaces/Papajams/soldersight-sapling</div>
+  </div>
+<script>
+  // Reveal times in clip seconds = VO07 word start + 0.2 (clip starts 94.3, VO @94.5)
+  const Q = [
+    ["v0", 0.34], ["v1", 1.24], ["v2", 2.24], ["v3", 3.36],
+    ["title", 4.72], ["rule", 5.5], ["sub", 5.9], ["urls", 6.4],
+  ];
+  Q.forEach(([id, t]) => setTimeout(() =>
+    document.getElementById(id).classList.add("on"), t * 1000));
+</script>
+</body>
+</html>
