@@ -48,3 +48,11 @@ data/deeppcb/*
 # Foundry (Lane 3): netlists, golden replay, demo script — committed so the autonomous
 # demo runs offline from a fresh clone.
 !data/foundry/
+
+# Demo film: renders, intermediates, screen captures and the music bed are
+# regenerable / exceed the 500KB commit cap. Scripts, EDL, narration, VO + SFX are tracked.
+video/demo/out/
+video/demo/work/
+video/demo/clips/
+video/demo/vo_samples/
+video/demo/audio/bed.mp3

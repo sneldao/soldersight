@@ -14,39 +14,37 @@ story: what an inspector teaches is visible as a prompt, and provable as a numbe
 
 Built for **Night Shift: $65K Mubit Hackathon** (London, Oct 23–25, 2026).
 
-## What the Demo Shows (≤ 2:00)
+## What the Demo Shows (1:46)
 
-Our ≤ 2-minute demo walks through the closed-loop hardware pipeline across **Triage**,
-**Banyan Sapling Verification**, and **SolderSight Foundry** (also playable offline from
-`data/foundry/golden.json` and `data/deeppcb/runs.jsonl` so overloaded API servers never
-break the demo):
+**Video:** `video/demo/out/soldersight-demo.mp4` (1920×1080 · 30fps · H.264/AAC · 1:46).
+The MP4 is a build artefact kept out of git (the repo caps files at 500 KB); rebuild it with
+`python3 video/demo/stage.py` (cut list: [`video/demo/edl.md`](video/demo/edl.md), voice-over:
+[`video/demo/narration.md`](video/demo/narration.md)). The submitted copy is the one uploaded
+with the entry.
 
-1. **The Catch — Trace Audit & Policy Gate (No Answer Key):**
-   - A baseline vision model (`gpt-4o-mini` routed through Mubit) inspects DeepPCB boards
-     crop-by-crop (`00041003` / `00041004`), writes *"visible short circuit"* in its own
-     region notes, yet stamps the whole board **`pass`**.
-   - **Mubit's Banyan Sapling** audits the *"ship as-is"* claim against the model's **own
-     notes** (no ground-truth labels consulted) and against our IPC acceptance policy —
-     flagging **`violation` (84%–97.5%)** and stamping **`BLOCK`** (`14/14`
-     self-contradicting boards stopped).
-2. **Task Adaptation — Inspector Corrections → Measured Lift:**
-   - An inspector submits 3 targeted corrections in the UI; SolderSight appends the rules
-     to the adapted Mubit task instructions. Running the same 28 crops across 6 DeepPCB
-     boards lifts **board disposition accuracy from 0% → 83%** at the same ~$0.0013/crop
-     cost.
-3. **Foundry Mode A (Evolve) — Watch a Board Design Itself:**
-   - In the **`Foundry`** tab, we enter a one-line circuit brief (*"3-stage RC power
-     filter, 6 pads"*). **Mubit** emits a validated netlist, the deterministic **A\* +
-     IPC-2221 DRC engine** mutates pad placement and routes traces across 8 generations
-      as the fitness curve climbs **`0.38 → 0.98`**, Mubit narrates each physical
-     improvement, and **Banyan Sapling** flips from **`PRUNE · BLOCK` (97.5% violation)**
-     to **`SURVIVE · SHIP` (<9% violation risk)**.
-4. **Foundry Mode B (Heal) — Autonomous Red → Green Repair on Real Copper:**
-   - Taking the blocked DeepPCB **Board `00041004`**, Foundry autonomously excises the
-     copper bridge at `(7,4)`, stitches the broken clock line at `(13,7)`, and widens
-     clearance at `(5,9)`—animating each defect **red → green** (`0 / 3 → 3 / 3 defects
-     healed`, DRC `0.35 → 0.99`) until Banyan Sapling certifies the repaired board
-     **`SHIP`**.
+Every shot is the real app (Triage + Foundry tabs) on real DeepPCB boards — no mock-ups. When
+the live APIs were overloaded we used the same recorded paths the app ships with
+(`data/deeppcb/runs.jsonl`, `data/foundry/golden.json`), so the demo never depends on a live
+call landing. One story runs through it: a defective board is **caught, blocked, healed,
+shipped**.
+
+| Time | Beat | What you see |
+| --- | --- | --- |
+| 0:00–0:13 | **Cold open: the catch** | Board `00041003` (from the DeepPCB set). The model's own crop note says *"visible short circuit"*, but its verdict is *ship as-is*. Banyan Sapling compares the two (no answer key) and returns **VIOLATION 0.84 → BLOCK**. |
+| 0:13–0:29 | **1 · Triage** | You pick a board, drag the template↔test slider, and run triage. SolderSight diffs against the known-good template, crops the cells that changed, and sends each crop through **Mubit**. Punch-in on a region card's `mreq_…` id and its $ cost, then the Mubit calls / latency / tokens / cost row. |
+| 0:29–0:50 | **Corrections → measured lift** | The baseline passes a broken trace. An inspector corrects it (*"that bright gap is a broken trace, not clean copper"*). That rule turns into a new Mubit task, and the two lanes run side by side on the same crops (`open · scrap · matches the labels`). Punch-in on the recorded comparison: **Board disposition right 0% → 83%** at the same ~$0.0013/crop. |
+| 0:50–1:06 | **2 · Policy gate (Banyan Sapling)** | *Verify against policy gate →* returns **✕ BLOCK — Ship blocked**, with policy violation calibrated from the model's own region notes. Then the stat: **14/14** self-contradicting boards stopped. |
+| 1:06–1:22 | **3 · Foundry Evolve** | One-line brief *"3-stage RC power filter, 6 pads"*. Mubit returns a netlist, the deterministic A\* + IPC-2221 DRC engine routes copper generation by generation, and the fitness curve climbs. Sapling moves from **PRUNE · BLOCK** to **SURVIVE · SHIP**. |
+| 1:22–1:34 | **4 · Foundry Heal** | Board `00041004` (a baseline "pass" with an open, a short and a clearance fault) starts at **0/3 healed, BLOCK**. Foundry cuts the short, stitches the open and widens the gap. Each defect flips red → green to **3/3**, and the post-repair gate reads **SHIP — Cleared to ship**. |
+| 1:34–1:46 | **Close** | *Catch it. Teach it. Verify it. Fix it.* Title card and repo link. |
+
+Notes:
+
+- The live policy-gate BLOCK is shot on `00041003`. On today's live baseline, `00041004` triages
+  as a clean "pass" and doesn't trip the gate on its own notes. It does in the recorded Foundry
+  run that the Heal beat replays.
+- The captions are burned in from the voice-over word timestamps. The punch-ins are eased crops
+  of the recorded screen (≤1.6×).
 
 ## What the corrections bought (measured, not claimed)
 
