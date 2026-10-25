@@ -10,6 +10,7 @@ import { PolicyGate } from "./components/PolicyGate";
 import { RegionCards } from "./components/RegionCards";
 import { RulesPanel } from "./components/RulesPanel";
 import { Badge, Button, ErrorPanel, GateChip, Panel, Stat } from "./components/ui";
+import { FoundryView } from "./foundry/ui";
 import { LANES, LANE_COPY } from "./laneTable";
 import type { Board, Inspection, RegionResult, Rules, VerifyResult } from "./types";
 
@@ -90,6 +91,11 @@ export default function App() {
   const [busy, setBusy] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"triage" | "foundry">(() =>
+    typeof window !== "undefined" && window.location.hash === "#foundry"
+      ? "foundry"
+      : "triage",
+  );
 
   useEffect(() => {
     Promise.all([fetchBoards(), fetchRules()])
@@ -143,12 +149,34 @@ export default function App() {
     <main className="shell">
       <header className="masthead">
         <h1>SolderSight</h1>
-        <span className="tagline">PCB defect triage · Mubit × Banyan</span>
+        <div className="hrow" role="tablist" aria-label="Workspace view">
+          <Button
+            variant={activeTab === "triage" ? "primary" : "ghost"}
+            role="tab"
+            aria-selected={activeTab === "triage"}
+            onClick={() => setActiveTab("triage")}
+          >
+            Triage
+          </Button>
+          <Button
+            variant={activeTab === "foundry" ? "primary" : "ghost"}
+            role="tab"
+            aria-selected={activeTab === "foundry"}
+            onClick={() => setActiveTab("foundry")}
+          >
+            Foundry
+          </Button>
+          <span className="tagline">PCB defect triage &amp; autonomous foundry · Mubit × Banyan</span>
+        </div>
       </header>
 
       {error && <ErrorPanel message={error} onDismiss={() => setError(null)} />}
 
-      <div className="hrow">
+      {activeTab === "foundry" ? (
+        <FoundryView />
+      ) : (
+        <>
+          <div className="hrow">
         <span className="dim small">Task lane</span>
         {LANES.map((name) => (
           <Button
@@ -281,6 +309,8 @@ export default function App() {
 
       <ComparePanel boardId={selectedId} />
       <BenchmarkPanel />
+        </>
+      )}
     </main>
   );
 }
