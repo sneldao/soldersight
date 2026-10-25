@@ -14,6 +14,40 @@ story: what an inspector teaches is visible as a prompt, and provable as a numbe
 
 Built for **Night Shift: $65K Mubit Hackathon** (London, Oct 23–25, 2026).
 
+## What the Demo Shows (≤ 2:00)
+
+Our ≤ 2-minute demo walks through the closed-loop hardware pipeline across **Triage**,
+**Banyan Sapling Verification**, and **SolderSight Foundry** (also playable offline from
+`data/foundry/golden.json` and `data/deeppcb/runs.jsonl` so overloaded API servers never
+break the demo):
+
+1. **The Catch — Trace Audit & Policy Gate (No Answer Key):**
+   - A baseline vision model (`gpt-4o-mini` routed through Mubit) inspects DeepPCB boards
+     crop-by-crop (`00041003` / `00041004`), writes *"visible short circuit"* in its own
+     region notes, yet stamps the whole board **`pass`**.
+   - **Mubit's Banyan Sapling** audits the *"ship as-is"* claim against the model's **own
+     notes** (no ground-truth labels consulted) and against our IPC acceptance policy —
+     flagging **`violation` (84%–97.5%)** and stamping **`BLOCK`** (`14/14`
+     self-contradicting boards stopped).
+2. **Task Adaptation — Inspector Corrections → Measured Lift:**
+   - An inspector submits 3 targeted corrections in the UI; SolderSight appends the rules
+     to the adapted Mubit task instructions. Running the same 28 crops across 6 DeepPCB
+     boards lifts **board disposition accuracy from 0% → 83%** at the same ~$0.0013/crop
+     cost.
+3. **Foundry Mode A (Evolve) — Watch a Board Design Itself:**
+   - In the **`Foundry`** tab, we enter a one-line circuit brief (*"3-stage RC power
+     filter, 6 pads"*). **Mubit** emits a validated netlist, the deterministic **A\* +
+     IPC-2221 DRC engine** mutates pad placement and routes traces across 8 generations
+      as the fitness curve climbs **`0.38 → 0.98`**, Mubit narrates each physical
+     improvement, and **Banyan Sapling** flips from **`PRUNE · BLOCK` (97.5% violation)**
+     to **`SURVIVE · SHIP` (<9% violation risk)**.
+4. **Foundry Mode B (Heal) — Autonomous Red → Green Repair on Real Copper:**
+   - Taking the blocked DeepPCB **Board `00041004`**, Foundry autonomously excises the
+     copper bridge at `(7,4)`, stitches the broken clock line at `(13,7)`, and widens
+     clearance at `(5,9)`—animating each defect **red → green** (`0 / 3 → 3 / 3 defects
+     healed`, DRC `0.35 → 0.99`) until Banyan Sapling certifies the repaired board
+     **`SHIP`**.
+
 ## What the corrections bought (measured, not claimed)
 
 `gpt-4o-mini` through Mubit over 6 DeepPCB boards, 28 crops per lane, 3 inspector
@@ -149,7 +183,7 @@ Install: `pre-commit install`. Run manually: `pre-commit run --all-files`.
 ## Status
 
 Core build + SolderSight Foundry complete (Oct 25).
-- **Backend:** concurrent per-region triage with per-crop failure isolation and confidence-weighted board verdict, corrections→instructions adaptation with append-only rule disabling, compare, metrics, benchmark, and Banyan Sapling policy gate + trace audit (`inspection.py`, `sapling.py`); **39 backend tests pass**.
+- **Backend:** concurrent per-region triage with per-crop failure isolation and confidence-weighted board verdict, corrections→instructions adaptation with append-only rule disabling, compare, metrics, benchmark, and Banyan Sapling policy gate + trace audit (`inspection.py`, `sapling.py`); **42 backend tests pass**.
 - **Foundry (`frontend/src/foundry/` + `data/foundry/`):**
   - `foundry/core`: deterministic A\* router, IPC-2221 DRC scorer, seeded evolutionary loop (`evolve()`), and autonomous defect repair (`heal()`).
   - `foundry/intel`: Mubit netlist architect (`spec.ts`), live designer commentary (`commentary.ts`), Banyan Sapling validity/taste judge (`judge.ts`), and offline-safe golden replay (`golden.ts`).
