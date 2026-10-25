@@ -1,0 +1,674 @@
+{
+  "version": "1.0.0",
+  "recordedAt": "2026-10-24T23:58:00Z",
+  "mubitModel": "gpt-4o-mini",
+  "saplingEndpoint": "https://6adbee0669a00298cd4774c9.endpoints.huggingface.cloud",
+  "saplingWeightsSha256": "103a67f7a112589346c3e1090f5bca182d7fdafee85dfd43e67ac5d75eb04dd4",
+  "evolve": {
+    "presetId": "rc-power-filter",
+    "brief": "3-stage RC power filter, 6 pads",
+    "netlist": {
+      "pads": [
+        { "id": "j1.vin", "x": 2, "y": 2, "net": "VIN" },
+        { "id": "r1.1", "x": 7, "y": 3, "net": "VIN" },
+        { "id": "r1.2", "x": 9, "y": 5, "net": "VFILT" },
+        { "id": "c1.1", "x": 13, "y": 4, "net": "VFILT" },
+        { "id": "c1.2", "x": 12, "y": 9, "net": "GND" },
+        { "id": "j2.gnd", "x": 3, "y": 9, "net": "GND" }
+      ],
+      "nets": [
+        ["j1.vin", "r1.1"],
+        ["r1.2", "c1.1"],
+        ["c1.2", "j2.gnd"]
+      ]
+    },
+    "generations": [
+      {
+        "index": 0,
+        "score": 0.38,
+        "delta": 0.38,
+        "note": "Initial seed: open leg on VFILT at (11,8) and VIN/GND trunk crossing at (7,5).",
+        "board": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "j1.vin", "x": 2, "y": 3, "net": "VIN" },
+            { "id": "r1.1", "x": 9, "y": 7, "net": "VIN" },
+            { "id": "r1.2", "x": 9, "y": 8, "net": "VFILT" },
+            { "id": "c1.1", "x": 13, "y": 8, "net": "VFILT" },
+            { "id": "c1.2", "x": 12, "y": 4, "net": "GND" },
+            { "id": "j2.gnd", "x": 3, "y": 8, "net": "GND" }
+          ],
+          "traces": [
+            {
+              "net": "VIN",
+              "path": [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [8, 7], [9, 7]]
+            },
+            {
+              "net": "VFILT",
+              "path": [[9, 8], [10, 8], [11, 8]]
+            },
+            {
+              "net": "GND",
+              "path": [[3, 8], [4, 8], [5, 8], [5, 7], [5, 6], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5], [10, 5], [11, 5], [12, 5], [12, 4]]
+            }
+          ],
+          "score": 0.38,
+          "violations": [
+            { "kind": "open", "at": [11, 8], "detail": "VFILT trace stops 2 cells short of c1.1" },
+            { "kind": "crossing", "at": [7, 5], "detail": "VIN and GND intersect at (7,5)" },
+            { "kind": "spacing", "at": [8, 6], "detail": "VIN trunk within 1 cell of GND return" }
+          ]
+        }
+      },
+      {
+        "index": 1,
+        "score": 0.52,
+        "delta": 0.14,
+        "note": "Stitched open VFILT leg into c1.1 at (13,8); −1 open violation.",
+        "board": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "j1.vin", "x": 2, "y": 3, "net": "VIN" },
+            { "id": "r1.1", "x": 9, "y": 7, "net": "VIN" },
+            { "id": "r1.2", "x": 9, "y": 8, "net": "VFILT" },
+            { "id": "c1.1", "x": 13, "y": 8, "net": "VFILT" },
+            { "id": "c1.2", "x": 12, "y": 4, "net": "GND" },
+            { "id": "j2.gnd", "x": 3, "y": 8, "net": "GND" }
+          ],
+          "traces": [
+            {
+              "net": "VIN",
+              "path": [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [8, 7], [9, 7]]
+            },
+            {
+              "net": "VFILT",
+              "path": [[9, 8], [10, 8], [11, 8], [12, 8], [13, 8]]
+            },
+            {
+              "net": "GND",
+              "path": [[3, 8], [4, 8], [5, 8], [5, 7], [5, 6], [5, 5], [6, 5], [7, 5], [8, 5], [9, 5], [10, 5], [11, 5], [12, 5], [12, 4]]
+            }
+          ],
+          "score": 0.52,
+          "violations": [
+            { "kind": "crossing", "at": [7, 5], "detail": "VIN and GND intersect at (7,5)" },
+            { "kind": "spacing", "at": [8, 6], "detail": "VIN trunk adjacent to GND return" }
+          ]
+        }
+      },
+      {
+        "index": 2,
+        "score": 0.64,
+        "delta": 0.12,
+        "note": "Migrated c1.2 to south ground rail (12,9); uncrossed VIN and GND at (7,5).",
+        "board": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "j1.vin", "x": 2, "y": 3, "net": "VIN" },
+            { "id": "r1.1", "x": 8, "y": 4, "net": "VIN" },
+            { "id": "r1.2", "x": 9, "y": 6, "net": "VFILT" },
+            { "id": "c1.1", "x": 13, "y": 6, "net": "VFILT" },
+            { "id": "c1.2", "x": 12, "y": 9, "net": "GND" },
+            { "id": "j2.gnd", "x": 3, "y": 9, "net": "GND" }
+          ],
+          "traces": [
+            {
+              "net": "VIN",
+              "path": [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [8, 4]]
+            },
+            {
+              "net": "VFILT",
+              "path": [[9, 6], [10, 6], [11, 6], [12, 6], [13, 6]]
+            },
+            {
+              "net": "GND",
+              "path": [[3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [8, 8], [9, 8], [10, 8], [11, 8], [12, 8], [12, 9]]
+            }
+          ],
+          "score": 0.64,
+          "violations": [
+            { "kind": "spacing", "at": [8, 5], "detail": "r1.1 pad too close to r1.2 VFILT entry" },
+            { "kind": "spacing", "at": [9, 7], "detail": "GND jog within 1 cell of VFILT trunk" }
+          ]
+        }
+      },
+      {
+        "index": 3,
+        "score": 0.73,
+        "delta": 0.09,
+        "note": "Flattened GND return onto row y=9; eliminated dogleg near VFILT (−1 spacing violation).",
+        "board": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "j1.vin", "x": 2, "y": 3, "net": "VIN" },
+            { "id": "r1.1", "x": 8, "y": 4, "net": "VIN" },
+            { "id": "r1.2", "x": 9, "y": 5, "net": "VFILT" },
+            { "id": "c1.1", "x": 13, "y": 5, "net": "VFILT" },
+            { "id": "c1.2", "x": 12, "y": 9, "net": "GND" },
+            { "id": "j2.gnd", "x": 3, "y": 9, "net": "GND" }
+          ],
+          "traces": [
+            {
+              "net": "VIN",
+              "path": [[2, 3], [3, 3], [4, 3], [5, 3], [6, 3], [7, 3], [8, 3], [8, 4]]
+            },
+            {
+              "net": "VFILT",
+              "path": [[9, 5], [10, 5], [11, 5], [12, 5], [13, 5]]
+            },
+            {
+              "net": "GND",
+              "path": [[3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9], [10, 9], [11, 9], [12, 9]]
+            }
+          ],
+          "score": 0.73,
+          "violations": [
+            { "kind": "spacing", "at": [8, 6], "detail": "Diagonal pad proximity between r1.1 (VIN) and r1.2 (VFILT)" }
+          ]
+        }
+      },
+      {
+        "index": 4,
+        "score": 0.81,
+        "delta": 0.08,
+        "note": "Shifted r1.1 west to (7,3); widened VIN-to-VFILT inter-stage isolation to 2 cells.",
+        "board": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "j1.vin", "x": 2, "y": 2, "net": "VIN" },
+            { "id": "r1.1", "x": 7, "y": 3, "net": "VIN" },
+            { "id": "r1.2", "x": 9, "y": 5, "net": "VFILT" },
+            { "id": "c1.1", "x": 13, "y": 5, "net": "VFILT" },
+            { "id": "c1.2", "x": 12, "y": 9, "net": "GND" },
+            { "id": "j2.gnd", "x": 3, "y": 9, "net": "GND" }
+          ],
+          "traces": [
+            {
+              "net": "VIN",
+              "path": [[2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [7, 3]]
+            },
+            {
+              "net": "VFILT",
+              "path": [[9, 5], [10, 5], [11, 5], [12, 5], [13, 5]]
+            },
+            {
+              "net": "GND",
+              "path": [[3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9], [10, 9], [11, 9], [12, 9]]
+            }
+          ],
+          "score": 0.81,
+          "violations": []
+        }
+      },
+      {
+        "index": 5,
+        "score": 0.88,
+        "delta": 0.07,
+        "note": "Compacted VIN input run to 6 grid hops; reduced parasitic series inductance.",
+        "board": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "j1.vin", "x": 2, "y": 2, "net": "VIN" },
+            { "id": "r1.1", "x": 7, "y": 2, "net": "VIN" },
+            { "id": "r1.2", "x": 9, "y": 5, "net": "VFILT" },
+            { "id": "c1.1", "x": 13, "y": 5, "net": "VFILT" },
+            { "id": "c1.2", "x": 12, "y": 9, "net": "GND" },
+            { "id": "j2.gnd", "x": 3, "y": 9, "net": "GND" }
+          ],
+          "traces": [
+            {
+              "net": "VIN",
+              "path": [[2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2]]
+            },
+            {
+              "net": "VFILT",
+              "path": [[9, 5], [10, 5], [11, 5], [12, 5], [13, 5]]
+            },
+            {
+              "net": "GND",
+              "path": [[3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9], [10, 9], [11, 9], [12, 9]]
+            }
+          ],
+          "score": 0.88,
+          "violations": []
+        }
+      },
+      {
+        "index": 6,
+        "score": 0.94,
+        "delta": 0.06,
+        "note": "Pulled c1.2 GND pad to (10,9) directly below filter node; loop area −22%.",
+        "board": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "j1.vin", "x": 2, "y": 2, "net": "VIN" },
+            { "id": "r1.1", "x": 7, "y": 2, "net": "VIN" },
+            { "id": "r1.2", "x": 9, "y": 5, "net": "VFILT" },
+            { "id": "c1.1", "x": 12, "y": 5, "net": "VFILT" },
+            { "id": "c1.2", "x": 10, "y": 9, "net": "GND" },
+            { "id": "j2.gnd", "x": 3, "y": 9, "net": "GND" }
+          ],
+          "traces": [
+            {
+              "net": "VIN",
+              "path": [[2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2]]
+            },
+            {
+              "net": "VFILT",
+              "path": [[9, 5], [10, 5], [11, 5], [12, 5]]
+            },
+            {
+              "net": "GND",
+              "path": [[3, 9], [4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9], [10, 9]]
+            }
+          ],
+          "score": 0.94,
+          "violations": []
+        }
+      },
+      {
+        "index": 7,
+        "score": 0.98,
+        "delta": 0.04,
+        "note": "Converged: straight horizontal trunks, 18 total copper cells, 0 DRC violations — Sapling certified.",
+        "board": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "j1.vin", "x": 3, "y": 2, "net": "VIN" },
+            { "id": "r1.1", "x": 7, "y": 2, "net": "VIN" },
+            { "id": "r1.2", "x": 9, "y": 5, "net": "VFILT" },
+            { "id": "c1.1", "x": 12, "y": 5, "net": "VFILT" },
+            { "id": "c1.2", "x": 10, "y": 9, "net": "GND" },
+            { "id": "j2.gnd", "x": 4, "y": 9, "net": "GND" }
+          ],
+          "traces": [
+            {
+              "net": "VIN",
+              "path": [[3, 2], [4, 2], [5, 2], [6, 2], [7, 2]]
+            },
+            {
+              "net": "VFILT",
+              "path": [[9, 5], [10, 5], [11, 5], [12, 5]]
+            },
+            {
+              "net": "GND",
+              "path": [[4, 9], [5, 9], [6, 9], [7, 9], [8, 9], [9, 9], [10, 9]]
+            }
+          ],
+          "score": 0.98,
+          "violations": []
+        }
+      }
+    ]
+  },
+  "heal": {
+    "boardId": "00041004",
+    "title": "Board 00041004 — Autonomous Short + Open + Clearance Repair",
+    "image": "/assets/00041004_test.jpg",
+    "initialBoard": {
+      "w": 16,
+      "h": 12,
+      "pads": [
+        { "id": "u1.vcc", "x": 2, "y": 1, "net": "NET_VCC" },
+        { "id": "u2.vcc", "x": 13, "y": 1, "net": "NET_VCC" },
+        { "id": "u1.gnd", "x": 2, "y": 4, "net": "NET_GND" },
+        { "id": "u2.gnd", "x": 13, "y": 4, "net": "NET_GND" },
+        { "id": "u1.clk", "x": 3, "y": 7, "net": "NET_CLK" },
+        { "id": "u2.clk", "x": 13, "y": 7, "net": "NET_CLK" },
+        { "id": "u1.sda", "x": 2, "y": 10, "net": "NET_SDA" },
+        { "id": "u2.sda", "x": 13, "y": 10, "net": "NET_SDA" }
+      ],
+      "traces": [
+        {
+          "net": "NET_VCC",
+          "path": [[2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [7, 2], [7, 3], [8, 3], [8, 2], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1]]
+        },
+        {
+          "net": "NET_GND",
+          "path": [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4], [11, 4], [12, 4], [13, 4]]
+        },
+        {
+          "net": "NET_CLK",
+          "path": [[3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7]]
+        },
+        {
+          "net": "NET_SDA",
+          "path": [[2, 10], [3, 10], [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [11, 10], [12, 10], [13, 10]]
+        }
+      ],
+      "defects": [
+        { "kind": "short", "at": [7, 4], "detail": "NET_VCC~NET_GND" },
+        { "kind": "open", "at": [13, 7], "detail": "NET_CLK" }
+      ],
+      "score": 0.35,
+      "violations": [
+        { "kind": "short", "at": [7, 4], "detail": "NET_VCC~NET_GND" },
+        { "kind": "open", "at": [13, 7], "detail": "NET_CLK" },
+        { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+      ]
+    },
+    "steps": [
+      {
+        "defect": { "kind": "short", "at": [7, 4], "detail": "NET_VCC~NET_GND" },
+        "action": "cut + reroute: excise NET_VCC spur at (7,4) and lock straight trunk on y=1",
+        "note": "Cleared copper bridge at (7,4); rerouted NET_VCC 3 cells north of NET_GND return.",
+        "verified": true,
+        "before": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "u1.vcc", "x": 2, "y": 1, "net": "NET_VCC" },
+            { "id": "u2.vcc", "x": 13, "y": 1, "net": "NET_VCC" },
+            { "id": "u1.gnd", "x": 2, "y": 4, "net": "NET_GND" },
+            { "id": "u2.gnd", "x": 13, "y": 4, "net": "NET_GND" },
+            { "id": "u1.clk", "x": 3, "y": 7, "net": "NET_CLK" },
+            { "id": "u2.clk", "x": 13, "y": 7, "net": "NET_CLK" },
+            { "id": "u1.sda", "x": 2, "y": 10, "net": "NET_SDA" },
+            { "id": "u2.sda", "x": 13, "y": 10, "net": "NET_SDA" }
+          ],
+          "traces": [
+            {
+              "net": "NET_VCC",
+              "path": [[2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [7, 2], [7, 3], [8, 3], [8, 2], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1]]
+            },
+            {
+              "net": "NET_GND",
+              "path": [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4], [11, 4], [12, 4], [13, 4]]
+            },
+            {
+              "net": "NET_CLK",
+              "path": [[3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7]]
+            },
+            {
+              "net": "NET_SDA",
+              "path": [[2, 10], [3, 10], [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [11, 10], [12, 10], [13, 10]]
+            }
+          ],
+          "defects": [
+            { "kind": "short", "at": [7, 4], "detail": "NET_VCC~NET_GND" },
+            { "kind": "open", "at": [13, 7], "detail": "NET_CLK" },
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ],
+          "score": 0.35,
+          "violations": [
+            { "kind": "short", "at": [7, 4], "detail": "NET_VCC~NET_GND" },
+            { "kind": "open", "at": [13, 7], "detail": "NET_CLK" },
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ]
+        },
+        "after": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "u1.vcc", "x": 2, "y": 1, "net": "NET_VCC" },
+            { "id": "u2.vcc", "x": 13, "y": 1, "net": "NET_VCC" },
+            { "id": "u1.gnd", "x": 2, "y": 4, "net": "NET_GND" },
+            { "id": "u2.gnd", "x": 13, "y": 4, "net": "NET_GND" },
+            { "id": "u1.clk", "x": 3, "y": 7, "net": "NET_CLK" },
+            { "id": "u2.clk", "x": 13, "y": 7, "net": "NET_CLK" },
+            { "id": "u1.sda", "x": 2, "y": 10, "net": "NET_SDA" },
+            { "id": "u2.sda", "x": 13, "y": 10, "net": "NET_SDA" }
+          ],
+          "traces": [
+            {
+              "net": "NET_VCC",
+              "path": [[2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1]]
+            },
+            {
+              "net": "NET_GND",
+              "path": [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4], [11, 4], [12, 4], [13, 4]]
+            },
+            {
+              "net": "NET_CLK",
+              "path": [[3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7]]
+            },
+            {
+              "net": "NET_SDA",
+              "path": [[2, 10], [3, 10], [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [11, 10], [12, 10], [13, 10]]
+            }
+          ],
+          "defects": [
+            { "kind": "open", "at": [13, 7], "detail": "NET_CLK" },
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ],
+          "score": 0.62,
+          "violations": [
+            { "kind": "open", "at": [13, 7], "detail": "NET_CLK" },
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ]
+        }
+      },
+      {
+        "defect": { "kind": "open", "at": [13, 7], "detail": "NET_CLK" },
+        "action": "reroute: A* stitch across (10,7)..(13,7) completes NET_CLK",
+        "note": "Stitched broken NET_CLK leg across (10,7)–(13,7); full pad-to-pad continuity restored.",
+        "verified": true,
+        "before": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "u1.vcc", "x": 2, "y": 1, "net": "NET_VCC" },
+            { "id": "u2.vcc", "x": 13, "y": 1, "net": "NET_VCC" },
+            { "id": "u1.gnd", "x": 2, "y": 4, "net": "NET_GND" },
+            { "id": "u2.gnd", "x": 13, "y": 4, "net": "NET_GND" },
+            { "id": "u1.clk", "x": 3, "y": 7, "net": "NET_CLK" },
+            { "id": "u2.clk", "x": 13, "y": 7, "net": "NET_CLK" },
+            { "id": "u1.sda", "x": 2, "y": 10, "net": "NET_SDA" },
+            { "id": "u2.sda", "x": 13, "y": 10, "net": "NET_SDA" }
+          ],
+          "traces": [
+            {
+              "net": "NET_VCC",
+              "path": [[2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1]]
+            },
+            {
+              "net": "NET_GND",
+              "path": [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4], [11, 4], [12, 4], [13, 4]]
+            },
+            {
+              "net": "NET_CLK",
+              "path": [[3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7]]
+            },
+            {
+              "net": "NET_SDA",
+              "path": [[2, 10], [3, 10], [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [11, 10], [12, 10], [13, 10]]
+            }
+          ],
+          "defects": [
+            { "kind": "open", "at": [13, 7], "detail": "NET_CLK" },
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ],
+          "score": 0.62,
+          "violations": [
+            { "kind": "open", "at": [13, 7], "detail": "NET_CLK" },
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ]
+        },
+        "after": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "u1.vcc", "x": 2, "y": 1, "net": "NET_VCC" },
+            { "id": "u2.vcc", "x": 13, "y": 1, "net": "NET_VCC" },
+            { "id": "u1.gnd", "x": 2, "y": 4, "net": "NET_GND" },
+            { "id": "u2.gnd", "x": 13, "y": 4, "net": "NET_GND" },
+            { "id": "u1.clk", "x": 3, "y": 7, "net": "NET_CLK" },
+            { "id": "u2.clk", "x": 13, "y": 7, "net": "NET_CLK" },
+            { "id": "u1.sda", "x": 2, "y": 10, "net": "NET_SDA" },
+            { "id": "u2.sda", "x": 13, "y": 10, "net": "NET_SDA" }
+          ],
+          "traces": [
+            {
+              "net": "NET_VCC",
+              "path": [[2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1]]
+            },
+            {
+              "net": "NET_GND",
+              "path": [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4], [11, 4], [12, 4], [13, 4]]
+            },
+            {
+              "net": "NET_CLK",
+              "path": [[3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7], [11, 7], [12, 7], [13, 7]]
+            },
+            {
+              "net": "NET_SDA",
+              "path": [[2, 10], [3, 10], [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [11, 10], [12, 10], [13, 10]]
+            }
+          ],
+          "defects": [
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ],
+          "score": 0.85,
+          "violations": [
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ]
+        }
+      },
+      {
+        "defect": { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" },
+        "action": "reroute: shift NET_SDA south onto y=10 channel for IPC clearance",
+        "note": "Shifted NET_SDA 1 cell south at (5,9); full IPC clearance achieved (0 DRC violations).",
+        "verified": true,
+        "before": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "u1.vcc", "x": 2, "y": 1, "net": "NET_VCC" },
+            { "id": "u2.vcc", "x": 13, "y": 1, "net": "NET_VCC" },
+            { "id": "u1.gnd", "x": 2, "y": 4, "net": "NET_GND" },
+            { "id": "u2.gnd", "x": 13, "y": 4, "net": "NET_GND" },
+            { "id": "u1.clk", "x": 3, "y": 7, "net": "NET_CLK" },
+            { "id": "u2.clk", "x": 13, "y": 7, "net": "NET_CLK" },
+            { "id": "u1.sda", "x": 2, "y": 10, "net": "NET_SDA" },
+            { "id": "u2.sda", "x": 13, "y": 10, "net": "NET_SDA" }
+          ],
+          "traces": [
+            {
+              "net": "NET_VCC",
+              "path": [[2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1]]
+            },
+            {
+              "net": "NET_GND",
+              "path": [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4], [11, 4], [12, 4], [13, 4]]
+            },
+            {
+              "net": "NET_CLK",
+              "path": [[3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7], [11, 7], [12, 7], [13, 7]]
+            },
+            {
+              "net": "NET_SDA",
+              "path": [[2, 10], [3, 10], [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [11, 10], [12, 10], [13, 10]]
+            }
+          ],
+          "defects": [
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ],
+          "score": 0.85,
+          "violations": [
+            { "kind": "spacing", "at": [5, 9], "detail": "NET_CLK~NET_SDA" }
+          ]
+        },
+        "after": {
+          "w": 16,
+          "h": 12,
+          "pads": [
+            { "id": "u1.vcc", "x": 2, "y": 1, "net": "NET_VCC" },
+            { "id": "u2.vcc", "x": 13, "y": 1, "net": "NET_VCC" },
+            { "id": "u1.gnd", "x": 2, "y": 4, "net": "NET_GND" },
+            { "id": "u2.gnd", "x": 13, "y": 4, "net": "NET_GND" },
+            { "id": "u1.clk", "x": 3, "y": 7, "net": "NET_CLK" },
+            { "id": "u2.clk", "x": 13, "y": 7, "net": "NET_CLK" },
+            { "id": "u1.sda", "x": 2, "y": 10, "net": "NET_SDA" },
+            { "id": "u2.sda", "x": 13, "y": 10, "net": "NET_SDA" }
+          ],
+          "traces": [
+            {
+              "net": "NET_VCC",
+              "path": [[2, 1], [3, 1], [4, 1], [5, 1], [6, 1], [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1], [13, 1]]
+            },
+            {
+              "net": "NET_GND",
+              "path": [[2, 4], [3, 4], [4, 4], [5, 4], [6, 4], [7, 4], [8, 4], [9, 4], [10, 4], [11, 4], [12, 4], [13, 4]]
+            },
+            {
+              "net": "NET_CLK",
+              "path": [[3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7], [9, 7], [10, 7], [11, 7], [12, 7], [13, 7]]
+            },
+            {
+              "net": "NET_SDA",
+              "path": [[2, 10], [3, 10], [4, 10], [5, 10], [6, 10], [7, 10], [8, 10], [9, 10], [10, 10], [11, 10], [12, 10], [13, 10]]
+            }
+          ],
+          "defects": [],
+          "score": 0.99,
+          "violations": []
+        }
+      }
+    ]
+  },
+  "saplingVerdicts": {
+    "gen_defect": {
+      "raw_label": "violation",
+      "status": "unsure",
+      "probabilities": {
+        "supported": 0.008029278539072015,
+        "violation": 0.9747561919013222,
+        "insufficient_information": 0.015377009805172431,
+        "inconsistent_context": 0.0018375197544331712
+      },
+      "prediction_set": ["supported", "violation", "insufficient_information"]
+    },
+    "gen_mid": {
+      "raw_label": "violation",
+      "status": "unsure",
+      "probabilities": {
+        "supported": 0.036972333192382634,
+        "violation": 0.8567198387389203,
+        "insufficient_information": 0.09496092811182785,
+        "inconsistent_context": 0.011346899956869081
+      },
+      "prediction_set": ["supported", "violation", "insufficient_information", "inconsistent_context"]
+    },
+    "gen_clean": {
+      "raw_label": "supported",
+      "status": "unsure",
+      "probabilities": {
+        "supported": 0.47690367255700894,
+        "violation": 0.08855173685600769,
+        "insufficient_information": 0.41102691413300585,
+        "inconsistent_context": 0.023517676453977596
+      },
+      "prediction_set": ["supported", "violation", "insufficient_information", "inconsistent_context"]
+    },
+    "heal_before": {
+      "raw_label": "violation",
+      "status": "unsure",
+      "probabilities": {
+        "supported": 0.008514878315624154,
+        "violation": 0.9749514686889644,
+        "insufficient_information": 0.014349939450149281,
+        "inconsistent_context": 0.0021837135452620676
+      },
+      "prediction_set": ["supported", "violation", "insufficient_information"]
+    },
+    "heal_after": {
+      "raw_label": "supported",
+      "status": "unsure",
+      "probabilities": {
+        "supported": 0.5674801506915288,
+        "violation": 0.07794586550376452,
+        "insufficient_information": 0.3332965881653305,
+        "inconsistent_context": 0.02127739563937627
+      },
+      "prediction_set": ["supported", "violation", "insufficient_information", "inconsistent_context"]
+    }
+  }
+}
