@@ -32,6 +32,7 @@ video/shots/
 *.log
 .idea/
 .vscode/
+.qoder/
 
 # DeepPCB: the 30-pair demo subset (images + annotations) and the recorded ledgers are
 # committed, so a fresh clone can run the demo with no download step. Anything else

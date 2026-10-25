@@ -80,18 +80,44 @@ Details: [`docs/sapling-gate.md`](docs/sapling-gate.md).
 — a free static HF Space that calls Banyan Sapling **live from your browser**
 (cached real verdicts as instant fallback). See [`docs/huggingface_strategy.md`](docs/huggingface_strategy.md).
 
+## SolderSight Foundry — Autonomous PCB Engine (Evolve + Heal)
+
+Where **Triage** catches defective boards and adapts the vision task, **Foundry** (the
+**Foundry** tab in the app) closes the hardware loop with two autonomous modes on one
+shared substrate:
+
+1. **Mode A — Evolve (Watch a Board Design Itself):**
+   - Enter a one-line circuit brief (e.g. *"3-stage RC power filter, 6 pads"*).
+   - **Mubit (`gpt-4o-mini`)** synthesizes a schema-validated `Netlist` (`foundry/intel/spec.ts`, with curated fallback in `data/foundry/netlists.json`).
+   - The deterministic **A\* router + IPC-2221 DRC engine** (`foundry/core`) mutates pad placements and re-routes copper traces across generations (`0.38 → 0.98` DRC fitness).
+   - **Mubit** narrates each physical improvement (`commentary.ts`), while **Banyan Sapling** (`judge.ts`) acts as the calibrated validity/taste gate (`PRUNE → MUTATE → SURVIVE / SHIP` once violation risk drops below 15%).
+2. **Mode B — Heal (Autonomous Red → Green Repair on Real Copper):**
+   - Loads DeepPCB **Board `00041004`**—the exact board where the baseline vision model falsely claimed `pass` and our Policy Gate blocked shipment.
+   - The A\* repair engine autonomously excises the copper bridge at `(7,4)`, stitches the broken clock line at `(13,7)`, and shifts `NET_SDA` at `(5,9)` for IPC clearance.
+   - Each defect visibly flips **red → green** (`0 / 3 → 3 / 3 defects healed`, DRC fitness `0.35 → 0.99`), and Banyan Sapling re-verifies the board from **`BLOCK` (97.5% violation)** to **`SHIP` (`supported`, 7.8% violation risk)**.
+
+Defaults to `data/foundry/golden.json` (real recorded Mubit notes + SHA-pinned Banyan
+Sapling verdicts) for zero-latency stage playback, with a **Run Live Engine** toggle for
+live browser execution. See [`docs/foundry_plan.md`](docs/foundry_plan.md) and
+[`data/foundry/demo_script.md`](data/foundry/demo_script.md).
+
 ## Tracks hit
-- **Recurring tasks** — defect triage (classify + disposition), one task per instruction set.
-- **Own your intelligence layer** — two tasks over the same crops, quality/cost/latency side by side.
-- **Fast refresh** — a new defect name in one correction joins the taxonomy the task accepts.
+- **Recurring tasks** — defect triage (classify + disposition) and iterative DRC layout/repair.
+- **Own your intelligence layer** — two tasks over the same crops, quality/cost/latency side by side, plus calibrated open-weight Sapling verification.
+- **Fast refresh** — a new defect name in one correction joins the taxonomy immediately; in Foundry, a one-line brief evolves a clean PCB layout in seconds.
 
 ## Judging (equally weighted)
 Use of Mubit · Usefulness · Technical execution · Demo. Code freeze Sun 25 Oct 05:00 GMT;
 expo judging 05:30 GMT; finalist stage demos 12:30 GMT; awards 13:30 GMT.
 
 ## Docs
-- [`docs/plan.md`](docs/plan.md) — full 42-hour build plan, architecture, demo arc, risks.
-- [`docs/README.md`](docs/README.md) — docs index.
+- [`docs/README.md`](docs/README.md) — full documentation index.
+- [`docs/foundry_plan.md`](docs/foundry_plan.md) — SolderSight Foundry 3-lane architecture (`foundry/core`, `foundry/ui`, `foundry/intel`).
+- [`data/foundry/demo_script.md`](data/foundry/demo_script.md) — 2-minute live stage script (4 beats).
+- [`docs/sapling-gate.md`](docs/sapling-gate.md) — Banyan Sapling trace audit (no answer key) & policy gate.
+- [`docs/huggingface_strategy.md`](docs/huggingface_strategy.md) — deployed static + live CORS Hugging Face Space.
+- [`docs/expo_test_plan.md`](docs/expo_test_plan.md) — expo table runbook & fallback checklist.
+- [`docs/plan.md`](docs/plan.md) — original 42-hour build plan & architecture.
 
 ## Setup (during the event)
 1. Copy `.env.example` → `.env` and fill in `MUBIT_API_KEY` (your OpenAI key stays in the
@@ -122,22 +148,14 @@ Install: `pre-commit install`. Run manually: `pre-commit run --all-files`.
 
 ## Status
 
-Core build complete (Oct 24). Backend: concurrent per-region triage with per-crop
-failure isolation and a confidence-weighted board verdict, corrections→instructions
-adaptation with append-only rule disabling, compare, metrics, benchmark, and the
-Banyan Sapling policy gate + trace audit; region-based inspection (`inspection.py`);
-**39 backend tests pass**. Frontend: case-file identity, board filmstrip, compare
-slider, defect overlays, triage + region cards, correction form + rule disabling,
-policy gate; typecheck clean, frontend tests pass. Demo data (30-pair DeepPCB subset)
-is committed, so a fresh clone runs offline.
-
-Remaining before code freeze (Sun 25 Oct 05:00 GMT):
-- "No Answer Key" demo film (~2:10) — rendered case-file video from `video/` plates (see `docs/demo_storyboard.md`)
-- PDF deck (derive from the same plates)
-- Mubit console screenshots (baseline vs adapted task) — the strongest "Use of Mubit" evidence
-- Expo demo test (iso figures run offline from disk — the fallback)
-
-See `docs/plan.md` for the full 42-hour build plan with checklists.
+Core build + SolderSight Foundry complete (Oct 25).
+- **Backend:** concurrent per-region triage with per-crop failure isolation and confidence-weighted board verdict, corrections→instructions adaptation with append-only rule disabling, compare, metrics, benchmark, and Banyan Sapling policy gate + trace audit (`inspection.py`, `sapling.py`); **39 backend tests pass**.
+- **Foundry (`frontend/src/foundry/` + `data/foundry/`):**
+  - `foundry/core`: deterministic A\* router, IPC-2221 DRC scorer, seeded evolutionary loop (`evolve()`), and autonomous defect repair (`heal()`).
+  - `foundry/intel`: Mubit netlist architect (`spec.ts`), live designer commentary (`commentary.ts`), Banyan Sapling validity/taste judge (`judge.ts`), and offline-safe golden replay (`golden.ts`).
+  - `foundry/ui`: interactive SVG `BoardCanvas` (animated copper traces, DeepPCB `00041004` photo underlay, pulsing red violations flipping green on repair), `EvolveView`, `HealView`, `Sparkline`, `SaplingGateCard`, and `FoundryView` with 4-beat stage runbook wired into `App.tsx`.
+- **Frontend:** case-file paper identity, `Triage` + `Foundry` workspace tabs, board filmstrip, compare slider, defect overlays, region cards, correction form, policy gate; `tsc --noEmit` and `vite build` clean.
+- **Demo data:** 30-pair DeepPCB subset (`data/deeppcb/`) + Foundry golden run and curated netlists (`data/foundry/`) committed so a fresh clone runs 100% offline.
 
 ## License
 MIT (to be confirmed).

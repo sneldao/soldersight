@@ -19,11 +19,13 @@
 
 | Step | Action | Expected result | Fallback if network fails |
 |------|--------|-----------------|---------------------------|
-| 1 | Open frontend, select board `00041004` | Board grid + test image loads | N/A (local static files) |
+| 1 | Open frontend (`Triage` tab), select board `00041004` | Board grid + test image loads | N/A (local static files) |
 | 2 | Click "Triage selected board" | Classification returns (pass/rework/scrap) | Show pre-captured `runs.jsonl` output |
-| 3 | Click "Verify against policy gate" | Sapling verdict badge + probability bars | Show `gate_demo.py` terminal output |
-| 4 | Override disposition in CorrectionForm | "Saved to Mubit memory" status | Show `/rules` JSON endpoint |
-| 5 | Run `python backend/trace_demo.py` | 14/14 shipping claims blocked | N/A (reads local `runs.jsonl`) |
+| 3 | Click "Verify against policy gate" | Sapling verdict badge (`BLOCK` @ 96% violation) + probability bars | Show `gate_demo.py` terminal output |
+| 4 | Override disposition in CorrectionForm | Rule added to adapted lane; compare table shows `0% → 83%` | Show `/rules` & `/benchmark` |
+| 5 | Switch to **`Foundry`** tab → **Mode A · Evolve** → click **Run Evolve** | Board routes itself over 8 generations (`0.38 → 0.98` fitness); Mubit narrates; Sapling flips `PRUNE → SURVIVE` | Defaults to `data/foundry/golden.json` (100% offline-safe) |
+| 6 | Switch to **Mode B · Heal (00041004)** → click **Heal Board** | 3 defects (`short`, `open`, `spacing`) flip **red → green** (`3 / 3 defects healed`, `0.35 → 0.99`); Sapling flips `BLOCK → SHIP` | Defaults to `data/foundry/golden.json` (100% offline-safe) |
+| 7 | Run `python backend/trace_demo.py` | 14/14 shipping claims blocked against model's own notes | N/A (reads local `runs.jsonl`) |
 
 ---
 
