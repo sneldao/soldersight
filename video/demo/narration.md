@@ -7,7 +7,7 @@ into the README's four beats. One segment = one TTS file (`vo/NN.mp3`).
 ## 01 · Cold open — plates (≈0:00–0:14)
 Visual: `board2.html` iso board → `iso-scenes.html` testimony terminal → `plates.html#p1` BLOCK.
 
-[low, intrigued] This circuit board has a short circuit. The AI inspecting it knew — it wrote it down. "Visible short circuit." [pause] [deadpan] Then it cleared the board to ship.
+[low, intrigued] This circuit board has a broken trace. The AI inspecting it saw something — it even wrote it down. "Visible short circuit." [pause] [deadpan] Then it cleared the board to ship.
 
 ## 02 · Title + triage (≈0:14–0:34)
 Visual: app Triage landing → board 00041004 → crops/region cards → verdict.
