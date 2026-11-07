@@ -52,6 +52,20 @@
         "inconsistent_rate": 0.0,
         "missed_defect_rate": 1.0,
         "false_alarm_rate": null,
+        "recall_by_worst": {
+          "mousebite": {
+            "n": 1,
+            "disposition_accuracy": 0.0
+          },
+          "open": {
+            "n": 9,
+            "disposition_accuracy": 0.0
+          },
+          "short": {
+            "n": 20,
+            "disposition_accuracy": 0.0
+          }
+        },
         "trials_per_task": 1,
         "pass@k": null,
         "pass^k": null,
@@ -69,6 +83,36 @@
         "inconsistent_rate": 0.0,
         "missed_defect_rate": 1.0,
         "false_alarm_rate": 0.0,
+        "recall_by_worst": {
+          "copper": {
+            "n": 9,
+            "disposition_accuracy": 0.0
+          },
+          "mousebite": {
+            "n": 12,
+            "disposition_accuracy": 0.0
+          },
+          "none": {
+            "n": 70,
+            "disposition_accuracy": 1.0
+          },
+          "open": {
+            "n": 27,
+            "disposition_accuracy": 0.0
+          },
+          "pinhole": {
+            "n": 8,
+            "disposition_accuracy": 0.0
+          },
+          "short": {
+            "n": 16,
+            "disposition_accuracy": 0.0
+          },
+          "spur": {
+            "n": 5,
+            "disposition_accuracy": 0.0
+          }
+        },
         "trials_per_task": 1,
         "pass@k": null,
         "pass^k": null,
@@ -90,6 +134,20 @@
         "inconsistent_rate": 0.0,
         "missed_defect_rate": 0.0,
         "false_alarm_rate": null,
+        "recall_by_worst": {
+          "mousebite": {
+            "n": 1,
+            "disposition_accuracy": 1.0
+          },
+          "open": {
+            "n": 9,
+            "disposition_accuracy": 1.0
+          },
+          "short": {
+            "n": 20,
+            "disposition_accuracy": 1.0
+          }
+        },
         "trials_per_task": 1,
         "pass@k": null,
         "pass^k": null,
@@ -107,6 +165,36 @@
         "inconsistent_rate": 0.0,
         "missed_defect_rate": 0.0,
         "false_alarm_rate": 0.0,
+        "recall_by_worst": {
+          "copper": {
+            "n": 9,
+            "disposition_accuracy": 1.0
+          },
+          "mousebite": {
+            "n": 12,
+            "disposition_accuracy": 1.0
+          },
+          "none": {
+            "n": 70,
+            "disposition_accuracy": 1.0
+          },
+          "open": {
+            "n": 27,
+            "disposition_accuracy": 1.0
+          },
+          "pinhole": {
+            "n": 8,
+            "disposition_accuracy": 1.0
+          },
+          "short": {
+            "n": 16,
+            "disposition_accuracy": 1.0
+          },
+          "spur": {
+            "n": 5,
+            "disposition_accuracy": 1.0
+          }
+        },
         "trials_per_task": 1,
         "pass@k": null,
         "pass^k": null,

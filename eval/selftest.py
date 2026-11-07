@@ -63,7 +63,7 @@ def main() -> None:
 
     out = EVAL_DIR / "results" / "selftest.json"
     out.parent.mkdir(exist_ok=True)
-    out.write_text(json.dumps({"checks": checks, "report": report}, indent=2))
+    out.write_text(json.dumps({"checks": checks, "report": report}, indent=2) + "\n")
 
     failed = [c for c in checks if not c[1]]
     for name, ok, value in checks:
