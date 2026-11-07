@@ -1,0 +1,59 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="scene.css">
+<style>
+.stage { position: absolute; inset: 0; display: flex; }
+.col { flex: 1; padding: 110px 60px 60px; }
+.head { font-size: 22px; letter-spacing: .3em; color: #6e8f81; text-transform: uppercase; margin-bottom: 26px; }
+.bignum { font-size: 120px; font-weight: 900; line-height: .95; color: #eafcf3; }
+.bignum small { font-size: 34px; color: #6e8f81; font-weight: 400; display:block; margin-top: 10px; letter-spacing:.1em;}
+.bar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 15px; }
+.bar-row .nm { width: 190px; font-size: 19px; color: #9fc4b3; text-align: right; }
+.bar-track { flex: 1; height: 30px; background: rgba(61,255,160,.07); border-radius: 4px; overflow: hidden; }
+.bar { height: 100%; width: 0; border-radius: 4px; transition: width .9s cubic-bezier(.3,0,.2,1); }
+.bar.g { background: linear-gradient(90deg, #1d7a4f, #3dffa0); }
+.bar.r { background: linear-gradient(90deg, #8a1f1f, #ff4040); }
+.bar-v { width: 70px; font-size: 20px; font-weight: 700; color: #eafcf3; }
+.hr { border: 0; border-top: 1px solid rgba(61,255,160,.15); margin: 30px 0; }
+</style></head><body>
+<div class="stage">
+  <div class="col">
+    <div class="head">BOARD SUITE — DISPOSITION ACCURACY</div>
+    <div class="bignum">0.44<small>BEST MODEL · SCRAP BOARDS ≈ COIN FLIP</small></div>
+    <div class="hr"></div>
+    <div id="bars"></div>
+  </div>
+  <div class="col">
+    <div class="head">FALSE-ALARM RATE — CLEAN GOLDEN BOARDS</div>
+    <div class="bignum red">0.89<small>WORST MODEL · HALLUCINATED DEFECTS</small></div>
+    <div class="hr"></div>
+    <div id="fabars"></div>
+  </div>
+</div>
+<script src="scene.js"></script><script>
+hud("FIG 4 — BOARD RESULTS");
+const models = [
+  ["claude-sonnet", .438], ["gpt-5-mini", .428], ["claude-opus", .406],
+  ["gemini-3.1", .400], ["grok-4.7", .339], ["kimi-k3.1", .339], ["gpt-5-5", .256],
+];
+const fa = [
+  ["gpt-5-mini", .211], ["claude-sonnet", .467], ["grok-4.7", .578],
+  ["gemini-3.1", .711], ["claude-opus", .744], ["kimi-k3.1", .767], ["gpt-5-5", .889],
+];
+function bars(el, rows, cls) {
+  el.innerHTML = rows.map(([n, v]) => `
+    <div class="bar-row fadeable">
+      <div class="nm">${n}</div>
+      <div class="bar-track"><div class="bar ${cls}" data-w="${v * 100}"></div></div>
+      <div class="bar-v">${v.toFixed(2)}</div>
+    </div>`).join("");
+}
+bars($("#bars"), models, "g");
+bars($("#fabars"), fa, "r");
+seq(
+  [1500, () => on("#bars .fadeable")],
+  [2000, () => $$("#bars .bar").forEach(b => b.style.width = b.dataset.w + "%")],
+  [19000, () => on("#fabars .fadeable")],
+  [19500, () => $$("#fabars .bar").forEach(b => b.style.width = b.dataset.w + "%")],
+  [23500, () => stampAt(1290, 880, "HALLUCINATION")],
+);
+run();
+</script></body></html>

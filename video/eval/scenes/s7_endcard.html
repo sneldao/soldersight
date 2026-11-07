@@ -1,0 +1,46 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="scene.css">
+<style>
+.stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; }
+.word { font-size: 150px; font-weight: 900; letter-spacing: .04em; color: #eafcf3;
+  text-shadow: 0 0 60px rgba(61,255,160,.25); }
+.word i { font-style: normal; color: #3dffa0; }
+.tagline { font-size: 26px; color: #9fc4b3; letter-spacing: .3em; text-transform: uppercase; }
+.stats { display: flex; gap: 70px; }
+.stat { text-align: center; }
+.stat .n { font-size: 52px; font-weight: 900; color: #3dffa0; }
+.stat .t { font-size: 15px; color: #6e8f81; letter-spacing: .2em; margin-top: 6px; }
+.repro {
+  font-size: 19px; color: #cfe8db; text-align: left; line-height: 1.9;
+  background: rgba(10,18,16,.85); border: 1px solid rgba(61,255,160,.25);
+  border-radius: 8px; padding: 20px 34px;
+}
+.repro .c { color: #3dffa0; }
+.credit { font-size: 15px; color: #4a6357; letter-spacing: .1em; }
+</style></head><body>
+<div class="stage">
+  <div class="word fadeable">SOLDER<i>SIGHT</i></div>
+  <div class="tagline fadeable">pcb defect eval · micro1 eval hackathon</div>
+  <div class="stats">
+    <div class="stat fadeable"><div class="n">207</div><div class="t">TASKS · 2 SUITES</div></div>
+    <div class="stat fadeable"><div class="n">7</div><div class="t">FRONTIER MODELS</div></div>
+    <div class="stat fadeable"><div class="n">4,345</div><div class="t">TRIALS GRADED</div></div>
+    <div class="stat fadeable"><div class="n">3.6 MB</div><div class="t">SUBMISSION ZIP</div></div>
+  </div>
+  <div class="repro fadeable">
+    <span class="c">$</span> python eval/run_eval.py --model gpt-5-5 --suite all --trials 3<br>
+    <span class="c">$</span> python eval/grader.py --predictions results/*.jsonl --report report.md<br>
+    <span class="c">$</span> python eval/selftest.py <span style="color:#6e8f81"># grader validates itself</span>
+  </div>
+  <div class="credit fadeable">DeepPCB (Tang et al.) · deterministic grader · OpenAI-compatible runner</div>
+</div>
+<script src="scene.js"></script><script>
+hud("FIG 7 — SOLDERSIGHT");
+seq(
+  [400, () => on(".word")],
+  [1200, () => on(".tagline")],
+  [2200, () => { $$(".stat").forEach((e, i) => setTimeout(() => e.classList.add("on"), i * 320)); }],
+  [5500, () => on(".repro")],
+  [9000, () => on(".credit")],
+);
+run();
+</script></body></html>

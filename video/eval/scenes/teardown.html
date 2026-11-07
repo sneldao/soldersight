@@ -1,0 +1,573 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<title>SolderSight — Teardown</title>
+<link rel="stylesheet" href="scene.css">
+<style>
+/* keeps the compositor painting so the screencast captures a steady framerate */
+@keyframes breathe {
+  0%   { opacity: .55; }
+  50%  { opacity: .75; }
+  100% { opacity: .55; }
+}
+.board-frame .glow { animation: breathe 3.2s ease-in-out infinite; }
+
+/* ---------- three-column grid: 78 | 520 | 650 | 560 | 1262 | 580 | 78 ---------- */
+:root {
+  --l: 78px;      /* left column x */
+  --lw: 486px;    /* left column width */
+  --cx: 628px;    /* centre x */
+  --cw: 620px;    /* centre width */
+  --rx: 1316px;   /* right column x */
+  --rw: 526px;    /* right column width */
+  --top: 120px;
+}
+.stage { position: fixed; inset: 0; }
+
+/* ---------- LEFT COLUMN: intro → detail → calibration ---------- */
+.pane {
+  position: absolute; left: var(--l); top: var(--top); width: var(--lw);
+  opacity: 0; transition: opacity .5s;
+}
+.pane.on { opacity: 1; }
+
+#intro h1 {
+  font-size: 40px; font-weight: 800; color: #eafcf3; line-height: 1.06;
+  letter-spacing: -.015em; margin-bottom: 20px;
+}
+#intro h1 .grn { color: #3dffa0; }
+#intro .lede { font-size: 18px; line-height: 1.55; color: #9fc4b3; }
+
+.stats { margin-top: 34px; display: flex; flex-direction: column; gap: 22px; }
+.stat { display: flex; align-items: baseline; gap: 16px; }
+.stat .num {
+  font-size: 48px; font-weight: 800; color: #3dffa0; letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums; min-width: 158px;
+}
+.stat .num.red { color: #ff4040; }
+.stat .lbl { font-size: 16px; color: #9fc4b3; line-height: 1.35; }
+
+.claim {
+  margin-top: 40px; padding-top: 22px;
+  border-top: 1px solid rgba(61,255,160,.18);
+}
+.claim .ch {
+  font-size: 12px; letter-spacing: .28em; color: #6e8f81; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.claim p { font-size: 17px; line-height: 1.55; color: #9fc4b3; }
+
+/* ---------- CENTRE: the subject ---------- */
+.board-stage {
+  position: absolute; left: var(--cx); top: var(--top); width: var(--cw); height: var(--cw);
+}
+.board-frame {
+  position: relative; width: var(--cw); height: var(--cw);
+  border: 1px solid rgba(61,255,160,.28); border-radius: 4px;
+  box-shadow: 0 0 90px rgba(61,255,160,.10), inset 0 0 90px rgba(0,0,0,.7);
+  overflow: hidden;
+}
+.board-frame img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: invert(1) brightness(1.1) sepia(.55) hue-rotate(95deg) saturate(1.7);
+}
+.board-frame .glow {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(61,255,160,.10), transparent 62%);
+}
+.board-label {
+  position: absolute; top: calc(var(--cw) + 12px); left: 0; right: 0;
+  text-align: center; font-size: 13px; letter-spacing: .2em; color: #9fc4b3;
+}
+
+/* ---------- fan-out chips ---------- */
+.calls {
+  position: absolute; left: var(--cx); top: calc(var(--top) + var(--cw) + 62px);
+  width: var(--cw); height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  pointer-events: none;
+}
+.calls .cap {
+  position: absolute; top: -26px; left: 0; font-size: 12px; letter-spacing: .26em;
+  color: #6e8f81; text-transform: uppercase;
+}
+.chip {
+  position: relative; width: 54px; height: 54px; border-radius: 50%;
+  border: 2px solid #3dffa0; background: rgba(4,7,10,.92);
+  transform: scale(0); opacity: 0;
+  transition: transform .45s cubic-bezier(.2,.9,.2,1), opacity .35s,
+              border-color .3s, box-shadow .3s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: 15px; color: #3dffa0; font-variant-numeric: tabular-nums; line-height: 1;
+}
+.chip small { font-size: 8.5px; letter-spacing: .08em; opacity: .75; margin-top: 3px; }
+.chip.on { transform: scale(1); opacity: 1; }
+.chip.bad { border-color: #ff4040; color: #ff4040; }
+.chip.pick {
+  transform: scale(1.22); opacity: 1;
+  box-shadow: 0 0 0 8px rgba(255,64,64,.16), 0 0 30px rgba(255,64,64,.5);
+  z-index: 5;
+}
+
+/* ---------- detail card (left column slot) ---------- */
+#detail {
+  background: rgba(6,11,9,.96); border: 1px solid rgba(255,64,64,.4);
+  border-radius: 6px; padding: 24px 26px; height: 786px;
+  display: flex; flex-direction: column;
+}
+#detail .dh {
+  font-size: 12px; letter-spacing: .24em; color: #6e8f81; text-transform: uppercase;
+  display: flex; justify-content: space-between; gap: 10px; margin-bottom: 16px;
+}
+#detail .dh .conf { color: #ff4040; letter-spacing: .1em; white-space: nowrap; }
+#detail .quote {
+  font-size: 19px; line-height: 1.45; color: #eafcf3;
+  border-left: 3px solid #ff4040; padding-left: 15px; margin-bottom: 18px;
+}
+#detail .kv { display: grid; grid-template-columns: 124px 1fr; gap: 10px 14px; font-size: 15px; }
+#detail .kv .k { color: #6e8f81; letter-spacing: .06em; }
+#detail .kv .v { color: #cfe8db; }
+#detail .kv .v.bad { color: #ff4040; font-weight: 700; }
+#detail .kv .v.good { color: #3dffa0; }
+#detail .grader {
+  margin-top: 18px; padding: 16px 18px; border-radius: 6px;
+  background: rgba(61,255,160,.045); border: 1px solid rgba(61,255,160,.20);
+}
+#detail .grader .gh {
+  font-size: 11px; letter-spacing: .26em; color: #6e8f81; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+#detail .grader code {
+  display: block; font-family: Menlo, monospace; font-size: 13.5px;
+  line-height: 1.7; color: #cfe8db; white-space: pre-wrap; word-break: break-word;
+}
+#detail .grader code .k { color: #5fd7ff; }
+#detail .grader code .bad { color: #ff4040; font-weight: 700; }
+#detail .grader code .good { color: #3dffa0; font-weight: 700; }
+
+#detail .transcript {
+  margin-top: 14px; padding: 14px 16px; border-radius: 6px;
+  background: rgba(95,215,255,.035); border: 1px solid rgba(95,215,255,.18);
+  flex: 1; min-height: 0; overflow: hidden;
+}
+#detail .transcript .th {
+  font-size: 11px; letter-spacing: .26em; color: #6e8f81; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+#detail .transcript code {
+  display: block; font-family: Menlo, monospace; font-size: 12.5px;
+  line-height: 1.62; color: #9fc4b3; white-space: pre-wrap; word-break: break-word;
+}
+#detail .transcript code .key { color: #5fd7ff; }
+#detail .transcript code .str { color: #cfe8db; }
+#detail .transcript code .num { color: #3dffa0; }
+
+#detail .verdict {
+  margin-top: auto; padding-top: 16px; border-top: 1px solid rgba(255,64,64,.25);
+  font-size: 25px; font-weight: 900; letter-spacing: .14em; color: #ff4040;
+}
+#detail .verdict.good { color: #3dffa0; border-top-color: rgba(61,255,160,.3); }
+
+/* ---------- calibration pane ---------- */
+#calib h2 { font-size: 27px; font-weight: 800; color: #eafcf3; margin-bottom: 8px; }
+#calib .sub2 { font-size: 14px; color: #6e8f81; margin-bottom: 14px; letter-spacing: .05em; }
+#curve { display: block; overflow: visible; }
+
+.scrub { margin-top: 18px; }
+.scrub .sh {
+  display: flex; justify-content: space-between; font-size: 12px;
+  letter-spacing: .2em; color: #6e8f81; text-transform: uppercase; margin-bottom: 10px;
+}
+.scrub .track {
+  position: relative; height: 8px; background: rgba(61,255,160,.12); border-radius: 4px;
+}
+.scrub .fill {
+  position: absolute; left: 0; top: 0; height: 100%; border-radius: 4px;
+  background: linear-gradient(90deg, #1f7a52, #3dffa0); width: 0%; transition: width .5s;
+}
+.scrub .knob {
+  position: absolute; top: 50%; width: 20px; height: 20px; border-radius: 50%;
+  background: #eafcf3; transform: translate(-50%,-50%); left: 0%;
+  box-shadow: 0 0 18px rgba(61,255,160,.6); transition: left .5s;
+}
+.scrub .readout { margin-top: 16px; font-size: 15px; color: #9fc4b3; line-height: 1.5; }
+.scrub .readout .r1 { display: block; letter-spacing: .02em; }
+.scrub .readout .r2 { display: block; margin-top: 6px; color: #6e8f81; }
+.scrub .readout b { color: #ff4040; font-size: 22px; font-weight: 800; }
+.scrub .readout b.grn { color: #3dffa0; }
+
+/* ---------- RIGHT COLUMN: the parts list ---------- */
+.parts { position: absolute; left: var(--rx); top: var(--top); width: var(--rw); }
+.parts .head {
+  font-size: 13px; letter-spacing: .28em; color: #6e8f81; text-transform: uppercase;
+  margin-bottom: 14px; display: flex; justify-content: space-between;
+}
+.parts .head span:last-child { letter-spacing: .1em; }
+
+.model-row {
+  display: grid; grid-template-columns: 218px 1fr 84px;
+  align-items: center; gap: 14px; padding: 10px 12px; margin-bottom: 4px;
+  border: 1px solid transparent; border-radius: 6px; cursor: pointer;
+  transition: background .25s, border-color .25s, transform .25s, opacity .4s;
+  opacity: 0; transform: translateX(16px);
+}
+.model-row.on { opacity: 1; transform: none; }
+.model-row.sel { background: rgba(61,255,160,.09); border-color: rgba(61,255,160,.45); }
+.model-row .nm-cell { display: flex; flex-direction: column; gap: 2px; }
+.model-row .nm { font-size: 18px; color: #eafcf3; letter-spacing: -.01em; }
+.model-row.sel .nm { color: #eafcf3; }
+.model-row .conf-badge {
+  font-size: 10.5px; letter-spacing: .05em; color: #8aa89a; white-space: nowrap;
+}
+.model-row .conf-badge b { color: #ff4040; font-weight: 700; }
+.model-row .bar { height: 10px; background: rgba(61,255,160,.16); border-radius: 5px; overflow: hidden; }
+.model-row .bar i {
+  display: block; height: 100%; width: 0; border-radius: 5px;
+  background: linear-gradient(90deg, #2ea06a, #5cffb4);
+  box-shadow: 0 0 12px rgba(61,255,160,.35);
+  transition: width .9s cubic-bezier(.2,.8,.2,1);
+}
+.model-row .pct {
+  font-size: 17px; color: #eafcf3; text-align: right; font-variant-numeric: tabular-nums;
+}
+
+.footnote {
+  position: absolute; left: 78px; right: 78px; bottom: 62px;
+  font-size: 14px; color: #8aa89a; letter-spacing: .04em;
+  border-top: 1px solid rgba(61,255,160,.14); padding-top: 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.footnote code { color: #cfe8db; font-family: Menlo, monospace; }
+
+/* aggregate footer */
+.agg {
+  margin-top: 26px; padding: 20px 22px; border-radius: 8px;
+  border: 1px solid rgba(255,64,64,.34); background: rgba(255,64,64,.045);
+}
+.agg .ah {
+  font-size: 12px; letter-spacing: .26em; color: #6e8f81; text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.agg .arow { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; }
+.agg .arow:last-child { margin-bottom: 0; }
+.agg .an { font-size: 30px; font-weight: 800; color: #ff4040; font-variant-numeric: tabular-nums; }
+.agg .an.grn { color: #3dffa0; }
+.agg .al { font-size: 13.5px; color: #9fc4b3; text-align: right; line-height: 1.3; max-width: 300px; }
+</style></head><body>
+
+<div class="stage">
+
+  <!-- LEFT: intro -->
+  <div class="pane on" id="intro">
+    <h1>The eval is<br>the machine.<br><span class="grn">Open it.</span></h1>
+    <div class="lede">
+      Seven frontier models. 207 tasks. 4,345 graded trials.
+      Every call is on the record — the image it saw, the claim it made,
+      the expert label, and whether it was right.
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="s-trials">0</div>
+        <div class="lbl">graded trials<br>across both suites</div></div>
+      <div class="stat"><div class="num" id="s-models">0</div>
+        <div class="lbl">frontier models<br>six labs</div></div>
+      <div class="stat"><div class="num red" id="s-hiwrong">0</div>
+        <div class="lbl">calls stated at ≥0.90<br>that were wrong</div></div>
+    </div>
+    <div class="claim">
+      <div class="ch">What the teardown shows</div>
+      <p>Confidence ranks a model's own answers fairly well, but it does not
+      mean the same thing across models. Two of them say 90%+ on most trials and
+      are wrong on about 40% of those calls. One cut-off cannot serve all seven.</p>
+    </div>
+  </div>
+
+  <!-- LEFT: detail (opened call) -->
+  <div class="pane" id="detail">
+    <div class="dh"><span id="d-task">—</span><span class="conf" id="d-conf">—</span></div>
+    <div class="quote" id="d-quote">—</div>
+    <div class="kv">
+      <div class="k">model said</div><div class="v bad" id="d-said">—</div>
+      <div class="k">expert label</div><div class="v good" id="d-truth">—</div>
+      <div class="k">confidence</div><div class="v bad" id="d-conf2">—</div>
+      <div class="k">latency</div><div class="v" id="d-lat">—</div>
+    </div>
+    <div class="grader">
+      <div class="gh">Grader — code, not judgment</div>
+      <code id="d-grade">—</code>
+    </div>
+    <div class="transcript">
+      <div class="th">Raw response — verbatim transcript</div>
+      <code id="d-raw">—</code>
+    </div>
+    <div class="verdict" id="d-verdict">WRONG</div>
+  </div>
+
+  <!-- LEFT: calibration -->
+  <div class="pane" id="calib">
+    <h2>One threshold fits no model</h2>
+    <div class="sub2">accuracy by stated confidence · all 4,345 trials, seven models pooled</div>
+    <svg id="curve" width="486" height="486"></svg>
+    <div class="scrub">
+      <div class="sh"><span>Confidence threshold</span><span id="sc-thr">0.00</span></div>
+      <div class="track"><div class="fill" id="sc-fill"></div><div class="knob" id="sc-knob"></div></div>
+      <div class="readout" id="sc-out">—</div>
+    </div>
+  </div>
+
+  <!-- CENTRE: the subject -->
+  <div class="board-stage">
+    <div class="board-frame">
+      <img id="bimg" src="../../../eval/tasks/images/boards/00041013.jpg">
+      <div class="glow"></div>
+    </div>
+    <div class="board-label" id="blabel">BOARD 00041013 · EXPERT LABEL: SCRAP</div>
+  </div>
+
+  <!-- CENTRE: fan-out chips -->
+  <div class="calls" id="calls"></div>
+
+  <!-- RIGHT: parts list -->
+  <div class="parts" id="parts">
+    <div class="head"><span>Model</span><span>Disposition accuracy</span></div>
+    <div id="rows"></div>
+    <div class="agg" id="agg">
+      <div class="ah">All 7 models · both suites</div>
+      <div class="arow"><div class="an" id="a-trials">0</div>
+        <div class="al">graded trials on the record</div></div>
+      <div class="arow"><div class="an" id="a-hi">0</div>
+        <div class="al">calls stated at ≥0.90 confidence</div></div>
+      <div class="arow"><div class="an" id="a-wrong">0</div>
+        <div class="al">of those were wrong</div></div>
+    </div>
+  </div>
+
+  <div class="footnote" id="foot">
+    <span class="fl">Every call is one row of <code>results/predictions_*.jsonl</code> —
+    image, claim, label, verdict. Nothing here is illustrative.</span>
+  </div>
+
+</div>
+
+<script src="teardown_data.js"></script>
+<script src="scene.js"></script>
+<script>
+hud("FIG 4 — TEARDOWN");
+const TD = window.TD;
+const G = TD.global;
+
+/* ---------- parts list from real data ---------- */
+const rowsEl = $("#rows");
+TD.models.forEach((m) => {
+  const d = document.createElement("div");
+  d.className = "model-row";
+  d.dataset.model = m.model;
+  const hiBad = m.n_hi >= 50 && m.acc_hi !== null && m.acc_hi < 0.7;
+  const wrongHi = hiBad ? Math.round((1 - m.acc_hi) * m.n_hi) : 0;
+  d.innerHTML = `
+    <div class="nm-cell">
+      <div class="nm">${m.model}</div>
+      <div class="conf-badge">${m.n_hi} @ ≥0.90${hiBad ? ` · <b>${wrongHi} wrong</b>` : ""}</div>
+    </div>
+    <div class="bar"><i data-acc="${m.acc}"></i></div>
+    <div class="pct">${(m.acc * 100).toFixed(1)}%</div>`;
+  d.onclick = () => selectModel(m.model);
+  rowsEl.appendChild(d);
+});
+
+/* ---------- aggregate footer (real numbers) ---------- */
+$("#a-trials").textContent = G.n.toLocaleString();
+$("#a-hi").textContent = G.n_hi.toLocaleString();
+$("#a-wrong").textContent = G.n_hi_wrong.toLocaleString();
+
+/* ---------- calibration curve from real buckets ---------- */
+function drawCurve() {
+  const svg = $("#curve");
+  const W = 486, H = 486, PAD = 54;
+  const x = v => PAD + v * (W - PAD - 20);
+  const y = v => H - PAD - v * (H - PAD - 22);
+  let s = "";
+  for (let v = 0; v <= 1.001; v += 0.25) {
+    s += `<line x1="${x(0)}" y1="${y(v)}" x2="${x(1)}" y2="${y(v)}"
+            stroke="rgba(61,255,160,.12)" stroke-width="1"/>`;
+    s += `<text x="${PAD - 10}" y="${y(v) + 4}" fill="#8aa89a" font-size="13"
+            text-anchor="end" font-family="Menlo,monospace">${v.toFixed(2)}</text>`;
+    s += `<text x="${x(v)}" y="${H - PAD + 20}" fill="#8aa89a" font-size="13"
+            text-anchor="middle" font-family="Menlo,monospace">${v.toFixed(2)}</text>`;
+  }
+  s += `<line x1="${x(0)}" y1="${y(0)}" x2="${x(1)}" y2="${y(1)}"
+          stroke="rgba(95,215,255,.45)" stroke-width="1.5" stroke-dasharray="6 6"/>`;
+  s += `<text x="${x(0.70)}" y="${y(0.30)}" fill="#5fd7ff" font-size="12"
+          font-family="Menlo,monospace" opacity=".85">perfect calibration</text>`;
+  const pts = G.calibration.map(b => [x((b.lo + b.hi) / 2), y(b.acc), b]);
+  s += `<polyline points="${pts.map(p => p[0] + "," + p[1]).join(" ")}"
+          fill="none" stroke="#3dffa0" stroke-width="3" stroke-linejoin="round"/>`;
+  pts.forEach(([px, py, b], i) => {
+    s += `<circle cx="${px}" cy="${py}" r="7" fill="#04070a" stroke="#3dffa0" stroke-width="2.8"/>`;
+    const ly = (i % 2 === 0) ? py - 18 : py + 28;
+    s += `<text x="${px}" y="${ly}" fill="#eafcf3" font-size="13"
+            text-anchor="middle" font-family="Menlo,monospace">${b.acc.toFixed(2)}</text>`;
+  });
+  s += `<text x="${(x(0) + x(1)) / 2}" y="${H - 6}" fill="#8aa89a" font-size="13"
+          text-anchor="middle" font-family="Menlo,monospace" letter-spacing="2">STATED CONFIDENCE</text>`;
+  svg.innerHTML = s;
+}
+drawCurve();
+
+/* ---------- interaction ---------- */
+function selectModel(name) {
+  $$(".model-row").forEach(r => r.classList.toggle("sel", r.dataset.model === name));
+  fanOut(name);
+}
+
+function fanOut(name) {
+  const callsEl = $("#calls");
+  callsEl.innerHTML = '<div class="cap">' + name + ' · calls</div>';
+  const calls = TD.by_model[name] || [];
+  calls.forEach((c, i) => {
+    const el = document.createElement("div");
+    const wrong = c.said_disp !== c.truth_disp;
+    el.className = "chip" + (wrong ? " bad" : "");
+    el.innerHTML = `${(c.conf * 100).toFixed(0)}<small>${wrong ? "WRONG" : "OK"}</small>`;
+    el.onclick = () => openCall(c, el);
+    callsEl.appendChild(el);
+    setTimeout(() => el.classList.add("on"), 90 + i * 70);
+  });
+}
+
+function openCall(c, chipEl) {
+  $$(".chip").forEach(x => x.classList.remove("pick"));
+  if (chipEl) chipEl.classList.add("pick");
+  $("#bimg").src = c.image;
+  $("#blabel").textContent =
+    `BOARD ${c.board_id} · EXPERT LABEL: ${c.truth_disp.toUpperCase()}`;
+  $("#d-task").textContent = c.model;
+  $("#d-conf").textContent = `CONF ${c.conf.toFixed(2)}`;
+  $("#d-quote").textContent = `"${c.reason}"`;
+  $("#d-said").textContent = `${c.said_disp} / ${c.said_type}`;
+  $("#d-truth").textContent = `${c.truth_disp} / ${c.truth_worst}`;
+  $("#d-conf2").textContent = c.conf.toFixed(2);
+  $("#d-lat").textContent = c.latency_ms ? (c.latency_ms / 1000).toFixed(1) + "s" : "—";
+  const wrong = c.said_disp !== c.truth_disp;
+  $("#d-grade").innerHTML =
+    `<span class="k">prediction</span>.disposition  ${c.said_disp}\n` +
+    `<span class="k">ground_truth</span>.disposition ${c.truth_disp}\n` +
+    `→ ${wrong ? '<span class="bad">False</span>' : '<span class="good">True</span>'}` +
+    `   <span class="k"># trial ${c.trial}</span>`;
+  $("#d-raw").innerHTML = renderJSON(c.raw);
+  $("#d-verdict").textContent = wrong ? "WRONG" : "CORRECT";
+  $("#d-verdict").className = "verdict" + (wrong ? "" : " good");
+  showPane("detail");
+}
+
+function renderJSON(raw) {
+  if (!raw) return "\u2014";
+  let txt = raw;
+  try { txt = JSON.stringify(JSON.parse(raw), null, 1); } catch (e) { /* keep as-is */ }
+  const esc = txt
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  const re = /("(?:\\u[a-fA-F0-9]{4}|\\[^u]|[^\\"])*")(\s*:)?|\b(true|false|null)\b|(-?\d+(?:\.\d+)?)/g;
+  return esc.replace(re, (m, str, colon, kw, num) => {
+    if (str) {
+      return colon
+        ? '<span class="key">' + str + "</span>" + colon
+        : '<span class="str">' + str + "</span>";
+    }
+    if (kw) return '<span class="num">' + kw + "</span>";
+    if (num) return '<span class="num">' + num + "</span>";
+    return m;
+  });
+}
+
+function showPane(id) {
+  ["intro", "detail", "calib"].forEach(p => $("#" + p).classList.toggle("on", p === id));
+}
+
+/* ---------- scrubber ---------- */
+function setThreshold(t) {
+  $("#sc-thr").textContent = t.toFixed(2);
+  $("#sc-fill").style.width = (t * 100) + "%";
+  $("#sc-knob").style.left = (t * 100) + "%";
+  let kept = 0, wrong = 0;
+  G.calibration.forEach(b => {
+    if (b.lo >= t - 1e-9) { kept += b.n; wrong += Math.round(b.n * (1 - b.acc)); }
+  });
+  const acc = kept ? (1 - wrong / kept) : 0;
+  $("#sc-out").innerHTML = kept
+    ? `<span class="r1"><b>${wrong}</b> of the ${kept} surviving calls are wrong</span>` +
+      `<span class="r2">${(acc * 100).toFixed(1)}% accurate · ${(kept / G.n * 100).toFixed(0)}% of all calls kept</span>`
+    : `<span class="r1">no calls survive</span>`;
+}
+
+/* ---------- counters ---------- */
+function countTo(el, target, dur = 1200, fmt = v => Math.round(v).toLocaleString()) {
+  const t0 = performance.now();
+  (function step(t) {
+    const k = Math.min(1, (t - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    el.textContent = fmt(target * e);
+    if (k < 1) requestAnimationFrame(step);
+  })(t0);
+}
+
+/* ================= TOUR ================= */
+/* Timeline matches vo/06.mp3 (58.8s). Beats are placed on the narration's
+   word timings (vo/06.align.json). */
+const T = [];
+function at(t, fn) { T.push([t, fn]); }
+
+function showSource() {
+  const top = [...TD.models].sort((a, b) => b.n_hi_wrong - a.n_hi_wrong).slice(0, 2);
+  const sum = top.reduce((s, m) => s + m.n_hi_wrong, 0);
+  const name = m => { const w = m.model.split("-")[0]; return w[0].toUpperCase() + w.slice(1); };
+  $("#sc-out").insertAdjacentHTML("beforeend",
+    `<span class="r2"><b>${sum}</b> of those ${G.n_hi_wrong} come from ${top.map(m => name(m) + " " + m.n_hi_wrong).join(" · ")}</span>`);
+}
+
+// 0:00 the subject — "So we opened the machine."
+at(200,   () => sweep());
+at(900,   () => countTo($("#s-trials"), G.n, 1500));
+at(1500,  () => countTo($("#s-models"), TD.models.length, 900));
+at(2300,  () => countTo($("#s-hiwrong"), G.n_hi_wrong, 1600));
+
+// 0:01 "Every call is on the record" — the parts list fills
+at(1600,  () => $$(".model-row").forEach((r, i) => setTimeout(() => r.classList.add("on"), i * 130)));
+at(3400,  () => $$(".model-row").forEach((r, i) => setTimeout(() => {
+  r.querySelector(".bar i").style.width =
+    (parseFloat(r.querySelector(".bar i").dataset.acc) * 100) + "%";
+}, i * 130)));
+
+// 0:08 "Here is Kimi, confident on most boards it sees"
+at(8400,  () => selectModel("kimi-k3-1-pro"));
+
+// 0:12 "Open its most confident calls" — the strip lands, then one opens
+at(12400, () => {
+  const calls = TD.by_model["kimi-k3-1-pro"] || [];
+  const i = calls.findIndex(c => c.said_disp !== c.truth_disp);
+  if (i >= 0) openCall(calls[i], $$(".chip")[i]);
+});
+
+// 0:17 "right and wrong sit side by side"
+at(16900, () => {
+  const chips = $$(".chip");
+  chips.forEach((c, i) => setTimeout(() => {
+    c.style.transition = "transform .4s, box-shadow .4s";
+    c.style.transform = c.classList.contains("bad") ? "scale(1.14)" : "scale(1)";
+  }, i * 110));
+});
+
+// 0:18 "Now pool all seven models" — the calibration pane, threshold sweep
+at(18400, () => showPane("calib"));
+at(19800, () => setThreshold(0.0));
+at(22400, () => setThreshold(0.5));
+at(25400, () => setThreshold(0.7));
+at(29300, () => setThreshold(0.9));   // "stated at ninety percent or higher"
+
+// 0:35 "Gemini and Kimi account for three hundred and seventy-three"
+at(35700, () => showSource());
+
+// 0:55 "Calibrate it per model"
+at(55600, () => stampAt(1080, 130, "CALIBRATE PER MODEL", true));
+
+T.sort((a, b) => a[0] - b[0]).forEach(([t, fn]) => setTimeout(fn, t));
+</script>
+</body></html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="scene.css">
+<style>
+.stage { position: absolute; inset: 0; display: flex; }
+.col { flex: 1; padding: 100px 60px 60px; display: flex; flex-direction: column; align-items: center; gap: 26px; }
+.col img { border-radius: 8px; filter: invert(1) brightness(1.1) sepia(.55) hue-rotate(95deg) saturate(1.7); }
+.cmp { display: flex; align-items: center; gap: 30px; }
+.cmp .lbl2 { font-size: 15px; letter-spacing: .25em; color: #6e8f81; text-transform: uppercase; margin-top: 12px; text-align:center;}
+.arrowb { font-size: 60px; color: #3dffa0; }
+.barsbox { width: 100%; margin-top: 10px; }
+.bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 11px; }
+.bar-row .nm { width: 160px; font-size: 17px; color: #9fc4b3; text-align: right; }
+.bar-track { flex: 1; height: 26px; background: rgba(61,255,160,.07); border-radius: 4px; overflow: hidden; }
+.bar { height: 100%; width: 0; border-radius: 4px; transition: width .9s cubic-bezier(.3,0,.2,1);
+  background: linear-gradient(90deg, #1d7a4f, #3dffa0); }
+.bar-v { width: 60px; font-size: 18px; font-weight: 700; color: #eafcf3; }
+.h2 { font-size: 20px; letter-spacing: .3em; color: #6e8f81; text-transform: uppercase; }
+</style></head><body>
+<div class="stage">
+  <div class="col">
+    <div class="h2 fadeable">THE ABLATION — MAGNIFY THE LESION</div>
+    <div class="cmp fadeable">
+      <div><img width="340" height="340" src="../../../eval/tasks/images/boards/00041012.jpg"><div class="lbl2">whole board · 640px</div></div>
+      <div class="arrowb">→</div>
+      <div><img width="340" height="340" src="../../../eval/tasks/images/crops/00041012_0.jpg"><div class="lbl2">diff crop · 480px</div></div>
+    </div>
+    <div class="bigline fadeable" style="font-size:26px;color:#eafcf3">same model · same defect · only resolution changes</div>
+  </div>
+  <div class="col">
+    <div class="h2 fadeable">BOARD VERDICTS FROM CROP AGGREGATION</div>
+    <div class="barsbox" id="bars"></div>
+    <div class="fadeable" style="font-size:24px;color:#9fc4b3;margin-top:16px">
+      resolution helps — <span class="red">calibration does not follow</span></div>
+  </div>
+</div>
+<script src="scene.js"></script><script>
+hud("FIG 6 — THE ABLATION");
+const rows = [
+  ["gemini-3.1", .967], ["claude-opus", .933], ["kimi-k3.1", .900],
+  ["gpt-5-5", .800], ["claude-sonnet", .767], ["grok-4.7", .733], ["gpt-5-mini", .600],
+];
+$("#bars").innerHTML = rows.map(([n, v]) => `
+  <div class="bar-row fadeable"><div class="nm">${n}</div>
+    <div class="bar-track"><div class="bar" data-w="${v * 100}"></div></div>
+    <div class="bar-v">${v.toFixed(2)}</div></div>`).join("");
+seq(
+  [500, () => on(".h2")],
+  [1500, () => on(".cmp")],
+  [8000, () => on(".bigline")],
+  [11000, () => { on("#bars .fadeable"); $$("#bars .bar").forEach(b => b.style.width = b.dataset.w + "%"); }],
+  [27000, () => on(".fadeable")],
+);
+run();
+</script></body></html>

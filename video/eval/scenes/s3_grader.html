@@ -1,0 +1,42 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="scene.css">
+<style>
+.stage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 34px; }
+.flow { display: flex; align-items: center; gap: 26px; }
+.node { min-width: 300px; text-align: center; }
+.node .h { font-size: 15px; letter-spacing: .26em; color: #6e8f81; text-transform: uppercase; margin-bottom: 12px; }
+.node .b { font-size: 30px; font-weight: 700; color: #eafcf3; }
+.arrow { font-size: 44px; color: #3dffa0; }
+.rules { display: flex; gap: 60px; }
+.rule { text-align: center; }
+.rule .n { font-size: 64px; font-weight: 900; color: #3dffa0; }
+.rule .t { font-size: 17px; color: #6e8f81; letter-spacing: .12em; margin-top: 8px; }
+.rule.redr .n { color: #ff4040; }
+.bigline { font-size: 30px; color: #eafcf3; letter-spacing: .04em; }
+</style></head><body>
+<div class="stage">
+  <div class="kicker fadeable">GRADING IS CODE — NOT JUDGMENT</div>
+  <div class="flow">
+    <div class="node card fadeable"><div class="h">model output</div><div class="b">JSON verdict</div></div>
+    <div class="arrow fadeable">→</div>
+    <div class="node card fadeable"><div class="h">grader.py</div><div class="b grn">deterministic</div></div>
+    <div class="arrow fadeable">→</div>
+    <div class="node card fadeable"><div class="h">expert label</div><div class="b">disposition match</div></div>
+  </div>
+  <div class="rules">
+    <div class="rule fadeable"><div class="n">3×</div><div class="t">TRIALS PER TASK<br>pass@k / pass^k</div></div>
+    <div class="rule fadeable"><div class="n">1.00</div><div class="t">REFERENCE SOLUTION<br>SCORES PERFECT</div></div>
+    <div class="rule redr fadeable"><div class="n">0%</div><div class="t">NULL MODEL<br>MISSES 100%</div></div>
+    <div class="rule fadeable"><div class="n">0</div><div class="t">LLM JUDGES<br>IN THE LOOP</div></div>
+  </div>
+  <div class="bigline fadeable">every claim backed by the raw transcript in <span class="grn">predictions_*.jsonl</span></div>
+</div>
+<script src="scene.js"></script><script>
+hud("FIG 3 — THE GRADER");
+seq(
+  [500, () => on(".kicker")],
+  [1500, () => on(".flow .fadeable")],
+  [7000, () => { $$(".rules .fadeable").forEach((e, i) => setTimeout(() => e.classList.add("on"), i * 380)); }],
+  [18000, () => on(".bigline")],
+);
+run();
+</script></body></html>
