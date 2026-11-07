@@ -1,0 +1,97 @@
+{
+  "per_model": {
+    "claude-opus-5-5": {
+      "trials": 621,
+      "accuracy": 0.628,
+      "mean_confidence": 0.614,
+      "auc": 0.835,
+      "trials_conf_ge_0.90": 15,
+      "wrong_among_conf_ge_0.90": 0
+    },
+    "claude-sonnet-5-5": {
+      "trials": 619,
+      "accuracy": 0.64,
+      "mean_confidence": 0.596,
+      "auc": 0.766,
+      "trials_conf_ge_0.90": 14,
+      "wrong_among_conf_ge_0.90": 0
+    },
+    "gemini-3-1-pro": {
+      "trials": 621,
+      "accuracy": 0.572,
+      "mean_confidence": 0.932,
+      "auc": 0.73,
+      "trials_conf_ge_0.90": 617,
+      "wrong_among_conf_ge_0.90": 262
+    },
+    "gpt-5-5": {
+      "trials": 621,
+      "accuracy": 0.361,
+      "mean_confidence": 0.792,
+      "auc": 0.765,
+      "trials_conf_ge_0.90": 58,
+      "wrong_among_conf_ge_0.90": 8
+    },
+    "gpt-5-mini": {
+      "trials": 621,
+      "accuracy": 0.501,
+      "mean_confidence": 0.75,
+      "auc": 0.455,
+      "trials_conf_ge_0.90": 6,
+      "wrong_among_conf_ge_0.90": 0
+    },
+    "grok-4-7": {
+      "trials": 621,
+      "accuracy": 0.459,
+      "mean_confidence": 0.726,
+      "auc": 0.7,
+      "trials_conf_ge_0.90": 33,
+      "wrong_among_conf_ge_0.90": 5
+    },
+    "kimi-k3-1-pro": {
+      "trials": 621,
+      "accuracy": 0.432,
+      "mean_confidence": 0.857,
+      "auc": 0.732,
+      "trials_conf_ge_0.90": 284,
+      "wrong_among_conf_ge_0.90": 111
+    }
+  },
+  "pooled": {
+    "trials": 4345,
+    "accuracy": 0.513,
+    "mean_confidence": 0.753,
+    "auc": 0.58,
+    "trials_conf_ge_0.90": 1027,
+    "wrong_among_conf_ge_0.90": 386
+  },
+  "within_model_weighted_mean_auc": 0.712,
+  "constant_answer_baselines": {
+    "board": {
+      "tasks": 60,
+      "label_counts": {
+        "scrap": 29,
+        "pass": 30,
+        "rework": 1
+      },
+      "always_answer_accuracy": {
+        "scrap": 0.483,
+        "pass": 0.5,
+        "rework": 0.017
+      }
+    },
+    "crop": {
+      "tasks": 147,
+      "label_counts": {
+        "scrap": 43,
+        "pass": 70,
+        "rework": 34
+      },
+      "always_answer_accuracy": {
+        "scrap": 0.293,
+        "pass": 0.476,
+        "rework": 0.231
+      }
+    }
+  }
+}

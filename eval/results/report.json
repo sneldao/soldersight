@@ -1,0 +1,604 @@
+{
+  "claude-opus-5-5": {
+    "board": {
+      "tasks": 180,
+      "scored": 180,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.406,
+      "type_accuracy": 0.611,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.0,
+      "false_alarm_rate": 0.744,
+      "recall_by_worst": {
+        "copper": {
+          "n": 3,
+          "disposition_accuracy": 1.0
+        },
+        "none": {
+          "n": 90,
+          "disposition_accuracy": 0.256
+        },
+        "open": {
+          "n": 81,
+          "disposition_accuracy": 0.543
+        },
+        "short": {
+          "n": 6,
+          "disposition_accuracy": 0.5
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.45,
+      "pass^k": 0.367,
+      "avg_latency_ms": 5600.7,
+      "total_tokens": 197549,
+      "total_cost_usd": 0,
+      "self_contradictions": 0
+    },
+    "crop": {
+      "tasks": 441,
+      "scored": 441,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.719,
+      "type_accuracy": 0.667,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.061,
+      "false_alarm_rate": 0.433,
+      "recall_by_worst": {
+        "copper": {
+          "n": 27,
+          "disposition_accuracy": 0.889
+        },
+        "mousebite": {
+          "n": 36,
+          "disposition_accuracy": 0.833
+        },
+        "none": {
+          "n": 210,
+          "disposition_accuracy": 0.567
+        },
+        "open": {
+          "n": 78,
+          "disposition_accuracy": 0.859
+        },
+        "pinhole": {
+          "n": 18,
+          "disposition_accuracy": 1.0
+        },
+        "short": {
+          "n": 51,
+          "disposition_accuracy": 0.745
+        },
+        "spur": {
+          "n": 21,
+          "disposition_accuracy": 1.0
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.789,
+      "pass^k": 0.667,
+      "avg_latency_ms": 4719.7,
+      "total_tokens": 367423,
+      "total_cost_usd": 0,
+      "boards": 30,
+      "board_disposition_accuracy": 0.933,
+      "self_contradictions": 0
+    }
+  },
+  "claude-sonnet-5-5": {
+    "board": {
+      "tasks": 180,
+      "scored": 178,
+      "invalid_output_rate": 0.011,
+      "disposition_accuracy": 0.438,
+      "type_accuracy": 0.764,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.0,
+      "false_alarm_rate": 0.467,
+      "recall_by_worst": {
+        "mousebite": {
+          "n": 3,
+          "disposition_accuracy": 1.0
+        },
+        "none": {
+          "n": 90,
+          "disposition_accuracy": 0.533
+        },
+        "open": {
+          "n": 27,
+          "disposition_accuracy": 0.407
+        },
+        "short": {
+          "n": 58,
+          "disposition_accuracy": 0.276
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.55,
+      "pass^k": 0.317,
+      "avg_latency_ms": 4382.5,
+      "total_tokens": 204102,
+      "total_cost_usd": 0,
+      "self_contradictions": 0
+    },
+    "crop": {
+      "tasks": 441,
+      "scored": 441,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.721,
+      "type_accuracy": 0.669,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.117,
+      "false_alarm_rate": 0.324,
+      "recall_by_worst": {
+        "copper": {
+          "n": 27,
+          "disposition_accuracy": 0.889
+        },
+        "mousebite": {
+          "n": 36,
+          "disposition_accuracy": 0.806
+        },
+        "none": {
+          "n": 210,
+          "disposition_accuracy": 0.676
+        },
+        "open": {
+          "n": 81,
+          "disposition_accuracy": 0.728
+        },
+        "pinhole": {
+          "n": 24,
+          "disposition_accuracy": 1.0
+        },
+        "short": {
+          "n": 48,
+          "disposition_accuracy": 0.521
+        },
+        "spur": {
+          "n": 15,
+          "disposition_accuracy": 1.0
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.789,
+      "pass^k": 0.673,
+      "avg_latency_ms": 3323.3,
+      "total_tokens": 373479,
+      "total_cost_usd": 0,
+      "boards": 30,
+      "board_disposition_accuracy": 0.767,
+      "self_contradictions": 0
+    }
+  },
+  "gemini-3-1-pro": {
+    "board": {
+      "tasks": 180,
+      "scored": 180,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.4,
+      "type_accuracy": 0.644,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.0,
+      "false_alarm_rate": 0.711,
+      "recall_by_worst": {
+        "mousebite": {
+          "n": 3,
+          "disposition_accuracy": 1.0
+        },
+        "none": {
+          "n": 90,
+          "disposition_accuracy": 0.289
+        },
+        "open": {
+          "n": 27,
+          "disposition_accuracy": 0.481
+        },
+        "short": {
+          "n": 60,
+          "disposition_accuracy": 0.5
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.467,
+      "pass^k": 0.333,
+      "avg_latency_ms": 2979.7,
+      "total_tokens": 237610,
+      "total_cost_usd": 0,
+      "self_contradictions": 0
+    },
+    "crop": {
+      "tasks": 441,
+      "scored": 441,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.642,
+      "type_accuracy": 0.601,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.013,
+      "false_alarm_rate": 0.619,
+      "recall_by_worst": {
+        "copper": {
+          "n": 27,
+          "disposition_accuracy": 1.0
+        },
+        "mousebite": {
+          "n": 36,
+          "disposition_accuracy": 1.0
+        },
+        "none": {
+          "n": 210,
+          "disposition_accuracy": 0.381
+        },
+        "open": {
+          "n": 81,
+          "disposition_accuracy": 0.84
+        },
+        "pinhole": {
+          "n": 24,
+          "disposition_accuracy": 1.0
+        },
+        "short": {
+          "n": 48,
+          "disposition_accuracy": 0.688
+        },
+        "spur": {
+          "n": 15,
+          "disposition_accuracy": 1.0
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.68,
+      "pass^k": 0.605,
+      "avg_latency_ms": 2874.5,
+      "total_tokens": 582322,
+      "total_cost_usd": 0,
+      "boards": 30,
+      "board_disposition_accuracy": 0.967,
+      "self_contradictions": 0
+    }
+  },
+  "gpt-5-5": {
+    "board": {
+      "tasks": 180,
+      "scored": 180,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.256,
+      "type_accuracy": 0.556,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.0,
+      "false_alarm_rate": 0.889,
+      "recall_by_worst": {
+        "mousebite": {
+          "n": 3,
+          "disposition_accuracy": 1.0
+        },
+        "none": {
+          "n": 90,
+          "disposition_accuracy": 0.111
+        },
+        "open": {
+          "n": 27,
+          "disposition_accuracy": 0.407
+        },
+        "short": {
+          "n": 60,
+          "disposition_accuracy": 0.367
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.367,
+      "pass^k": 0.15,
+      "avg_latency_ms": 11466.9,
+      "total_tokens": 225016,
+      "total_cost_usd": 0,
+      "self_contradictions": 0
+    },
+    "crop": {
+      "tasks": 441,
+      "scored": 441,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.404,
+      "type_accuracy": 0.331,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.017,
+      "false_alarm_rate": 0.995,
+      "recall_by_worst": {
+        "copper": {
+          "n": 27,
+          "disposition_accuracy": 0.815
+        },
+        "mousebite": {
+          "n": 36,
+          "disposition_accuracy": 0.972
+        },
+        "none": {
+          "n": 210,
+          "disposition_accuracy": 0.005
+        },
+        "open": {
+          "n": 81,
+          "disposition_accuracy": 0.728
+        },
+        "pinhole": {
+          "n": 24,
+          "disposition_accuracy": 1.0
+        },
+        "short": {
+          "n": 48,
+          "disposition_accuracy": 0.458
+        },
+        "spur": {
+          "n": 15,
+          "disposition_accuracy": 1.0
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.435,
+      "pass^k": 0.367,
+      "avg_latency_ms": 7319.8,
+      "total_tokens": 357784,
+      "total_cost_usd": 0,
+      "boards": 30,
+      "board_disposition_accuracy": 0.8,
+      "self_contradictions": 0
+    }
+  },
+  "gpt-5-mini": {
+    "board": {
+      "tasks": 180,
+      "scored": 180,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.428,
+      "type_accuracy": 0.8,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.089,
+      "false_alarm_rate": 0.211,
+      "recall_by_worst": {
+        "mousebite": {
+          "n": 3,
+          "disposition_accuracy": 0.667
+        },
+        "none": {
+          "n": 90,
+          "disposition_accuracy": 0.789
+        },
+        "open": {
+          "n": 27,
+          "disposition_accuracy": 0.0
+        },
+        "short": {
+          "n": 60,
+          "disposition_accuracy": 0.067
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.533,
+      "pass^k": 0.3,
+      "avg_latency_ms": 2037.4,
+      "total_tokens": 129288,
+      "total_cost_usd": 0.0525,
+      "self_contradictions": 0
+    },
+    "crop": {
+      "tasks": 441,
+      "scored": 441,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.531,
+      "type_accuracy": 0.465,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.134,
+      "false_alarm_rate": 0.543,
+      "recall_by_worst": {
+        "copper": {
+          "n": 27,
+          "disposition_accuracy": 0.963
+        },
+        "mousebite": {
+          "n": 36,
+          "disposition_accuracy": 0.861
+        },
+        "none": {
+          "n": 210,
+          "disposition_accuracy": 0.457
+        },
+        "open": {
+          "n": 81,
+          "disposition_accuracy": 0.481
+        },
+        "pinhole": {
+          "n": 24,
+          "disposition_accuracy": 0.75
+        },
+        "short": {
+          "n": 48,
+          "disposition_accuracy": 0.208
+        },
+        "spur": {
+          "n": 15,
+          "disposition_accuracy": 0.933
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.653,
+      "pass^k": 0.388,
+      "avg_latency_ms": 1959.0,
+      "total_tokens": 223150,
+      "total_cost_usd": 0.1036,
+      "boards": 30,
+      "board_disposition_accuracy": 0.6,
+      "self_contradictions": 0
+    }
+  },
+  "grok-4-7": {
+    "board": {
+      "tasks": 180,
+      "scored": 180,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.339,
+      "type_accuracy": 0.678,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.011,
+      "false_alarm_rate": 0.578,
+      "recall_by_worst": {
+        "copper": {
+          "n": 3,
+          "disposition_accuracy": 1.0
+        },
+        "none": {
+          "n": 90,
+          "disposition_accuracy": 0.422
+        },
+        "open": {
+          "n": 81,
+          "disposition_accuracy": 0.247
+        },
+        "short": {
+          "n": 6,
+          "disposition_accuracy": 0.0
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.483,
+      "pass^k": 0.167,
+      "avg_latency_ms": 37078.6,
+      "total_tokens": 235022,
+      "total_cost_usd": 0,
+      "self_contradictions": 0
+    },
+    "crop": {
+      "tasks": 441,
+      "scored": 441,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.508,
+      "type_accuracy": 0.415,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.056,
+      "false_alarm_rate": 0.714,
+      "recall_by_worst": {
+        "copper": {
+          "n": 27,
+          "disposition_accuracy": 0.815
+        },
+        "mousebite": {
+          "n": 36,
+          "disposition_accuracy": 0.972
+        },
+        "none": {
+          "n": 210,
+          "disposition_accuracy": 0.286
+        },
+        "open": {
+          "n": 78,
+          "disposition_accuracy": 0.654
+        },
+        "pinhole": {
+          "n": 18,
+          "disposition_accuracy": 0.944
+        },
+        "short": {
+          "n": 51,
+          "disposition_accuracy": 0.353
+        },
+        "spur": {
+          "n": 21,
+          "disposition_accuracy": 1.0
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.619,
+      "pass^k": 0.361,
+      "avg_latency_ms": 52641.8,
+      "total_tokens": 391022,
+      "total_cost_usd": 0,
+      "boards": 30,
+      "board_disposition_accuracy": 0.733,
+      "self_contradictions": 0
+    }
+  },
+  "kimi-k3-1-pro": {
+    "board": {
+      "tasks": 180,
+      "scored": 180,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.339,
+      "type_accuracy": 0.611,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.0,
+      "false_alarm_rate": 0.767,
+      "recall_by_worst": {
+        "copper": {
+          "n": 3,
+          "disposition_accuracy": 1.0
+        },
+        "none": {
+          "n": 90,
+          "disposition_accuracy": 0.233
+        },
+        "open": {
+          "n": 81,
+          "disposition_accuracy": 0.42
+        },
+        "short": {
+          "n": 6,
+          "disposition_accuracy": 0.5
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.533,
+      "pass^k": 0.15,
+      "avg_latency_ms": 37293.2,
+      "total_tokens": 852540,
+      "total_cost_usd": 0,
+      "self_contradictions": 0
+    },
+    "crop": {
+      "tasks": 441,
+      "scored": 441,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.469,
+      "type_accuracy": 0.429,
+      "inconsistent_rate": 0.0,
+      "missed_defect_rate": 0.056,
+      "false_alarm_rate": 0.838,
+      "recall_by_worst": {
+        "copper": {
+          "n": 27,
+          "disposition_accuracy": 0.704
+        },
+        "mousebite": {
+          "n": 36,
+          "disposition_accuracy": 0.861
+        },
+        "none": {
+          "n": 210,
+          "disposition_accuracy": 0.162
+        },
+        "open": {
+          "n": 78,
+          "disposition_accuracy": 0.756
+        },
+        "pinhole": {
+          "n": 18,
+          "disposition_accuracy": 0.889
+        },
+        "short": {
+          "n": 51,
+          "disposition_accuracy": 0.549
+        },
+        "spur": {
+          "n": 21,
+          "disposition_accuracy": 0.952
+        }
+      },
+      "trials_per_task": 3,
+      "pass@k": 0.585,
+      "pass^k": 0.367,
+      "avg_latency_ms": 24416.7,
+      "total_tokens": 1409065,
+      "total_cost_usd": 0,
+      "boards": 30,
+      "board_disposition_accuracy": 0.9,
+      "self_contradictions": 0
+    }
+  }
+}

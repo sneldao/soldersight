@@ -1,0 +1,78 @@
+{
+  "claude-sonnet-5-5": {
+    "board": {
+      "tasks": 90,
+      "scored": 90,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.233,
+      "type_accuracy": 0.922,
+      "inconsistent_rate": 0.478,
+      "missed_defect_rate": 0.044,
+      "false_alarm_rate": null,
+      "trials_per_task": 3,
+      "pass@k": 0.367,
+      "pass^k": 0.067,
+      "avg_latency_ms": 4866.3,
+      "total_tokens": 98771,
+      "total_cost_usd": 0,
+      "self_contradictions": 26
+    }
+  },
+  "gemini-3-1-pro": {
+    "board": {
+      "tasks": 90,
+      "scored": 90,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.689,
+      "type_accuracy": 1.0,
+      "inconsistent_rate": 0.022,
+      "missed_defect_rate": 0.0,
+      "false_alarm_rate": null,
+      "trials_per_task": 3,
+      "pass@k": 0.733,
+      "pass^k": 0.633,
+      "avg_latency_ms": 3162.1,
+      "total_tokens": 114714,
+      "total_cost_usd": 0,
+      "self_contradictions": 1
+    }
+  },
+  "gpt-5-5": {
+    "board": {
+      "tasks": 90,
+      "scored": 90,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.1,
+      "type_accuracy": 1.0,
+      "inconsistent_rate": 0.244,
+      "missed_defect_rate": 0.0,
+      "false_alarm_rate": null,
+      "trials_per_task": 3,
+      "pass@k": 0.2,
+      "pass^k": 0.033,
+      "avg_latency_ms": 8381.8,
+      "total_tokens": 99607,
+      "total_cost_usd": 0,
+      "self_contradictions": 0
+    }
+  },
+  "gpt-5-mini": {
+    "board": {
+      "tasks": 90,
+      "scored": 90,
+      "invalid_output_rate": 0.0,
+      "disposition_accuracy": 0.022,
+      "type_accuracy": 0.822,
+      "inconsistent_rate": 0.278,
+      "missed_defect_rate": 0.056,
+      "false_alarm_rate": null,
+      "trials_per_task": 3,
+      "pass@k": 0.033,
+      "pass^k": 0.0,
+      "avg_latency_ms": 2192.6,
+      "total_tokens": 60367,
+      "total_cost_usd": 0.0252,
+      "self_contradictions": 9
+    }
+  }
+}

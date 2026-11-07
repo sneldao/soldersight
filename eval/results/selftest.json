@@ -1,0 +1,122 @@
+{
+  "checks": [
+    [
+      "reference/board disposition_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "reference/board type_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "reference/board missed_defect_rate == 0.0",
+      true,
+      0.0
+    ],
+    [
+      "reference/crop disposition_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "reference/crop type_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "reference/crop missed_defect_rate == 0.0",
+      true,
+      0.0
+    ],
+    [
+      "null/board missed_defect_rate == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "null/crop missed_defect_rate == 1.0",
+      true,
+      1.0
+    ]
+  ],
+  "report": {
+    "null-baseline": {
+      "board": {
+        "tasks": 30,
+        "scored": 30,
+        "invalid_output_rate": 0.0,
+        "disposition_accuracy": 0.0,
+        "type_accuracy": 0.0,
+        "inconsistent_rate": 0.0,
+        "missed_defect_rate": 1.0,
+        "false_alarm_rate": null,
+        "trials_per_task": 1,
+        "pass@k": null,
+        "pass^k": null,
+        "avg_latency_ms": 0.0,
+        "total_tokens": 0,
+        "total_cost_usd": 0,
+        "self_contradictions": 0
+      },
+      "crop": {
+        "tasks": 147,
+        "scored": 147,
+        "invalid_output_rate": 0.0,
+        "disposition_accuracy": 0.476,
+        "type_accuracy": 0.476,
+        "inconsistent_rate": 0.0,
+        "missed_defect_rate": 1.0,
+        "false_alarm_rate": 0.0,
+        "trials_per_task": 1,
+        "pass@k": null,
+        "pass^k": null,
+        "avg_latency_ms": 0.0,
+        "total_tokens": 0,
+        "total_cost_usd": 0,
+        "boards": 30,
+        "board_disposition_accuracy": 0.0,
+        "self_contradictions": 0
+      }
+    },
+    "reference": {
+      "board": {
+        "tasks": 30,
+        "scored": 30,
+        "invalid_output_rate": 0.0,
+        "disposition_accuracy": 1.0,
+        "type_accuracy": 1.0,
+        "inconsistent_rate": 0.0,
+        "missed_defect_rate": 0.0,
+        "false_alarm_rate": null,
+        "trials_per_task": 1,
+        "pass@k": null,
+        "pass^k": null,
+        "avg_latency_ms": 0.0,
+        "total_tokens": 0,
+        "total_cost_usd": 0,
+        "self_contradictions": 0
+      },
+      "crop": {
+        "tasks": 147,
+        "scored": 147,
+        "invalid_output_rate": 0.0,
+        "disposition_accuracy": 1.0,
+        "type_accuracy": 1.0,
+        "inconsistent_rate": 0.0,
+        "missed_defect_rate": 0.0,
+        "false_alarm_rate": 0.0,
+        "trials_per_task": 1,
+        "pass@k": null,
+        "pass^k": null,
+        "avg_latency_ms": 0.0,
+        "total_tokens": 0,
+        "total_cost_usd": 0,
+        "boards": 30,
+        "board_disposition_accuracy": 0.9,
+        "self_contradictions": 0
+      }
+    }
+  }
+}
