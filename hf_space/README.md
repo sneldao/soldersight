@@ -73,4 +73,4 @@ https://github.com/sneldao/soldersight — full app (FastAPI + React), tests, an
 
 ---
 
-Built for Mubit Night Shift Hackathon (London, Oct 23–25, 2026).
+Verdicts by Mubit's Banyan Sapling.

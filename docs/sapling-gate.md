@@ -1,6 +1,6 @@
 # The Policy Gate — Banyan Sapling as SolderSight's safety check
 
-**Side Quest: The "Policy" Challenge.** Sapling doing the hard part, on a realistic input.
+Sapling doing the hard part, on a realistic input.
 
 ## Trace audit — the model's own words vs the decision to ship (no answer key)
 

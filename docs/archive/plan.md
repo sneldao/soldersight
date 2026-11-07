@@ -177,7 +177,7 @@ The same iso figures double as the expo-table interactive and HF Space artifact.
 ## Hugging Face Space — DEPLOYED
 
 **Live:** https://huggingface.co/spaces/Papajams/soldersight-sapling — see
-[`docs/huggingface_strategy.md`](huggingface_strategy.md) for the as-built writeup.
+[`docs/huggingface_strategy.md`](../huggingface_strategy.md) for the as-built writeup.
 
 Two facts changed the plan below: HF now paywalls **Gradio** Spaces behind PRO (only
 **static** Spaces are free), and the Sapling endpoint allows browser (CORS) calls — so

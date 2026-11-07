@@ -249,7 +249,7 @@ is the check that catches them. Two verifications:
 Sapling is called **live** (no auth on the research-preview endpoint). If it's cold,
 the app shows a **cached real verdict** — never a fabricated one.
 
-**Repo:** [{REPO_URL}]({REPO_URL}) · Built for Mubit Night Shift (London, Oct 2026).
+**Repo:** [{REPO_URL}]({REPO_URL}) · Verdicts by Mubit's Banyan Sapling.
 """
 
 THEME = gr.themes.Soft(primary_hue="blue", neutral_hue="slate")

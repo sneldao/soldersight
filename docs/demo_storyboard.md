@@ -43,5 +43,5 @@
 
 ## Live artifact reuse
 
-The same HTML figures are the HF Space / expo-table interactive —
+The same HTML figures are the HF Space interactive —
 `?demo` autoplays; click/space drives them manually. Zero network needed.

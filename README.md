@@ -1,4 +1,42 @@
-# SolderSight — Visual PCB Defect Triage (Mubit Hackathon Entry)
+# SolderSight — PCB Defect Triage and Evaluation
+
+## The eval: can frontier vision models inspect PCBs?
+
+[`eval/`](eval/) is a self-contained, deterministically graded benchmark of PCB
+defect triage on the expert-labelled [DeepPCB](https://github.com/tangsanli5201/DeepPCB)
+dataset: **207 tasks, two suites (whole board, defect crop), 7 frontier models × 3 trials
+(4,345 graded trials).** The answer is `defect_type` + `severity` + `disposition`
+(`pass` / `rework` / `scrap`) + `confidence`, checked against expert labels by code. No
+LLM judge, and reference answers prove every task solvable (`eval/selftest.py`).
+
+| | whole board (60 tasks) | defect crop (147 tasks) |
+|---|---|---|
+| Disposition accuracy, 7 models | **0.26 – 0.44** | 0.40 – 0.72 |
+| Constant "pass" answer | 0.50 | 0.48 |
+| False-alarm rate on clean inputs | 0.21 – 0.89 | 0.32 – 0.995 |
+
+- Every model scores **below the constant-answer floor** on whole boards. They rarely say
+  "no defect" on a bad board, but they over-flag clean ones and name a benign defect
+  (`pinhole`, `spur`) where a fatal one (`short`, `open`) sits, turning a `scrap` into a
+  `rework`.
+- Magnified crops help (board verdicts aggregated from crops reach 0.60 – 0.97) but do not fix
+  the false alarms.
+- Stated confidence is informative within most models (per-model AUC 0.70 – 0.84, one at
+  chance) but not comparable across them: Gemini states ≥ 0.90 on 617 of 621 trials at 57%
+  accuracy.
+
+Start with [`eval/README.md`](eval/README.md) (task design, grader, results, repro) and
+[`eval/SUBMISSION.md`](eval/SUBMISSION.md). To reproduce the numbers from the committed
+predictions, with no API key:
+
+```bash
+pip install -r eval/requirements.txt
+python eval/selftest.py                                   # grader accepts references, rejects a null model
+python eval/grader.py --predictions eval/results/predictions_*.jsonl --report /tmp/report.md
+python eval/calibration.py                                # per-model confidence AUC + baselines
+```
+
+## The SolderSight app
 
 A visual quality-inspection agent for PCB manufacturing. **Recurring task:** a PCB
 photo → defect type + severity + disposition (pass / rework / scrap). **Corrections
@@ -12,15 +50,12 @@ Mubit records every call (`mreq_…` ids are printed per crop), and the two task
 separable in the console by their instructions. There is no hidden fine-tune in this
 story: what an inspector teaches is visible as a prompt, and provable as a number.
 
-Built for **Night Shift: $65K Mubit Hackathon** (London, Oct 23–25, 2026).
-
 ## What the Demo Shows (1:46)
 
 **Video:** `video/demo/out/soldersight-demo.mp4` (1920×1080 · 30fps · H.264/AAC · 1:46).
 The MP4 is a build artefact kept out of git (the repo caps files at 500 KB); rebuild it with
 `python3 video/demo/stage.py` (cut list: [`video/demo/edl.md`](video/demo/edl.md), voice-over:
-[`video/demo/narration.md`](video/demo/narration.md)). The submitted copy is the one uploaded
-with the entry. Public copy: https://youtu.be/mDsO856kxaU.
+[`video/demo/narration.md`](video/demo/narration.md)). Public copy: https://youtu.be/mDsO856kxaU.
 
 Every shot is the real app (Triage + Foundry tabs) on real DeepPCB boards — no mock-ups. When
 the live APIs were overloaded we used the same recorded paths the app ships with
@@ -69,14 +104,15 @@ benchmark.
 
 ## Why crops, not whole boards
 
-A 640×640 DeepPCB board carries 30–55px defects: at whole-board scale a vision model
-calls a scrap board "no visible defects" with 90% confidence. SolderSight diffs the
+A 640×640 DeepPCB board carries 30–55px defects: at whole-board scale frontier vision
+models misjudge both bad and clean boards (see the eval above: 0.26 – 0.44 disposition
+accuracy, under a constant-answer floor). SolderSight diffs the
 board against its known-good template on an 8×8 grid (`backend/inspection.py`), keeps
 the cells that changed, and upscales each to a 480px crop — so the model sees copper,
 not a thumbnail. Every verdict records the region and the exact crop it was given
 (`GET /crop/{board_id}/{index}`).
 
-## Policy gate — Banyan Sapling (side quest: The "Policy" Challenge)
+## Policy gate — Banyan Sapling
 
 The vision model only *proposes* a disposition, and the cheap baseline demonstrably
 clears defective boards as "pass". Before a board ships, SolderSight puts that
@@ -133,25 +169,16 @@ Sapling verdicts) for zero-latency stage playback, with a **Run Live Engine** to
 live browser execution. See [`docs/foundry_plan.md`](docs/foundry_plan.md) and
 [`data/foundry/demo_script.md`](data/foundry/demo_script.md).
 
-## Tracks hit
-- **Recurring tasks** — defect triage (classify + disposition) and iterative DRC layout/repair.
-- **Own your intelligence layer** — two tasks over the same crops, quality/cost/latency side by side, plus calibrated open-weight Sapling verification.
-- **Fast refresh** — a new defect name in one correction joins the taxonomy immediately; in Foundry, a one-line brief evolves a clean PCB layout in seconds.
-
-## Judging (equally weighted)
-Use of Mubit · Usefulness · Technical execution · Demo. Code freeze Sun 25 Oct 05:00 GMT;
-expo judging 05:30 GMT; finalist stage demos 12:30 GMT; awards 13:30 GMT.
-
 ## Docs
+- [`eval/README.md`](eval/README.md) — the PCB defect eval: task design, grader, results, reproduction.
 - [`docs/README.md`](docs/README.md) — full documentation index.
 - [`docs/foundry_plan.md`](docs/foundry_plan.md) — SolderSight Foundry 3-lane architecture (`foundry/core`, `foundry/ui`, `foundry/intel`).
 - [`data/foundry/demo_script.md`](data/foundry/demo_script.md) — 2-minute live stage script (4 beats).
 - [`docs/sapling-gate.md`](docs/sapling-gate.md) — Banyan Sapling trace audit (no answer key) & policy gate.
 - [`docs/huggingface_strategy.md`](docs/huggingface_strategy.md) — deployed static + live CORS Hugging Face Space.
-- [`docs/expo_test_plan.md`](docs/expo_test_plan.md) — expo table runbook & fallback checklist.
-- [`docs/plan.md`](docs/plan.md) — original 42-hour build plan & architecture.
+- [`docs/archive/`](docs/archive/) — original build plan and event-era runbooks (historical).
 
-## Setup (during the event)
+## Setup (app)
 1. Copy `.env.example` → `.env` and fill in `MUBIT_API_KEY` (your OpenAI key stays in the
    Mubit console under **Provider keys**; the starter credit works too).
 2. Data: nothing to download. `data/deeppcb/` carries a committed 30-pair subset of the
@@ -180,7 +207,7 @@ Install: `pre-commit install`. Run manually: `pre-commit run --all-files`.
 
 ## Status
 
-Core build + SolderSight Foundry complete (Oct 25).
+App: core build + SolderSight Foundry complete. Eval: complete, with committed results and a zip packaged by `eval/package.sh`.
 - **Backend:** concurrent per-region triage with per-crop failure isolation and confidence-weighted board verdict, corrections→instructions adaptation with append-only rule disabling, compare, metrics, benchmark, and Banyan Sapling policy gate + trace audit (`inspection.py`, `sapling.py`); **42 backend tests pass**.
 - **Foundry (`frontend/src/foundry/` + `data/foundry/`):**
   - `foundry/core`: deterministic A\* router, IPC-2221 DRC scorer, seeded evolutionary loop (`evolve()`), and autonomous defect repair (`heal()`).

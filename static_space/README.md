@@ -29,4 +29,4 @@ and serve as the fallback if the endpoint is cold — nothing here is fabricated
 Open weights (Apache-2.0): [MubitLabs/banyan-sapling](https://huggingface.co/MubitLabs/banyan-sapling).
 Full app, tests, and CLI demos: [github.com/sneldao/soldersight](https://github.com/sneldao/soldersight).
 
-Built for Mubit Night Shift Hackathon (London, Oct 2026).
+Verdicts by Mubit's Banyan Sapling.
