@@ -27,41 +27,41 @@
   background: rgba(10,18,16,.85); border: 1px solid rgba(255,64,64,.45);
 }
 .vchip .m { font-size: 15px; color: #9fc4b3; letter-spacing: .1em; }
-.vchip .v { font-size: 26px; font-weight: 800; color: #ff4040; margin-top: 4px; }
+.vchip .v { font-size: 22px; font-weight: 800; color: #ff4040; margin-top: 4px; }
 </style></head><body>
 <div class="stage">
   <div class="board-wrap" id="bw">
-    <img class="board" src="../../../eval/tasks/images/boards/00041003.jpg">
-    <div class="lesion-tag" id="lt" style="left:410px;top:390px">LESION 040×065 PX<br>OPEN CIRCUIT — FATAL</div>
+    <img class="board" src="../../../eval/tasks/images/boards/00041001.jpg">
+    <div class="lesion-tag" id="lt" style="left:560px;top:312px">LESION 031×042 PX<br>OPEN CIRCUIT — FATAL</div>
   </div>
   <div class="verdict-row" id="vr">
-    <div class="vchip"><div class="m">claude-opus</div><div class="v">✗</div></div>
-    <div class="vchip"><div class="m">claude-sonnet</div><div class="v">✗</div></div>
-    <div class="vchip"><div class="m">gemini-3.1</div><div class="v">✗</div></div>
-    <div class="vchip"><div class="m">gpt-5.5</div><div class="v">✗</div></div>
-    <div class="vchip"><div class="m">gpt-5-mini</div><div class="v">✗</div></div>
-    <div class="vchip"><div class="m">grok-4.7</div><div class="v">✗</div></div>
-    <div class="vchip"><div class="m">kimi-k3.1</div><div class="v">✗</div></div>
+    <div class="vchip"><div class="m">claude-opus</div><div class="v">REWORK</div></div>
+    <div class="vchip"><div class="m">claude-sonnet</div><div class="v">REWORK</div></div>
+    <div class="vchip"><div class="m">gemini-3.1</div><div class="v">REWORK</div></div>
+    <div class="vchip"><div class="m">gpt-5.5</div><div class="v">REWORK</div></div>
+    <div class="vchip"><div class="m">gpt-5-mini</div><div class="v">REWORK</div></div>
+    <div class="vchip"><div class="m">grok-4.7</div><div class="v">REWORK</div></div>
+    <div class="vchip"><div class="m">kimi-k3.1</div><div class="v">REWORK</div></div>
   </div>
 </div>
 <script src="scene.js"></script><script>
 hud("FIG 1 — THE SCAN");
 const vr = $("#vr"), lt = $("#lt");
 vr.style.opacity = 0; vr.style.transition = "opacity .6s";
-// 640px annotation -> 880px display: defect open at 335,265-374,330, center ~354,297
+// 640px annotation -> 880px display: the one "open" is at 540,140-571,182, center ~555,161
 const S = 880 / 640;
 seq(
   [400, () => sweep()],
   [3400, () => sweep()],
-  [6200, () => {                       // reticle locks the lesion
+  [5200, () => {                       // reticle locks the lesion
     const r = $("#bw").getBoundingClientRect();
-    reticleAt(r.left + 354 * S, r.top + 297 * S, 1.25);
+    reticleAt(r.left + 555 * S, r.top + 161 * S, 1.25);
   }],
-  [7400, () => lt.classList.add("on")],
-  [8600, () => stampAt(1080, 150, "GROUND TRUTH: SCRAP")],
-  [11500, () => { reticleOff(); vr.style.opacity = 1; }],
-  [12000, () => on(".vchip")],
-  [17000, () => stampAt(820, 90, "7 / 7 WRONG", true)],
+  [6800, () => lt.classList.add("on")],
+  [7900, () => stampAt(1080, 150, "GROUND TRUTH: SCRAP")],
+  [9800, () => { reticleOff(); vr.style.opacity = 1; }],
+  [10400, () => $$(".vchip").forEach((e, i) => setTimeout(() => e.classList.add("on"), i * 450))],
+  [17500, () => stampAt(760, 90, "21 / 21 WRONG", true)],
 );
 run();
 </script></body></html>

@@ -16,35 +16,39 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "vo")
 SEGS = {
     "01": """This is a scan of a dead board. Somewhere in it — a forty pixel
 lesion. An open circuit. Fatal. We showed this scan to seven of the world's
-most capable vision models. Each one is a diagnostician. And every single
-one of them got the diagnosis wrong.""",
+most capable vision models, three times each. Twenty-one verdicts. Every one
+said: rework.""",
     "02": """Every board that ships — phone, car, implant — passed through an
-inspector exactly like this. The task is a diagnosis: name the lesion —
-open, short, mousebite, spur, stray copper, pinhole — then rule on
-disposition: pass, rework, scrap. The rules are in the prompt; the ground
-truth is expert-labelled DeepPCB. Two hundred and seven tasks in two
-suites: the whole board as the camera sees it, and the magnified crop a
-real pipeline sends.""",
+inspector exactly like this. The task is a diagnosis: name the lesion, then
+rule on disposition — pass, rework, scrap. The rules are in the prompt; the
+ground truth is expert-labelled DeepPCB. Eleven hundred and twenty-seven tasks
+in three suites: whole boards, magnified crops, and a wide set of ninety-two
+fresh boards, each with a clean twin.""",
     "03": """Grading is code, not judgment. The expert label is law — a trial
 passes only when the disposition matches exactly. Missed defects and false
-alarms are counted separately, across three independent trials per task.
-Reference answers prove every task solvable. A null model scores zero.
-No language-model judge anywhere in the loop.""",
+alarms are counted separately, with intervals that resample whole boards.
+Reference answers prove every task solvable. A null model scores zero. The
+clean twins are certified by a pixel-diff detector. No language-model judge
+anywhere in the loop.""",
     "04": """Here is what the seven diagnosticians did with the full-board
-scan. Disposition accuracy: forty-four percent — at best. Twenty-six percent
-at worst. Coin-flip territory, on boards that are scrap. And the failure
-runs in both directions. On defective boards, they miss the fatal lesion —
-they name a benign pinhole and recommend rework. On golden samples — boards
-with nothing wrong — they invent pathology anyway. One model condemns
-eighty-nine percent of clean boards as faulty.""",
+scan. Disposition accuracy: forty-four percent at best. Twenty-six at worst.
+Scrap boards were ruled scrap in barely a third of trials. They almost never
+call a defective board clean — they under-rule it. And they raise the alarm on
+almost everything: on golden boards with nothing wrong, one model condemns
+eighty-nine percent.""",
     "05": """Exhibit A. A short circuit. Ground truth: scrap. GPT-five-five
 writes — an isolated speck of excess copper, not forming a short. Rework.
 Confident. Wrong. Exhibit B. A pristine golden board. Grok describes — a
-clear gap, creating an open circuit. It scraps a perfect board. Exhibit C.
-Magnified, and now inventing defects: on a clean region, GPT-five-five reports
-jagged protrusions and calls for rework. It is not an isolated slip — it flags
-ninety-nine point five percent of clean crops as defective. They do not know
-what they do not know.""",
+clear gap, creating an open circuit. It scraps a perfect board. They do not
+know what they do not know.""",
+    "06r": """A fair objection: maybe it is the prompt. So we ran ninety-two
+fresh boards, each with a clean twin, under five different prompts. State the
+worst-defect rule: nothing changes. Tell the model half the boards are clean:
+false alarms fall, but real defects start slipping through. Now do what a real
+inspection line does — hand it a golden reference. Three of four models stop
+crying wolf; discrimination jumps to point nine. But the verdict does not
+follow: scrap boards are ruled scrap only two times in three, at best. A
+reference fixes noticing. It does not fix judging.""",
     "06": """So we opened the machine. Every call is on the record — the image
 it saw, the claim it made, the expert label, and the verdict. Here is Kimi,
 confident on most boards it sees. Open its most confident calls: same stated
@@ -57,11 +61,10 @@ seventy-three. The Claude models almost never say ninety. Inside most models,
 confidence does rank their own answers, roughly nought point seven to nought
 point eight on the AUC. Across models, it does not transfer. Confidence is
 not a portable safety net. Calibrate it per model, or do not lean on it.""",
-    "07": """Everything here reproduces. Two hundred and seven tasks, a
-deterministic grader, four thousand three hundred and forty-five trials of
-raw transcripts — in a three-point-six megabyte zip. One command re-runs any
-model through any OpenAI-compatible endpoint. The eval is SolderSight.
-The boards are still waiting.""",
+    "07": """Everything here reproduces. Eleven hundred and twenty-seven tasks,
+a deterministic grader, eight thousand transcripts — in a six-point-seven
+megabyte zip. One command re-runs any model through any OpenAI-compatible
+endpoint. The eval is SolderSight. The boards are still waiting.""",
 }
 
 

@@ -41,7 +41,7 @@ runner, fully reproducible offline.
   standalone runner + grader, metrics, prompt-variant ablation, frontier-model
   results.
 
-## Video — as built (4:33, cap 5:00)
+## Video — as built (4:41, cap 5:00)
 
 `video/eval/out/soldersight-eval-the-scan.mp4` — 1920x1080, H.264/AAC, burned-in
 word-timed captions. The rendered video and voice-over MP3s are build artefacts,
@@ -52,13 +52,14 @@ not committed. Rebuild with `ELEVENLABS_API_KEY=... python3 video/eval/tts.py`
 
 | Time | Beat |
 |---|---|
-| 0:00–0:22 | **The scan.** A dead board, a 40px open circuit, seven models, 7/7 wrong. |
-| 0:22–1:05 | **The task.** 207 tasks, two suites, the prompt and JSON contract, the expert label. |
-| 1:05–1:35 | **The grader.** Code not judgment; reference fixture scores 1.000, null model 0.000. |
-| 1:35–2:17 | **Board results.** Disposition accuracy 0.26–0.44; failure runs both directions. |
-| 2:17–3:09 | **Exhibits.** A missed short, a scrapped golden board, a clean crop called defective. |
-| 3:09–4:09 | **The teardown.** The eval opened up: every call on the record, and the calibration finding. |
-| 4:09–4:33 | **Repro + close.** 207 tasks, deterministic grader, 4,345 graded trials. |
+| 0:00–0:22 | **The scan.** A fatal 40px open circuit; seven models, 21 verdicts, every one says rework. |
+| 0:22–0:58 | **The task.** 1,127 tasks in three suites (board, crop, wide with clean twins), the prompt and JSON contract. |
+| 0:58–1:32 | **The grader.** Code not judgment; bootstrap intervals over boards; clean twins certified by a pixel-diff detector; reference fixture 1.000, null model 0.000. |
+| 1:32–2:04 | **Board results.** Disposition accuracy 0.26–0.44; scrap boards ruled scrap in 35% of trials; false alarms up to 0.89. |
+| 2:04–2:34 | **Exhibits.** An under-called short, a scrapped golden board. |
+| 2:34–3:18 | **Is it the prompt?** Five prompt variants on the wide suite: the worst-defect rule changes nothing, a base-rate hint trades false alarms for misses, a golden reference lifts three of four models to J 0.90–0.92, and scrap is still under-ruled. |
+| 3:18–4:18 | **The teardown.** The eval opened up: every call on the record, and the calibration finding. |
+| 4:18–4:41 | **Repro + close.** 1,127 tasks, deterministic grader, 8,027 raw transcripts, 6.7 MB zip. |
 
 ### The headline finding the video lands
 

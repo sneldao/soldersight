@@ -4,7 +4,7 @@
 .col { flex: 1; padding: 110px 60px 60px; }
 .head { font-size: 22px; letter-spacing: .3em; color: #6e8f81; text-transform: uppercase; margin-bottom: 26px; }
 .bignum { font-size: 120px; font-weight: 900; line-height: .95; color: #eafcf3; }
-.bignum small { font-size: 34px; color: #6e8f81; font-weight: 400; display:block; margin-top: 10px; letter-spacing:.1em;}
+.bignum small { min-height: 84px; font-size: 34px; color: #6e8f81; font-weight: 400; display:block; margin-top: 10px; letter-spacing:.1em;}
 .bar-row { display: flex; align-items: center; gap: 14px; margin-bottom: 15px; }
 .bar-row .nm { width: 190px; font-size: 19px; color: #9fc4b3; text-align: right; }
 .bar-track { flex: 1; height: 30px; background: rgba(61,255,160,.07); border-radius: 4px; overflow: hidden; }
@@ -17,7 +17,7 @@
 <div class="stage">
   <div class="col">
     <div class="head">BOARD SUITE — DISPOSITION ACCURACY</div>
-    <div class="bignum">0.44<small>BEST MODEL · SCRAP BOARDS ≈ COIN FLIP</small></div>
+    <div class="bignum">0.44<small id="sub1">BEST MODEL · DISPOSITION ACCURACY</small></div>
     <div class="hr"></div>
     <div id="bars"></div>
   </div>
@@ -49,11 +49,12 @@ function bars(el, rows, cls) {
 bars($("#bars"), models, "g");
 bars($("#fabars"), fa, "r");
 seq(
-  [1500, () => on("#bars .fadeable")],
-  [2000, () => $$("#bars .bar").forEach(b => b.style.width = b.dataset.w + "%")],
-  [19000, () => on("#fabars .fadeable")],
-  [19500, () => $$("#fabars .bar").forEach(b => b.style.width = b.dataset.w + "%")],
-  [23500, () => stampAt(1290, 880, "HALLUCINATION")],
+  [4200, () => on("#bars .fadeable")],
+  [4800, () => $$("#bars .bar").forEach(b => b.style.width = b.dataset.w + "%")],
+  [12500, () => { $("#sub1").innerHTML = 'SCRAP BOARDS RULED SCRAP IN <span class="red">35%</span> OF TRIALS'; }],
+  [22000, () => on("#fabars .fadeable")],
+  [22500, () => $$("#fabars .bar").forEach(b => b.style.width = b.dataset.w + "%")],
+  [28400, () => stampAt(1290, 880, "HALLUCINATION")],
 );
 run();
 </script></body></html>

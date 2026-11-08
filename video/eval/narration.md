@@ -1,86 +1,51 @@
-# "The Scan" — eval video narration (target ≈4:45, hard cap 5:00)
+# "The Scan" — eval video narration (4:41, hard cap 5:00)
 
 Voice: ElevenLabs "Keith - Warm East African Narrator" (uLfPT2jUO3X81OwnftBP),
-model v4-class. Low, measured, forensic-documentary register.
-One segment = one TTS file (vo/NN.mp3).
+model eleven_v3. Low, measured, forensic-documentary register. One segment =
+one TTS file (vo/NN.mp3). `tts.py` holds the source text; this file mirrors it
+with the visual for each scene.
 
-## 01 · Cold open — the scan (≈0:00–0:22)
-Visual: xray.html — board fills frame, scan-line sweep, zoom into defect region.
+## 01 · The scan (0:00–0:22)
+Visual: s1_xray — board 00041001 fills frame, sweep, reticle locks the single
+fatal open; seven verdict chips all read REWORK. (All 7 models x 3 trials ruled
+rework; ground truth is scrap.)
 
-[low, deliberate] This is a scan of a dead board. Somewhere in it — a forty
-pixel lesion. An open circuit. Fatal. We showed this scan to seven of the
-world's most capable vision models. Each one is a diagnostician.
-[beat] And every single one of them got the diagnosis wrong.
+This is a scan of a dead board. Somewhere in it — a forty pixel lesion. An open circuit. Fatal. We showed this scan to seven of the world's most capable vision models, three times each. Twenty-one verdicts. Every one said: rework.
 
-## 02 · The task (≈0:22–1:14)
-Visual: taskcard.html — the image beside the JSON contract; suite split
-board vs crop; tasks.jsonl line.
+## 02 · The task (0:22–0:58)
+Visual: s2_task — prompt contract, task line, defect glyphs, odometer to 1,127,
+then the three suites.
 
-In PCB quality control, triage is a diagnosis. Look at the board. Name the
-lesion — open, short, mousebite, spur, stray copper, pinhole. Then rule on
-disposition: pass, rework, or scrap. The rules are printed in the prompt —
-there is no ambiguity. Two hundred and seven tasks, drawn from the
-expert-labelled DeepPCB dataset, in two suites: the whole board, as the
-camera sees it — and the magnified crop, the way a real inspection pipeline
-isolates each flaw.
+Every board that ships — phone, car, implant — passed through an inspector exactly like this. The task is a diagnosis: name the lesion, then rule on disposition — pass, rework, scrap. The rules are in the prompt; the ground truth is expert-labelled DeepPCB. Eleven hundred and twenty-seven tasks in three suites: whole boards, magnified crops, and a wide set of ninety-two fresh boards, each with a clean twin.
 
-## 03 · The grader (≈1:14–1:44)
-Visual: grader.html — scoring flow, ref fixture pass, null-model fail.
+## 03 · The grader (0:58–1:32)
+Visual: s3_grader — scoring flow, board-clustered intervals, reference fixture,
+null model, clean twins certified by a pixel-diff detector.
 
-Grading is code, not judgment. The expert label is law — a trial passes only
-when the disposition matches exactly. Missed defects and false alarms are
-counted separately, across three independent trials per task. Reference
-answers prove every task solvable. A null model scores zero.
-[beat] No language-model judge anywhere in the loop.
+Grading is code, not judgment. The expert label is law — a trial passes only when the disposition matches exactly. Missed defects and false alarms are counted separately, with intervals that resample whole boards. Reference answers prove every task solvable. A null model scores zero. The clean twins are certified by a pixel-diff detector. No language-model judge anywhere in the loop.
 
-## 04 · Board results (≈1:44–2:26)
-Visual: metrics.html — bars animate per model (0.256–0.438 disp); FA column
-lights up (0.21–0.89).
+## 04 · Board results (1:32–2:04)
+Visual: s4_metrics — disposition accuracy bars, scrap-ruled-scrap 35%, then the
+false-alarm bars.
 
-Here is what the seven diagnosticians did with the full-board scan.
-[building] Disposition accuracy: forty-four percent — at best. Twenty-six
-percent at worst. Coin-flip territory, on boards that are scrap.
-And the failure runs in both directions. On defective boards, they miss the
-fatal lesion — they name a benign pinhole and recommend rework. On golden
-samples — boards with nothing wrong — they invent pathology anyway.
-One model condemns eighty-nine percent of clean boards as faulty.
+Here is what the seven diagnosticians did with the full-board scan. Disposition accuracy: forty-four percent at best. Twenty-six at worst. Scrap boards were ruled scrap in barely a third of trials. They almost never call a defective board clean — they under-rule it. And they raise the alarm on almost everything: on golden boards with nothing wrong, one model condemns eighty-nine percent.
 
-## 05 · Exhibits (≈2:26–3:18)
-Visual: exhibits.html — real transcript cards, verbatim quotes, red ink.
+## 05 · Exhibits (2:04–2:34)
+Visual: s5_exhibits — two transcript cards (under-called short; scrapped golden
+board).
 
-Exhibit A. A short circuit. Ground truth: scrap. GPT-five-five writes —
-"an isolated speck of excess copper... not forming a short." Rework.
-Confident. Wrong.
-Exhibit B. A pristine golden board. Grok describes — "a clear gap...
-creating an open circuit." It scraps a perfect board.
-Exhibit C. Magnified, and still blind: one model flags ninety-nine point
-five percent of clean crops as defective.
-[beat] They do not know what they do not know.
+Exhibit A. A short circuit. Ground truth: scrap. GPT-five-five writes — an isolated speck of excess copper, not forming a short. Rework. Confident. Wrong. Exhibit B. A pristine golden board. Grok describes — a clear gap, creating an open circuit. It scraps a perfect board. They do not know what they do not know.
 
-## 06 · The teardown (≈3:18–4:20)
-Visual: teardown.html — the eval opened up. Board centre, parts list right,
-calibration curve left. Every number bound to the prediction files.
+## 06 · Is it the prompt? (2:34–3:18)
+Visual: s6_reference — wide suite, Youden J for 4 models x 5 prompts; golden
+reference swaps in; scrap-ruled-scrap before/after.
 
-So we opened the machine. Every call is on the record — the image it saw, the
-claim it made, the expert label, and the verdict. Here is Kimi, confident on
-most boards it sees. Open its most confident calls: same stated confidence,
-and right and wrong sit side by side.
-[building] Now pool all seven models, four thousand three hundred and
-forty-five trials, and ask whether one confidence cut-off could be trusted.
-One thousand and twenty-seven calls were stated at ninety percent or higher.
-Three hundred and eighty-six of them were wrong. Look at who made them.
-Gemini and Kimi account for three hundred and seventy-three. The Claude models
-almost never say ninety. Inside most models, confidence does rank their own
-answers, roughly nought point seven to nought point eight on the AUC. Across
-models, it does not transfer.
-[beat] Confidence is not a portable safety net. Calibrate it per model, or do
-not lean on it.
+A fair objection: maybe it is the prompt. So we ran ninety-two fresh boards, each with a clean twin, under five different prompts. State the worst-defect rule: nothing changes. Tell the model half the boards are clean: false alarms fall, but real defects start slipping through. Now do what a real inspection line does — hand it a golden reference. Three of four models stop crying wolf; discrimination jumps to point nine. But the verdict does not follow: scrap boards are ruled scrap only two times in three, at best. A reference fixes noticing. It does not fix judging.
 
-## 07 · Repro + endcard (≈4:29–4:44)
-Visual: endcard.html — repro commands, zip contents, stat plate.
+## 07 · The teardown (3:18–4:18)
+Visual: teardown — tts.py segment "06" (calibration findings, unchanged).
 
-Everything here reproduces. Two hundred and seven tasks, a deterministic
-grader, four thousand three hundred and forty-seven trials of raw
-transcripts — in a three-point-six megabyte zip. One command re-runs any
-model through any OpenAI-compatible endpoint. [beat] The eval is
-SolderSight. The boards are still waiting.
+## 08 · Repro + endcard (4:18–4:41)
+Visual: s7_endcard — stat plate, repro commands.
+
+Everything here reproduces. Eleven hundred and twenty-seven tasks, a deterministic grader, eight thousand transcripts — in a six-point-seven megabyte zip. One command re-runs any model through any OpenAI-compatible endpoint. The eval is SolderSight. The boards are still waiting.

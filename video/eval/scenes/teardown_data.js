@@ -247,8 +247,8 @@ window.TD = {
     "open",
     "copper",
     "mousebite",
-    "spur",
-    "pinhole"
+    "pinhole",
+    "spur"
    ],
    "reason": "A small pinhole defect is visible in the copper trace.",
    "raw": "{\n  \"defect_type\": \"pinhole\",\n  \"severity\": \"minor\",\n  \"disposition\": \"rework\",\n  \"confidence\": 0.95,\n  \"reason\": \"A small pinhole defect is visible in the copper trace.\"\n}",
@@ -287,14 +287,14 @@ window.TD = {
    "said_type": "mousebite",
    "said_disp": "rework",
    "truth_disp": "scrap",
-   "truth_worst": "short",
+   "truth_worst": "open",
    "truth_types": [
-    "short",
     "open",
+    "short",
     "copper",
     "mousebite",
-    "spur",
-    "pinhole"
+    "pinhole",
+    "spur"
    ],
    "reason": "A significant mousebite defect is visible on the edge of the thick vertical trace on the left side of the image, reducing the trace width.",
    "raw": "{\n  \"defect_type\": \"mousebite\",\n  \"severity\": \"major\",\n  \"disposition\": \"rework\",\n  \"confidence\": 0.95,\n  \"reason\": \"A significant mousebite defect is visible on the edge of the thick vertical trace on the left side of the image, reducing the trace width.\"\n}",
@@ -314,8 +314,8 @@ window.TD = {
    "truth_worst": "open",
    "truth_types": [
     "open",
-    "mousebite",
     "copper",
+    "mousebite",
     "pinhole"
    ],
    "reason": "Isolated copper spot detected on the substrate.",
@@ -359,8 +359,8 @@ window.TD = {
     "open",
     "copper",
     "mousebite",
-    "spur",
-    "pinhole"
+    "pinhole",
+    "spur"
    ],
    "reason": "There is a small piece of stray copper on the board surface.",
    "raw": "{\n  \"defect_type\": \"copper\",\n  \"severity\": \"minor\",\n  \"disposition\": \"rework\",\n  \"confidence\": 0.95,\n  \"reason\": \"There is a small piece of stray copper on the board surface.\"\n}",
@@ -872,8 +872,8 @@ window.TD = {
      "open",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "The diagonal trace in the upper right is interrupted by a thin white gap near y\u2248130, which breaks continuity between the top pad and the lower pad.",
     "raw": "The image is a binarized close-up with black traces on a white background. In the upper right, a trace running diagonally from the top-right pad toward the lower pad is interrupted. A thin white band crosses the trace at about y=130, so the copper looks broken or nearly broken there. That points to an open circuit.\n\nThe small specks elsewhere look like noise or minor artifacts.\n\n```json\n{\"defect_type\":\"open\",\"severity\":\"critical\",\"disposition\":\"scrap\",\"confidence\":0.72,\"reason\":\"The diagonal trace in the upper right is interrupted by a thin white gap near y\u2248130, which breaks continuity between the top pad and the lower pad.\"}\n```",
@@ -916,8 +916,8 @@ window.TD = {
      "open",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A small pinhole defect is visible in the copper trace.",
     "raw": "{\n  \"defect_type\": \"pinhole\",\n  \"severity\": \"minor\",\n  \"disposition\": \"rework\",\n  \"confidence\": 0.95,\n  \"reason\": \"A small pinhole defect is visible in the copper trace.\"\n}",
@@ -934,14 +934,14 @@ window.TD = {
     "said_type": "short",
     "said_disp": "scrap",
     "truth_disp": "scrap",
-    "truth_worst": "short",
+    "truth_worst": "open",
     "truth_types": [
-     "short",
      "open",
+     "short",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A thin trace of copper is creating an unintended connection (short) between two separate traces.",
     "raw": "{\n  \"defect_type\": \"short\",\n  \"severity\": \"critical\",\n  \"disposition\": \"scrap\",\n  \"confidence\": 0.95,\n  \"reason\": \"A thin trace of copper is creating an unintended connection (short) between two separate traces.\"\n}",
@@ -958,14 +958,14 @@ window.TD = {
     "said_type": "short",
     "said_disp": "scrap",
     "truth_disp": "scrap",
-    "truth_worst": "short",
+    "truth_worst": "open",
     "truth_types": [
-     "short",
      "open",
+     "short",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A thin copper trace is creating an unintended connection (short) between two separate traces.",
     "raw": "{\n  \"defect_type\": \"short\",\n  \"severity\": \"critical\",\n  \"disposition\": \"scrap\",\n  \"confidence\": 0.95,\n  \"reason\": \"A thin copper trace is creating an unintended connection (short) between two separate traces.\"\n}",
@@ -982,14 +982,14 @@ window.TD = {
     "said_type": "short",
     "said_disp": "scrap",
     "truth_disp": "scrap",
-    "truth_worst": "short",
+    "truth_worst": "open",
     "truth_types": [
-     "short",
      "open",
+     "short",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A thin trace of copper is creating an unintended connection (short) between two separate traces.",
     "raw": "{\n  \"defect_type\": \"short\",\n  \"severity\": \"critical\",\n  \"disposition\": \"scrap\",\n  \"confidence\": 0.95,\n  \"reason\": \"A thin trace of copper is creating an unintended connection (short) between two separate traces.\"\n}",
@@ -1011,8 +1011,8 @@ window.TD = {
      "open",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A small pinhole defect is visible in the trace, requiring rework to ensure proper conductivity.",
     "raw": "{\n  \"defect_type\": \"pinhole\",\n  \"severity\": \"minor\",\n  \"disposition\": \"rework\",\n  \"confidence\": 0.95,\n  \"reason\": \"A small pinhole defect is visible in the trace, requiring rework to ensure proper conductivity.\"\n}",
@@ -1076,8 +1076,8 @@ window.TD = {
     "truth_worst": "open",
     "truth_types": [
      "open",
-     "mousebite",
      "copper",
+     "mousebite",
      "pinhole"
     ],
     "reason": "There is a complete break in the copper trace, creating an open circuit.",
@@ -1102,8 +1102,8 @@ window.TD = {
      "open",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "The bottom horizontal conductor has a clear break/gap, indicating an open circuit.",
     "raw": "{\"defect_type\":\"open\",\"severity\":\"critical\",\"disposition\":\"scrap\",\"confidence\":0.93,\"reason\":\"The bottom horizontal conductor has a clear break/gap, indicating an open circuit.\"}",
@@ -1125,8 +1125,8 @@ window.TD = {
      "open",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "The bottom horizontal copper trace is visibly broken by a clear gap, indicating an open circuit.",
     "raw": "{\"defect_type\":\"open\",\"severity\":\"critical\",\"disposition\":\"scrap\",\"confidence\":0.93,\"reason\":\"The bottom horizontal copper trace is visibly broken by a clear gap, indicating an open circuit.\"}",
@@ -1143,14 +1143,14 @@ window.TD = {
     "said_type": "open",
     "said_disp": "scrap",
     "truth_disp": "scrap",
-    "truth_worst": "short",
+    "truth_worst": "open",
     "truth_types": [
-     "short",
      "open",
+     "short",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A vertical copper trace near the lower-left center has a clear gap separating the conductor, indicating an open circuit.",
     "raw": "{\"defect_type\":\"open\",\"severity\":\"critical\",\"disposition\":\"scrap\",\"confidence\":0.92,\"reason\":\"A vertical copper trace near the lower-left center has a clear gap separating the conductor, indicating an open circuit.\"}",
@@ -1167,14 +1167,14 @@ window.TD = {
     "said_type": "open",
     "said_disp": "scrap",
     "truth_disp": "scrap",
-    "truth_worst": "short",
+    "truth_worst": "open",
     "truth_types": [
-     "short",
      "open",
+     "short",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A vertical copper trace near the lower-left area is visibly broken by a white gap, indicating an open circuit.",
     "raw": "{\"defect_type\":\"open\",\"severity\":\"critical\",\"disposition\":\"scrap\",\"confidence\":0.92,\"reason\":\"A vertical copper trace near the lower-left area is visibly broken by a white gap, indicating an open circuit.\"}",
@@ -1194,8 +1194,8 @@ window.TD = {
     "truth_worst": "open",
     "truth_types": [
      "open",
-     "mousebite",
      "copper",
+     "mousebite",
      "pinhole"
     ],
     "reason": "An isolated black copper speck is visible in the lower-left area away from the intended traces.",
@@ -1213,14 +1213,14 @@ window.TD = {
     "said_type": "open",
     "said_disp": "scrap",
     "truth_disp": "scrap",
-    "truth_worst": "short",
+    "truth_worst": "open",
     "truth_types": [
-     "short",
      "open",
+     "short",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A horizontal copper trace is visibly broken by a clear gap, creating an open circuit.",
     "raw": "{\"defect_type\":\"open\",\"severity\":\"critical\",\"disposition\":\"scrap\",\"confidence\":0.92,\"reason\":\"A horizontal copper trace is visibly broken by a clear gap, creating an open circuit.\"}",
@@ -1242,8 +1242,8 @@ window.TD = {
      "open",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "The long horizontal conductor near the bottom has a clear break/gap, indicating an open circuit.",
     "raw": "{\"defect_type\":\"open\",\"severity\":\"critical\",\"disposition\":\"scrap\",\"confidence\":0.92,\"reason\":\"The long horizontal conductor near the bottom has a clear break/gap, indicating an open circuit.\"}",
@@ -1260,14 +1260,14 @@ window.TD = {
     "said_type": "short",
     "said_disp": "scrap",
     "truth_disp": "scrap",
-    "truth_worst": "short",
+    "truth_worst": "open",
     "truth_types": [
-     "short",
      "open",
+     "short",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "A visible copper bridge connects two adjacent horizontal traces, creating an electrical short.",
     "raw": "{\"defect_type\":\"short\",\"severity\":\"critical\",\"disposition\":\"scrap\",\"confidence\":0.92,\"reason\":\"A visible copper bridge connects two adjacent horizontal traces, creating an electrical short.\"}",
@@ -1329,8 +1329,8 @@ window.TD = {
      "open",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "Small void/hole in the copper trace is visible near the upper left of the thick trace and appears localized and not severing the trace.",
     "raw": "{\"defect_type\":\"pinhole\",\"severity\":\"minor\",\"disposition\":\"rework\",\"confidence\":0.88,\"reason\":\"Small void/hole in the copper trace is visible near the upper left of the thick trace and appears localized and not severing the trace.\"}",
@@ -1412,14 +1412,14 @@ window.TD = {
     "said_type": "spur",
     "said_disp": "rework",
     "truth_disp": "scrap",
-    "truth_worst": "short",
+    "truth_worst": "open",
     "truth_types": [
-     "short",
      "open",
+     "short",
      "copper",
      "mousebite",
-     "spur",
-     "pinhole"
+     "pinhole",
+     "spur"
     ],
     "reason": "There are small thin copper whiskers/spurs jutting from the inner edges of some traces that could cause leakage; they are minor and repairable.",
     "raw": "{\"defect_type\":\"spur\",\"severity\":\"minor\",\"disposition\":\"rework\",\"confidence\":0.88,\"reason\":\"There are small thin copper whiskers/spurs jutting from the inner edges of some traces that could cause leakage; they are minor and repairable.\"}",

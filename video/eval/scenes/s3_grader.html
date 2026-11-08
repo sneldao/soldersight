@@ -23,20 +23,23 @@
     <div class="node card fadeable"><div class="h">expert label</div><div class="b">disposition match</div></div>
   </div>
   <div class="rules">
-    <div class="rule fadeable"><div class="n">3×</div><div class="t">TRIALS PER TASK<br>pass@k / pass^k</div></div>
+    <div class="rule fadeable"><div class="n">95%</div><div class="t">INTERVALS RESAMPLE<br>WHOLE BOARDS</div></div>
     <div class="rule fadeable"><div class="n">1.00</div><div class="t">REFERENCE SOLUTION<br>SCORES PERFECT</div></div>
     <div class="rule redr fadeable"><div class="n">0%</div><div class="t">NULL MODEL<br>MISSES 100%</div></div>
     <div class="rule fadeable"><div class="n">0</div><div class="t">LLM JUDGES<br>IN THE LOOP</div></div>
   </div>
-  <div class="bigline fadeable">every claim backed by the raw transcript in <span class="grn">predictions_*.jsonl</span></div>
+  <div class="bigline fadeable">clean twins certified by a <span class="grn">pixel-diff detector</span> — no model decides what is clean</div>
 </div>
 <script src="scene.js"></script><script>
 hud("FIG 3 — THE GRADER");
 seq(
   [500, () => on(".kicker")],
   [1500, () => on(".flow .fadeable")],
-  [7000, () => { $$(".rules .fadeable").forEach((e, i) => setTimeout(() => e.classList.add("on"), i * 380)); }],
-  [18000, () => on(".bigline")],
+  [14400, () => $$(".rules .fadeable")[0].classList.add("on")],
+  [17400, () => $$(".rules .fadeable")[1].classList.add("on")],
+  [21300, () => $$(".rules .fadeable")[2].classList.add("on")],
+  [23300, () => on(".bigline")],
+  [27600, () => $$(".rules .fadeable")[3].classList.add("on")],
 );
 run();
 </script></body></html>

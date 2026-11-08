@@ -13,13 +13,13 @@ from caplib import Recorder, new_browser  # noqa: E402
 from playwright.sync_api import sync_playwright  # noqa: E402
 
 SCENES = [
-    ("s1_xray", "s1_xray.html", 19.5),
-    ("s2_task", "s2_task.html", 43.5),
-    ("s3_grader", "s3_grader.html", 29.0),
-    ("s4_metrics", "s4_metrics.html", 41.5),
-    ("s5_exhibits", "s5_exhibits.html", 52.5),
-    ("s6_ablation", "s6_ablation.html", 38.5),
-    ("s7_endcard", "s7_endcard.html", 24.0),
+    ("s1_xray", "s1_xray.html", 22.0),
+    ("s2_task", "s2_task.html", 36.0),
+    ("s3_grader", "s3_grader.html", 33.5),
+    ("s4_metrics", "s4_metrics.html", 32.5),
+    ("s5_exhibits", "s5_exhibits.html", 30.0),
+    ("s6_reference", "s6_reference.html", 44.0),
+    ("s7_endcard", "s7_endcard.html", 23.0),
     ("teardown", "teardown.html", 59.8),
 ]
 

@@ -21,10 +21,10 @@
   <div class="word fadeable">SOLDER<i>SIGHT</i></div>
   <div class="tagline fadeable">pcb defect eval · micro1 eval hackathon</div>
   <div class="stats">
-    <div class="stat fadeable"><div class="n">207</div><div class="t">TASKS · 2 SUITES</div></div>
+    <div class="stat fadeable"><div class="n">1,127</div><div class="t">TASKS · 3 SUITES</div></div>
     <div class="stat fadeable"><div class="n">7</div><div class="t">FRONTIER MODELS</div></div>
-    <div class="stat fadeable"><div class="n">4,345</div><div class="t">TRIALS GRADED</div></div>
-    <div class="stat fadeable"><div class="n">3.6 MB</div><div class="t">SUBMISSION ZIP</div></div>
+    <div class="stat fadeable"><div class="n">8,027</div><div class="t">RAW TRANSCRIPTS</div></div>
+    <div class="stat fadeable"><div class="n">6.7 MB</div><div class="t">SUBMISSION ZIP</div></div>
   </div>
   <div class="repro fadeable">
     <span class="c">$</span> python eval/run_eval.py --model gpt-5-5 --suite all --trials 3<br>
@@ -38,9 +38,12 @@ hud("FIG 7 — SOLDERSIGHT");
 seq(
   [400, () => on(".word")],
   [1200, () => on(".tagline")],
-  [2200, () => { $$(".stat").forEach((e, i) => setTimeout(() => e.classList.add("on"), i * 320)); }],
-  [5500, () => on(".repro")],
-  [9000, () => on(".credit")],
+  [2100, () => $$(".stat")[0].classList.add("on")],
+  [3500, () => $$(".stat")[1].classList.add("on")],
+  [7100, () => $$(".stat")[2].classList.add("on")],
+  [10100, () => $$(".stat")[3].classList.add("on")],
+  [11800, () => on(".repro")],
+  [17800, () => on(".credit")],
 );
 run();
 </script></body></html>

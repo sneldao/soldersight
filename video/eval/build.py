@@ -24,6 +24,7 @@ SCENES = [
     ("s3_grader", "03", 0.4),
     ("s4_metrics", "04", 0.4),
     ("s5_exhibits", "05", 0.4),
+    ("s6_reference", "06r", 0.4),
     ("teardown", "06", 0.4),
     ("s7_endcard", "07", 0.4),
 ]
@@ -75,14 +76,15 @@ def scene_starts():
 
 STARTS = scene_starts()
 
-# SFX: (file, at_seconds, gain). Cues after the teardown are anchored to scene
-# starts so they follow the clip lengths when a scene is re-cut.
+# SFX: (file, at_seconds, gain). Every cue is anchored to its scene start so it
+# follows the clip lengths when a scene is re-cut.
 SFX = [
-    ("stamp.mp3", 8.6, 0.7),  # GROUND TRUTH: SCRAP
-    ("stamp.mp3", 17.2, 0.6),  # 7/7 WRONG
-    ("stamp.mp3", 113.0, 0.7),  # HALLUCINATION
-    ("whoosh.mp3", 136.0, 0.5),  # exhibits land
-    ("stamp.mp3", 174.5, 0.6),  # THEY DON'T KNOW
+    ("stamp.mp3", STARTS["s1_xray"] + 8.0, 0.7),  # GROUND TRUTH: SCRAP
+    ("stamp.mp3", STARTS["s1_xray"] + 17.6, 0.6),  # 21 / 21 WRONG
+    ("stamp.mp3", STARTS["s4_metrics"] + 28.5, 0.7),  # HALLUCINATION
+    ("whoosh.mp3", STARTS["s5_exhibits"] + 0.4, 0.5),  # exhibits land
+    ("stamp.mp3", STARTS["s5_exhibits"] + 26.4, 0.6),  # THEY DON'T KNOW
+    ("whoosh.mp3", STARTS["s6_reference"] + 21.6, 0.5),  # golden reference swaps in
     ("stamp.mp3", STARTS["teardown"] + 55.6, 0.6),  # CALIBRATE PER MODEL
     ("ship.mp3", STARTS["s7_endcard"] + 0.4, 0.5),  # endcard word lands
 ]

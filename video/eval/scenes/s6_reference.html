@@ -1,0 +1,124 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="scene.css">
+<style>
+.stage { position: absolute; inset: 0; display: flex; gap: 56px; padding: 100px 70px 60px 84px; }
+.left { width: 470px; display: flex; flex-direction: column; gap: 20px; }
+.right { flex: 1; display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.h2 { font-size: 18px; letter-spacing: .3em; color: #6e8f81; text-transform: uppercase; }
+.pair { display: flex; flex-direction: column; gap: 14px; }
+.pimg { position: relative; }
+.pimg img { width: 470px; height: 300px; object-fit: cover; border-radius: 8px;
+  filter: invert(1) brightness(1.1) sepia(.55) hue-rotate(95deg) saturate(1.7); }
+.pimg .lbl { position: absolute; left: 10px; top: 10px; font-size: 13px; letter-spacing: .22em;
+  color: #3dffa0; background: rgba(4,7,10,.78); padding: 4px 9px; border-radius: 4px;
+  border: 1px solid rgba(61,255,160,.3); }
+.pimg .lbl.red { color: #ff4040; border-color: rgba(255,64,64,.45); }
+.pimg .verdict { position: absolute; right: 10px; bottom: 10px; font-size: 20px; font-weight: 800;
+  padding: 6px 14px; border-radius: 6px; background: rgba(4,7,10,.85); }
+.verdict.good { color: #3dffa0; border: 2px solid #3dffa0; }
+.verdict.bad { color: #ff4040; border: 2px solid #ff4040; }
+.swap { transition: opacity .5s; }
+.hidden { opacity: 0; }
+.grid { display: grid; grid-template-columns: 175px repeat(5, 1fr); gap: 34px 14px; align-items: center; }
+.colh { font-size: 17px; letter-spacing: .16em; color: #9fc4b3; text-align: center; text-transform: uppercase;
+  opacity: 0; transition: opacity .6s; line-height: 1.35; }
+.colh small { display: block; font-size: 11px; color: #6e8f81; letter-spacing: .08em; text-transform: none; }
+.colh.on { opacity: 1; }
+.colh.hl { color: #3dffa0; }
+.rowh { font-size: 22px; color: #9fc4b3; text-align: right; padding-right: 8px; }
+.cell { opacity: 0; transition: opacity .6s; }
+.cell.on { opacity: 1; }
+.cell .track { height: 40px; background: rgba(61,255,160,.07); border-radius: 4px; overflow: hidden; }
+.cell .bar { height: 100%; width: 0; border-radius: 4px; transition: width 1s cubic-bezier(.3,0,.2,1); }
+.bar.r { background: linear-gradient(90deg, #8a1f1f, #ff4040); }
+.bar.y { background: linear-gradient(90deg, #7a5a1d, #ffc04a); }
+.bar.g { background: linear-gradient(90deg, #1d7a4f, #3dffa0); }
+.cell .v { font-size: 21px; font-weight: 700; color: #eafcf3; margin-top: 3px; text-align: right; }
+.legend { font-size: 16px; color: #6e8f81; letter-spacing: .06em; }
+.note { font-size: 28px; color: #eafcf3; opacity: 0; transition: opacity .6s; min-height: 34px; }
+.note.on { opacity: 1; }
+.scrap { display: flex; gap: 16px; opacity: 0; transition: opacity .6s; }
+.scrap.on { opacity: 1; }
+.sc { flex: 1; padding: 14px 16px; border-radius: 8px; background: rgba(10,18,16,.85);
+  border: 1px solid rgba(255,64,64,.35); text-align: center; }
+.sc .m { font-size: 14px; color: #9fc4b3; letter-spacing: .1em; }
+.sc .t { font-size: 36px; font-weight: 800; color: #eafcf3; margin-top: 6px; }
+.sc .t i { font-style: normal; color: #6e8f81; font-size: 22px; padding: 0 6px; }
+.sc .t b { color: #ff4040; }
+.closer { font-size: 44px; font-weight: 800; color: #eafcf3; opacity: 0; transition: opacity .7s; letter-spacing: .01em; }
+.closer.on { opacity: 1; }
+.closer .grn { color: #3dffa0; }
+@keyframes keep-alive { 0%{opacity:.8} 50%{opacity:1} 100%{opacity:.8} }
+.note.on, .closer.on { animation: keep-alive 3.4s ease-in-out infinite; }
+</style></head><body>
+<div class="stage">
+  <div class="left">
+    <div class="h2" id="lh">92 FRESH BOARDS · EACH WITH A CLEAN TWIN</div>
+    <div class="pair swap hidden" id="p1">
+      <div class="pimg"><img src="../../../eval/tasks/images/wide/00041052_test.jpg"><div class="lbl red">DEFECTIVE BOARD</div></div>
+      <div class="pimg"><img src="../../../eval/tasks/images/wide/00041052_clean.jpg"><div class="lbl">CLEAN TWIN · CERTIFIED BY DETECTOR</div></div>
+    </div>
+    <div class="pair swap hidden" id="p2" style="position:absolute;top:154px;left:84px">
+      <div class="pimg"><img src="../../../eval/tasks/images/wide/00041052_ref.jpg"><div class="lbl">GOLDEN REFERENCE</div></div>
+      <div class="pimg"><img src="../../../eval/tasks/images/wide/00041052_clean.jpg"><div class="lbl">BOARD UNDER TEST</div><div class="verdict good" id="vd" style="opacity:0;transition:opacity .5s">PASS ✓</div></div>
+    </div>
+  </div>
+  <div class="right">
+    <div class="h2">YOUDEN J · SAME 184 BOARDS · FIVE PROMPTS</div>
+    <div class="grid" id="grid"></div>
+    <div class="legend">J = flag rate on defective boards − flag rate on clean twins · 0 = cannot tell them apart</div>
+    <div class="note" id="note"></div>
+    <div class="scrap" id="scrap"></div>
+    <div class="closer" id="closer">A reference fixes <span class="grn">noticing</span>. It does not fix <span class="red">judging</span>.</div>
+  </div>
+</div>
+<script src="scene.js"></script><script>
+hud("FIG 6 — IS IT THE PROMPT?");
+const cols = [
+  ["production", "the shipped prompt"],
+  ["worst", "+ worst-defect rule"],
+  ["prior", "+ half are clean"],
+  ["binary", "defective: yes / no"],
+  ["paired", "+ golden reference"],
+];
+const rows = [
+  ["claude-sonnet", [.554, .543, .707, .565, .924]],
+  ["gemini-3.1",    [.435, .402, .652, .696, .902]],
+  ["gpt-5-5",       [.207, .185, .402, .250, .620]],
+  ["gpt-5-mini",    [.652, .663, .717, .880, .902]],
+];
+const g = $("#grid");
+g.insertAdjacentHTML("beforeend", `<div></div>` + cols.map(([n, s], i) =>
+  `<div class="colh${i === 4 ? " hl" : ""}" data-c="${i}">${n}<small>${s}</small></div>`).join(""));
+rows.forEach(([m, vals]) => {
+  g.insertAdjacentHTML("beforeend", `<div class="rowh">${m}</div>` + vals.map((v, i) => {
+    const cls = v >= .85 ? "g" : v >= .5 ? "y" : "r";
+    return `<div class="cell" data-c="${i}"><div class="track"><div class="bar ${cls}" data-w="${v * 100}"></div></div><div class="v">${v.toFixed(2)}</div></div>`;
+  }).join(""));
+});
+function col(i) {
+  $$(`.colh[data-c="${i}"]`).forEach(e => e.classList.add("on"));
+  $$(`.cell[data-c="${i}"]`).forEach(e => e.classList.add("on"));
+  setTimeout(() => $$(`.cell[data-c="${i}"] .bar`).forEach(b => b.style.width = b.dataset.w + "%"), 150);
+}
+function note(t) { const n = $("#note"); n.classList.remove("on"); setTimeout(() => { n.innerHTML = t; n.classList.add("on"); }, 250); }
+const scrapRows = [["claude-sonnet", 38, 65], ["gemini-3.1", 50, 70], ["gpt-5-5", 30, 66], ["gpt-5-mini", 8, 20]];
+$("#scrap").innerHTML = scrapRows.map(([m, a, b]) =>
+  `<div class="sc"><div class="m">${m}</div><div class="t">${a}%<i>→</i><b>${b}%</b></div></div>`).join("");
+seq(
+  [500, () => on("#lh")],
+  [4400, () => { $("#p1").classList.remove("hidden"); }],
+  [8800, () => col(0)],
+  [11800, () => { col(1); note("state the rule — <span class='red'>nothing changes</span>"); }],
+  [14600, () => col(2)],
+  [17400, () => { col(3); note("tell it half are clean — <span style='color:#ffc04a'>false alarms fall, misses appear</span>"); }],
+  [21500, () => {
+    $("#p1").classList.add("hidden"); $("#p2").classList.remove("hidden");
+    $("#lh").textContent = "THE GOLDEN REFERENCE · AS A REAL LINE USES IT";
+    col(4); note("");
+  }],
+  [26300, () => { $("#vd").style.opacity = 1; note("3 of 4 models: J <span class='grn'>0.90 – 0.92</span>"); }],
+  [31200, () => { note("<span class='red'>but the verdict does not follow</span> — scrap ruled scrap, before → with reference"); on("#scrap"); }],
+  [38000, () => { note(""); on("#closer"); }],
+);
+run();
+</script></body></html>

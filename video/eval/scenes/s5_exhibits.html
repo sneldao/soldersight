@@ -23,7 +23,7 @@
   <div class="exhibit" id="exA">
     <img src="../../../eval/tasks/images/boards/00041002.jpg">
     <div class="body">
-      <div class="ex">EXHIBIT A — THE MISSED LESION</div>
+      <div class="ex">EXHIBIT A — THE UNDER-CALLED LESION</div>
       <div class="who">gpt-5-5 · board:00041002 · trial 0</div>
       <div class="quote redq">"An isolated speck of excess copper is present in the
         insulating area between traces — not forming a short."</div>
@@ -46,20 +46,6 @@
       </div>
     </div>
   </div>
-  <div class="exhibit" id="exC">
-    <img src="../../../eval/tasks/images/crops/00041001_0.jpg">
-    <div class="body">
-      <div class="ex">EXHIBIT C — MAGNIFIED, AND INVENTING DEFECTS</div>
-      <div class="who">gpt-5-5 · crop:00041001:0 · a clean region, magnified</div>
-      <div class="quote redq">"The copper trace has noticeable jagged protrusions along
-        its edge without forming a short or open circuit."</div>
-      <div class="verdict">
-        <span class="vpill out">model: spur → REWORK</span>
-        <span class="vpill truth">truth: NONE → PASS</span>
-        <span class="stat">FA 0.995</span>
-      </div>
-    </div>
-  </div>
 </div>
 <style>
 /* keep-painting: the CDP screencast only emits frames on paint, so long static
@@ -71,9 +57,8 @@
 hud("FIG 5 — THE EVIDENCE");
 seq(
   [500, () => on("#exA")],
-  [14000, () => { off("#exA"); on("#exB"); }],
-  [29000, () => { off("#exB"); on("#exC"); }],
-  [47000, () => stampAt(700, 120, "THEY DON'T KNOW")],
+  [14900, () => { off("#exA"); on("#exB"); }],
+  [26300, () => stampAt(700, 120, "THEY DON'T KNOW")],
 );
 run();
 </script></body></html>

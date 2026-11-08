@@ -52,6 +52,10 @@
 .hero .crop img{width:100%;height:100%;object-fit:cover;filter:invert(1) brightness(1.1) sepia(.55) hue-rotate(95deg) saturate(1.7);transform:scale(3.2) translate(-18%,-12%)}
 .hero .crop .lbl{position:absolute;bottom:4px;left:6px;font-size:9px;letter-spacing:.18em;color:#5fd7ff}
 .odo{font-variant-numeric:tabular-nums}
+.suites{display:flex;flex-direction:column;gap:6px}
+.sc{font-size:16px;color:#9fc4b3;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
+.sc.on{opacity:1;transform:none}
+.sc b{color:#3dffa0;letter-spacing:.14em;display:inline-block;min-width:74px}
 .tri{display:flex;flex-direction:column;gap:4px;opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s}
 .tri.on{opacity:1;transform:none}
 .tri .r{display:flex;align-items:center;gap:10px;font-size:15px;color:#9fc4b3}
@@ -86,9 +90,11 @@
       "mousebite"/"spur"/"copper"/"pinhole" → rework · "none" → pass</div>
     <div class="card fadeable"><div class="h">tasks/tasks.jsonl — image + expert label</div>
       <div class="taskline" id="tl"></div></div>
-    <div class="counter fadeable"><span class="odo" id="odo">000</span><small>tasks</small></div>
-    <div class="tri fadeable" id="tri">
-      <div class="r"><span class="n" id="t1">0</span><span class="eq">tasks ×</span><span class="n">2</span><span class="eq">suites ×</span><span class="n">3</span><span class="eq">trials =</span><span class="tot" id="tot">0</span><span class="eq">gradings</span></div>
+    <div class="counter fadeable"><span class="odo" id="odo">0</span><small>tasks</small></div>
+    <div class="suites" id="suites">
+      <div class="sc" id="scA"><b>BOARD</b> 60 tasks · whole board, 640px</div>
+      <div class="sc" id="scB"><b>CROP</b> 147 tasks · magnified, as a pipeline sends</div>
+      <div class="sc" id="scC"><b>WIDE</b> 920 tasks · 92 boards + 92 clean twins × 5 prompts</div>
     </div>
   </div>
   <div class="right">
@@ -101,8 +107,8 @@
       </div>
       <div class="crop" id="crop"><img src="../../../eval/tasks/images/boards/00041002.jpg" alt=""><div class="lbl">×3.2 · pipeline-isolated</div></div>
     </div>
-    <div class="wall fadeable" id="wall"><div class="v">WITNESSES · 12 / 207</div><div class="grid" id="grid"></div><div class="grain"></div></div>
-    <div class="line fadeable">whole boards at 640px — and the magnified crops a real pipeline sends</div>
+    <div class="wall fadeable" id="wall"><div class="v">WITNESSES · 12 / 1,127</div><div class="grid" id="grid"></div><div class="grain"></div></div>
+    <div class="line fadeable">whole boards, the magnified crops a real pipeline sends — and a wide set that tests the prompt</div>
   </div>
 </div>
 <div class="sweep" id="sweep"></div>
@@ -128,10 +134,9 @@ seq(
   [2200, () => on(".left .card")],
   [3200, () => typeIn($("#pj"), prompt, 110)],
   [17500, () => typeIn($("#tl"), taskline, 130)],
-  [23000, () => on(".policy")],
-  [28000, () => on(".counter")],
-  [30000, () => on(".line"), ],
-  [36000, () => on(".fadeable")],
+  [12500, () => on(".policy")],
+  [21800, () => on(".counter")],
+  [31500, () => on(".line")],
 );
 // Pass 1 wiring
 function sweep(){const s=$("#sweep");s.classList.remove("on");void s.offsetWidth;s.classList.add("on");}
@@ -140,9 +145,12 @@ setInterval(()=>{frame=(frame+3)%1243;const fr=$("#fr");if(fr)fr.textContent=Str
 const btnA=$("#btnA"),btnB=$("#btnB"),crop=$("#crop"),hero=$("#hero"),mag=$("#mag");
 if(btnA)btnA.addEventListener("click",()=>{btnA.classList.add("active");btnB.classList.remove("active");crop.classList.remove("on");hero.classList.remove("zoom");if(mag)mag.textContent="×1.0";});
 if(btnB)btnB.addEventListener("click",()=>{btnB.classList.add("active");btnA.classList.remove("active");crop.classList.add("on");hero.classList.add("zoom");(function(){let s=null;function step(ts){if(!s)s=ts;const p=Math.min(1,(ts-s)/1200);const e=1-Math.pow(1-p,3);if(mag)mag.textContent="×"+(1.0+2.2*e).toFixed(1);if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);})();});
-function rollOdo(to,dur){const el=$("#odo");if(!el)return;let s=null;function step(ts){if(!s)s=ts;const p=Math.min(1,(ts-s)/dur);const e=1-Math.pow(1-p,3);el.textContent=String(Math.round(to*e)).padStart(3,"0");if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
-// trigger zoom+odo after counter time
-setTimeout(()=>{if(hero)hero.classList.add("zoom");if(crop)crop.classList.add("on");if(btnB){btnB.classList.add("active");btnA.classList.remove("active");}rollOdo(207,1200);const tri=$("#tri");if(tri)tri.classList.add("on");const t1=$("#t1");if(t1)t1.textContent="207";const tot=$("#tot");if(tot)tot.textContent="1242";const ret=$("#ret");if(ret)ret.classList.add("on");},24000);
+function rollOdo(to,dur){const el=$("#odo");if(!el)return;let s=null;function step(ts){if(!s)s=ts;const p=Math.min(1,(ts-s)/dur);const e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e).toLocaleString("en-US");if(p<1)requestAnimationFrame(step);}requestAnimationFrame(step);}
+// narration-locked reveals: count, then board suite, crop suite (zoom), wide suite
+setTimeout(()=>rollOdo(1127,1400),22000);
+setTimeout(()=>$("#scA").classList.add("on"),24800);
+setTimeout(()=>{$("#scB").classList.add("on");if(hero)hero.classList.add("zoom");if(crop)crop.classList.add("on");if(btnB){btnB.classList.add("active");btnA.classList.remove("active");}const ret=$("#ret");if(ret)ret.classList.add("on");},26800);
+setTimeout(()=>$("#scC").classList.add("on"),29000);
 // defect glyphs
 const gdata=[{name:"open",d:"M4,13 L22,13 M13,4 L13,22"},{name:"short",d:"M4,4 L22,22 M22,4 L4,22"},{name:"mousebite",d:"M4,13 Q13,4 22,13 Q13,22 4,13"},{name:"spur",d:"M4,13 L16,13 L20,6"},{name:"copper",d:"M6,6 L20,6 L20,20 L6,20 Z"},{name:"pinhole",d:"M13,13 m-3,0 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0"}];
 const gwrap=$("#glyphs");
