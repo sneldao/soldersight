@@ -1,0 +1,780 @@
+{
+  "boards": 92,
+  "tasks": 920,
+  "variants": [
+    "production",
+    "worst",
+    "prior",
+    "binary",
+    "paired"
+  ],
+  "groups": {
+    "group00041": 6,
+    "group12100": 1,
+    "group13000": 37,
+    "group20085": 17,
+    "group44000": 6,
+    "group77000": 16,
+    "group90100": 2,
+    "group92000": 7
+  },
+  "worst_type": {
+    "open": 44,
+    "short": 6,
+    "copper": 35,
+    "mousebite": 6,
+    "pinhole": 1
+  },
+  "disposition": {
+    "scrap": 50,
+    "rework": 42,
+    "pass_clean_twins": 92
+  },
+  "repair_pad_px": 10,
+  "clean_twin_check": {
+    "detector_threshold": 5.0,
+    "defective_min_max_cell_delta": 0.0,
+    "defective_boards_over_threshold": 86,
+    "clean_max_max_cell_delta": 0.0,
+    "clean_boards_under_threshold": 92,
+    "boards": 92
+  },
+  "per_board": [
+    {
+      "board_id": "00041052",
+      "group": "group00041",
+      "worst": "open",
+      "n_defects": 9,
+      "max_cell_delta_defective": 11.74,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "00041113",
+      "group": "group00041",
+      "worst": "open",
+      "n_defects": 7,
+      "max_cell_delta_defective": 8.18,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "00041137",
+      "group": "group00041",
+      "worst": "open",
+      "n_defects": 9,
+      "max_cell_delta_defective": 15.98,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "00041210",
+      "group": "group00041",
+      "worst": "open",
+      "n_defects": 5,
+      "max_cell_delta_defective": 26.44,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "00041214",
+      "group": "group00041",
+      "worst": "open",
+      "n_defects": 5,
+      "max_cell_delta_defective": 21.77,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "00041218",
+      "group": "group00041",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 17.82,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "12100123",
+      "group": "group12100",
+      "worst": "open",
+      "n_defects": 4,
+      "max_cell_delta_defective": 22.14,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000001",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 8,
+      "max_cell_delta_defective": 11.08,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000042",
+      "group": "group13000",
+      "worst": "short",
+      "n_defects": 4,
+      "max_cell_delta_defective": 24.55,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000070",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 5,
+      "max_cell_delta_defective": 9.62,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000089",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 5,
+      "max_cell_delta_defective": 26.36,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000111",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 3,
+      "max_cell_delta_defective": 13.43,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000112",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 32.73,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000113",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 5,
+      "max_cell_delta_defective": 23.36,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000114",
+      "group": "group13000",
+      "worst": "mousebite",
+      "n_defects": 4,
+      "max_cell_delta_defective": 12.25,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000125",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 11.09,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000128",
+      "group": "group13000",
+      "worst": "short",
+      "n_defects": 4,
+      "max_cell_delta_defective": 14.33,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000129",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 9.35,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000130",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 3,
+      "max_cell_delta_defective": 12.75,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000131",
+      "group": "group13000",
+      "worst": "mousebite",
+      "n_defects": 3,
+      "max_cell_delta_defective": 7.56,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000134",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 10.79,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000143",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 11.99,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000145",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 5,
+      "max_cell_delta_defective": 14.54,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000146",
+      "group": "group13000",
+      "worst": "pinhole",
+      "n_defects": 4,
+      "max_cell_delta_defective": 13.71,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000147",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 5,
+      "max_cell_delta_defective": 10.42,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000148",
+      "group": "group13000",
+      "worst": "mousebite",
+      "n_defects": 4,
+      "max_cell_delta_defective": 13.94,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000152",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 13.06,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000153",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 5,
+      "max_cell_delta_defective": 10.88,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000158",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 9.3,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000159",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 19.58,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000179",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 4,
+      "max_cell_delta_defective": 22.89,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000180",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 6,
+      "max_cell_delta_defective": 17.34,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000181",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 7,
+      "max_cell_delta_defective": 7.27,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000188",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 11.78,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000189",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 6,
+      "max_cell_delta_defective": 8.86,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000192",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 6,
+      "max_cell_delta_defective": 11.6,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000193",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 4,
+      "max_cell_delta_defective": 10.23,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000195",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 11.64,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000200",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 6,
+      "max_cell_delta_defective": 13.69,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000206",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 4,
+      "max_cell_delta_defective": 15.34,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000207",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 9.37,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000211",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 5,
+      "max_cell_delta_defective": 17.73,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000212",
+      "group": "group13000",
+      "worst": "copper",
+      "n_defects": 5,
+      "max_cell_delta_defective": 22.17,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "13000213",
+      "group": "group13000",
+      "worst": "open",
+      "n_defects": 3,
+      "max_cell_delta_defective": 0.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085002",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 7,
+      "max_cell_delta_defective": 6.19,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085007",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 6,
+      "max_cell_delta_defective": 8.04,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085008",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 5,
+      "max_cell_delta_defective": 7.35,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085009",
+      "group": "group20085",
+      "worst": "short",
+      "n_defects": 7,
+      "max_cell_delta_defective": 11.12,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085022",
+      "group": "group20085",
+      "worst": "open",
+      "n_defects": 7,
+      "max_cell_delta_defective": 9.63,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085027",
+      "group": "group20085",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 13.72,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085034",
+      "group": "group20085",
+      "worst": "short",
+      "n_defects": 6,
+      "max_cell_delta_defective": 10.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085035",
+      "group": "group20085",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 8.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085047",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 3,
+      "max_cell_delta_defective": 5.85,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085060",
+      "group": "group20085",
+      "worst": "open",
+      "n_defects": 3,
+      "max_cell_delta_defective": 20.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085159",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 1,
+      "max_cell_delta_defective": 0.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085161",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 21.24,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085167",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 1,
+      "max_cell_delta_defective": 0.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085168",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 1,
+      "max_cell_delta_defective": 5.43,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085216",
+      "group": "group20085",
+      "worst": "mousebite",
+      "n_defects": 3,
+      "max_cell_delta_defective": 6.51,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085312",
+      "group": "group20085",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 0.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "20085320",
+      "group": "group20085",
+      "worst": "mousebite",
+      "n_defects": 2,
+      "max_cell_delta_defective": 0.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "44000044",
+      "group": "group44000",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 14.81,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "44000047",
+      "group": "group44000",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 8.34,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "44000075",
+      "group": "group44000",
+      "worst": "open",
+      "n_defects": 8,
+      "max_cell_delta_defective": 10.37,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "44000076",
+      "group": "group44000",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 8.37,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "44000078",
+      "group": "group44000",
+      "worst": "open",
+      "n_defects": 7,
+      "max_cell_delta_defective": 15.8,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "44000087",
+      "group": "group44000",
+      "worst": "open",
+      "n_defects": 9,
+      "max_cell_delta_defective": 17.67,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000030",
+      "group": "group77000",
+      "worst": "short",
+      "n_defects": 7,
+      "max_cell_delta_defective": 9.19,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000053",
+      "group": "group77000",
+      "worst": "copper",
+      "n_defects": 1,
+      "max_cell_delta_defective": 8.09,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000054",
+      "group": "group77000",
+      "worst": "open",
+      "n_defects": 4,
+      "max_cell_delta_defective": 14.86,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000057",
+      "group": "group77000",
+      "worst": "open",
+      "n_defects": 3,
+      "max_cell_delta_defective": 25.47,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000059",
+      "group": "group77000",
+      "worst": "copper",
+      "n_defects": 3,
+      "max_cell_delta_defective": 16.8,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000064",
+      "group": "group77000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 0.0,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000067",
+      "group": "group77000",
+      "worst": "mousebite",
+      "n_defects": 3,
+      "max_cell_delta_defective": 8.83,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000083",
+      "group": "group77000",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 10.88,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000086",
+      "group": "group77000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 16.24,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000088",
+      "group": "group77000",
+      "worst": "open",
+      "n_defects": 7,
+      "max_cell_delta_defective": 12.2,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000091",
+      "group": "group77000",
+      "worst": "open",
+      "n_defects": 4,
+      "max_cell_delta_defective": 20.92,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000093",
+      "group": "group77000",
+      "worst": "open",
+      "n_defects": 5,
+      "max_cell_delta_defective": 12.05,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000094",
+      "group": "group77000",
+      "worst": "open",
+      "n_defects": 5,
+      "max_cell_delta_defective": 9.68,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000099",
+      "group": "group77000",
+      "worst": "open",
+      "n_defects": 5,
+      "max_cell_delta_defective": 14.35,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000104",
+      "group": "group77000",
+      "worst": "copper",
+      "n_defects": 4,
+      "max_cell_delta_defective": 21.64,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "77000106",
+      "group": "group77000",
+      "worst": "short",
+      "n_defects": 5,
+      "max_cell_delta_defective": 15.04,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "90100005",
+      "group": "group90100",
+      "worst": "open",
+      "n_defects": 8,
+      "max_cell_delta_defective": 22.15,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "90100006",
+      "group": "group90100",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 17.2,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "92000035",
+      "group": "group92000",
+      "worst": "open",
+      "n_defects": 6,
+      "max_cell_delta_defective": 26.48,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "92000083",
+      "group": "group92000",
+      "worst": "copper",
+      "n_defects": 5,
+      "max_cell_delta_defective": 9.88,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "92000091",
+      "group": "group92000",
+      "worst": "open",
+      "n_defects": 5,
+      "max_cell_delta_defective": 24.64,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "92000095",
+      "group": "group92000",
+      "worst": "open",
+      "n_defects": 4,
+      "max_cell_delta_defective": 32.25,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "92000112",
+      "group": "group92000",
+      "worst": "open",
+      "n_defects": 7,
+      "max_cell_delta_defective": 23.95,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "92000115",
+      "group": "group92000",
+      "worst": "open",
+      "n_defects": 7,
+      "max_cell_delta_defective": 20.11,
+      "max_cell_delta_clean": 0.0
+    },
+    {
+      "board_id": "92000117",
+      "group": "group92000",
+      "worst": "open",
+      "n_defects": 8,
+      "max_cell_delta_defective": 17.06,
+      "max_cell_delta_clean": 0.0
+    }
+  ]
+}

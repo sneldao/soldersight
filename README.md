@@ -4,8 +4,9 @@
 
 [`eval/`](eval/) is a self-contained, deterministically graded benchmark of PCB
 defect triage on the expert-labelled [DeepPCB](https://github.com/tangsanli5201/DeepPCB)
-dataset: **207 tasks, two suites (whole board, defect crop), 7 frontier models × 3 trials
-(4,345 graded trials).** The answer is `defect_type` + `severity` + `disposition`
+dataset: **1,127 tasks in three suites (whole board, defect crop, and a 92-board balanced
+"wide" suite with five prompt variants), 7 frontier models × 3 trials on the core suites
+and 4 on the wide suite.** The answer is `defect_type` + `severity` + `disposition`
 (`pass` / `rework` / `scrap`) + `confidence`, checked against expert labels by code. No
 LLM judge, and reference answers prove every task solvable (`eval/selftest.py`).
 
@@ -15,10 +16,16 @@ LLM judge, and reference answers prove every task solvable (`eval/selftest.py`).
 | Constant "pass" answer | 0.50 | 0.48 |
 | False-alarm rate on clean inputs | 0.21 – 0.89 | 0.32 – 0.995 |
 
-- Every model scores **below the constant-answer floor** on whole boards. They rarely say
-  "no defect" on a bad board, but they over-flag clean ones and name a benign defect
-  (`pinhole`, `spur`) where a fatal one (`short`, `open`) sits, turning a `scrap` into a
-  `rework`.
+- No model is credibly above the constant-answer floor on whole boards, and four of seven
+  are credibly below it (30 boards, so intervals are wide). They rarely say "no defect" on
+  a bad board, but they over-flag clean ones (Youden J, which ignores the tendency to flag,
+  is 0.11 – 0.70) and name a benign defect (`pinhole`, `spur`) where a fatal one (`short`,
+  `open`) sits, turning a `scrap` into a `rework`.
+- We tested whether that is the prompt or the sample: on 92 fresh boards from 8 DeepPCB
+  groups, stating the worst-defect rule changes nothing, a base-rate hint trades false
+  alarms for misses, and giving the model the golden reference image lifts three of four
+  models to J 0.90 – 0.92. The main failure is detecting absence without a reference;
+  severity under-calling remains even with one.
 - Magnified crops help (board verdicts aggregated from crops reach 0.60 – 0.97) but do not fix
   the false alarms.
 - Stated confidence is informative within most models (per-model AUC 0.70 – 0.84, one at
@@ -106,7 +113,7 @@ benchmark.
 
 A 640×640 DeepPCB board carries 30–55px defects: at whole-board scale frontier vision
 models misjudge both bad and clean boards (see the eval above: 0.26 – 0.44 disposition
-accuracy, under a constant-answer floor). SolderSight diffs the
+accuracy, near or under a constant-answer floor). SolderSight diffs the
 board against its known-good template on an 8×8 grid (`backend/inspection.py`), keeps
 the cells that changed, and upscales each to a 480px crop — so the model sees copper,
 not a thumbnail. Every verdict records the region and the exact crop it was given

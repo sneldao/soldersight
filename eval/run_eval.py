@@ -29,7 +29,12 @@ from openai import APIConnectionError, APIStatusError, OpenAI
 
 EVAL_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(EVAL_DIR / "src"))
-from common import parse_classification  # noqa: E402
+from common import (  # noqa: E402
+    VARIANTS,
+    parse_binary,
+    parse_classification,
+    wide_task_files,
+)
 
 # USD per 1M tokens (input, output). Unknown models record tokens, cost = null.
 PRICES = {
@@ -95,17 +100,18 @@ def create_completion(
 ):
     """One chat call with patient retries: aggregator gateways rate-limit hard
     (e.g. 5 req/min), and a 429 is a pacing signal, not a model failure."""
+    images = task.get("images") or [task["image"]]
+    content = []
+    for index, name in enumerate(images):
+        if len(images) > 1:
+            label = "Golden reference:" if index == 0 else "Board under test:"
+            content.append({"type": "text", "text": label})
+        content.append(
+            {"type": "image_url", "image_url": {"url": data_url(dataset / name)}}
+        )
     messages = [
         {"role": "system", "content": task["prompt"]},
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "image_url",
-                    "image_url": {"url": data_url(dataset / task["image"])},
-                }
-            ],
-        },
+        {"role": "user", "content": content},
     ]
     kwargs = {}
     if temperature is not None:
@@ -161,6 +167,7 @@ def run_task(
         "suite": task["suite"],
         "board_id": task["board_id"],
         "model": model,
+        **({"variant": task["variant"]} if task.get("variant") else {}),
         "settings": {
             "temperature": temperature,
             "prompt_sha256": hashlib.sha256(task["prompt"].encode()).hexdigest()[:12],
@@ -185,7 +192,12 @@ def run_task(
             raw = content or ""
         row["raw"] = raw
         try:
-            row.update(parse_classification(raw))
+            parse = (
+                parse_binary
+                if task.get("variant") == "binary"
+                else parse_classification
+            )
+            row.update(parse(raw))
         except (ValueError, json.JSONDecodeError) as exc:
             row["error"] = f"unparseable output: {exc}"
         usage = getattr(response, "usage", None)
@@ -204,8 +216,19 @@ def run_task(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--tasks", default=str(EVAL_DIR / "tasks" / "tasks.jsonl"))
-    parser.add_argument("--suite", choices=["board", "crop", "all"], default="all")
+    parser.add_argument(
+        "--tasks",
+        help="task file (default: tasks.jsonl, or tasks_wide_*.jsonl with --suite wide)",
+    )
+    parser.add_argument(
+        "--suite", choices=["board", "crop", "wide", "all"], default="all"
+    )
+    parser.add_argument(
+        "--variant",
+        choices=VARIANTS,
+        nargs="+",
+        help="wide suite only: run just these prompt variants (default: all)",
+    )
     parser.add_argument("--model", required=True)
     parser.add_argument("--trials", type=int, default=1, help="attempts per task")
     parser.add_argument("--out", required=True)
@@ -233,15 +256,24 @@ def main() -> None:
     if not args.api_key:
         sys.exit("set EVAL_API_KEY or OPENAI_API_KEY")
 
-    tasks_path = Path(args.tasks)
-    dataset = tasks_path.parent
+    tasks_dir = EVAL_DIR / "tasks"
+    if args.tasks:
+        task_files = [Path(args.tasks)]
+    elif args.suite == "wide":
+        task_files = wide_task_files(tasks_dir)
+    else:
+        task_files = [tasks_dir / "tasks.jsonl"]
+    dataset = task_files[0].parent
     tasks = [
         json.loads(line)
-        for line in tasks_path.read_text(encoding="utf-8").splitlines()
+        for path in task_files
+        for line in path.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
     if args.suite != "all":
         tasks = [t for t in tasks if t["suite"] == args.suite]
+    if args.variant:
+        tasks = [t for t in tasks if t.get("variant") in args.variant]
     if args.limit:
         tasks = tasks[: args.limit]
 
@@ -291,7 +323,9 @@ def main() -> None:
             row = future.result()
             handle.write(json.dumps(row) + "\n")
             handle.flush()
-            status = row.get("error") or row.get("disposition", "?")
+            status = (
+                row.get("error") or row.get("disposition") or row.get("defective", "?")
+            )
             print(f"[{i}/{len(todo)}] {row['task_id']}#{row['trial']}: {status}")
 
 

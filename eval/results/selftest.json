@@ -39,31 +39,155 @@
       "null/crop missed_defect_rate == 1.0",
       true,
       1.0
+    ],
+    [
+      "reference/wide detection balanced_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "null/wide detects nothing (TPR == 0.0, FPR == 0.0)",
+      true,
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      "reference/wide disposition_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "reference/wide/binary detection balanced_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "null/wide/binary detects nothing (TPR == 0.0, FPR == 0.0)",
+      true,
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      "reference/wide/paired detection balanced_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "null/wide/paired detects nothing (TPR == 0.0, FPR == 0.0)",
+      true,
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      "reference/wide/paired disposition_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "reference/wide/prior detection balanced_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "null/wide/prior detects nothing (TPR == 0.0, FPR == 0.0)",
+      true,
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      "reference/wide/prior disposition_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "reference/wide/worst detection balanced_accuracy == 1.0",
+      true,
+      1.0
+    ],
+    [
+      "null/wide/worst detects nothing (TPR == 0.0, FPR == 0.0)",
+      true,
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    [
+      "reference/wide/worst disposition_accuracy == 1.0",
+      true,
+      1.0
     ]
   ],
   "report": {
     "null-baseline": {
       "board": {
-        "tasks": 30,
-        "scored": 30,
+        "tasks": 60,
+        "scored": 60,
         "invalid_output_rate": 0.0,
-        "disposition_accuracy": 0.0,
-        "type_accuracy": 0.0,
+        "disposition_accuracy": 0.5,
+        "disposition_accuracy_ci95": [
+          0.5,
+          0.5
+        ],
+        "detection": {
+          "n_defective": 30,
+          "n_clean": 30,
+          "tpr": 0.0,
+          "fpr": 0.0,
+          "youden_j": 0.0,
+          "youden_j_ci95": [
+            0.0,
+            0.0
+          ],
+          "balanced_accuracy": 0.5,
+          "balanced_accuracy_ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "named_real_type_wrong_disposition": null,
+        "type_accuracy": 0.5,
         "inconsistent_rate": 0.0,
         "missed_defect_rate": 1.0,
-        "false_alarm_rate": null,
+        "false_alarm_rate": 0.0,
         "recall_by_worst": {
-          "mousebite": {
+          "copper": {
             "n": 1,
             "disposition_accuracy": 0.0
           },
+          "none": {
+            "n": 30,
+            "disposition_accuracy": 1.0
+          },
           "open": {
-            "n": 9,
+            "n": 28,
             "disposition_accuracy": 0.0
           },
           "short": {
-            "n": 20,
+            "n": 1,
             "disposition_accuracy": 0.0
+          }
+        },
+        "recall_by_disposition": {
+          "scrap": {
+            "n": 29,
+            "accuracy": 0.0
+          },
+          "rework": {
+            "n": 1,
+            "accuracy": 0.0
+          },
+          "pass": {
+            "n": 30,
+            "accuracy": 1.0
           }
         },
         "trials_per_task": 1,
@@ -79,6 +203,27 @@
         "scored": 147,
         "invalid_output_rate": 0.0,
         "disposition_accuracy": 0.476,
+        "disposition_accuracy_ci95": [
+          0.387,
+          0.565
+        ],
+        "detection": {
+          "n_defective": 77,
+          "n_clean": 70,
+          "tpr": 0.0,
+          "fpr": 0.0,
+          "youden_j": 0.0,
+          "youden_j_ci95": [
+            0.0,
+            0.0
+          ],
+          "balanced_accuracy": 0.5,
+          "balanced_accuracy_ci95": [
+            0.5,
+            0.5
+          ]
+        },
+        "named_real_type_wrong_disposition": null,
         "type_accuracy": 0.476,
         "inconsistent_rate": 0.0,
         "missed_defect_rate": 1.0,
@@ -113,6 +258,20 @@
             "disposition_accuracy": 0.0
           }
         },
+        "recall_by_disposition": {
+          "scrap": {
+            "n": 43,
+            "accuracy": 0.0
+          },
+          "rework": {
+            "n": 34,
+            "accuracy": 0.0
+          },
+          "pass": {
+            "n": 70,
+            "accuracy": 1.0
+          }
+        },
         "trials_per_task": 1,
         "pass@k": null,
         "pass^k": null,
@@ -126,26 +285,68 @@
     },
     "reference": {
       "board": {
-        "tasks": 30,
-        "scored": 30,
+        "tasks": 60,
+        "scored": 60,
         "invalid_output_rate": 0.0,
         "disposition_accuracy": 1.0,
+        "disposition_accuracy_ci95": [
+          1.0,
+          1.0
+        ],
+        "detection": {
+          "n_defective": 30,
+          "n_clean": 30,
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "youden_j": 1.0,
+          "youden_j_ci95": [
+            1.0,
+            1.0
+          ],
+          "balanced_accuracy": 1.0,
+          "balanced_accuracy_ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "named_real_type_wrong_disposition": {
+          "n": 30,
+          "disposition_wrong_rate": 0.0
+        },
         "type_accuracy": 1.0,
         "inconsistent_rate": 0.0,
         "missed_defect_rate": 0.0,
-        "false_alarm_rate": null,
+        "false_alarm_rate": 0.0,
         "recall_by_worst": {
-          "mousebite": {
+          "copper": {
             "n": 1,
             "disposition_accuracy": 1.0
           },
+          "none": {
+            "n": 30,
+            "disposition_accuracy": 1.0
+          },
           "open": {
-            "n": 9,
+            "n": 28,
             "disposition_accuracy": 1.0
           },
           "short": {
-            "n": 20,
+            "n": 1,
             "disposition_accuracy": 1.0
+          }
+        },
+        "recall_by_disposition": {
+          "scrap": {
+            "n": 29,
+            "accuracy": 1.0
+          },
+          "rework": {
+            "n": 1,
+            "accuracy": 1.0
+          },
+          "pass": {
+            "n": 30,
+            "accuracy": 1.0
           }
         },
         "trials_per_task": 1,
@@ -161,6 +362,30 @@
         "scored": 147,
         "invalid_output_rate": 0.0,
         "disposition_accuracy": 1.0,
+        "disposition_accuracy_ci95": [
+          1.0,
+          1.0
+        ],
+        "detection": {
+          "n_defective": 77,
+          "n_clean": 70,
+          "tpr": 1.0,
+          "fpr": 0.0,
+          "youden_j": 1.0,
+          "youden_j_ci95": [
+            1.0,
+            1.0
+          ],
+          "balanced_accuracy": 1.0,
+          "balanced_accuracy_ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "named_real_type_wrong_disposition": {
+          "n": 77,
+          "disposition_wrong_rate": 0.0
+        },
         "type_accuracy": 1.0,
         "inconsistent_rate": 0.0,
         "missed_defect_rate": 0.0,
@@ -195,6 +420,20 @@
             "disposition_accuracy": 1.0
           }
         },
+        "recall_by_disposition": {
+          "scrap": {
+            "n": 43,
+            "accuracy": 1.0
+          },
+          "rework": {
+            "n": 34,
+            "accuracy": 1.0
+          },
+          "pass": {
+            "n": 70,
+            "accuracy": 1.0
+          }
+        },
         "trials_per_task": 1,
         "pass@k": null,
         "pass^k": null,
@@ -204,6 +443,740 @@
         "boards": 30,
         "board_disposition_accuracy": 0.9,
         "self_contradictions": 0
+      }
+    },
+    "_constant_answer_accuracy": {
+      "board": {
+        "tasks": 60,
+        "always_pass": 0.5,
+        "always_rework": 0.017,
+        "always_scrap": 0.483
+      },
+      "crop": {
+        "tasks": 147,
+        "always_pass": 0.476,
+        "always_rework": 0.231,
+        "always_scrap": 0.293
+      }
+    },
+    "wide": {
+      "null-baseline": {
+        "wide": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "disposition_accuracy": 0.5,
+          "disposition_accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 0.0,
+            "fpr": 0.0,
+            "youden_j": 0.0,
+            "youden_j_ci95": [
+              0.0,
+              0.0
+            ],
+            "balanced_accuracy": 0.5,
+            "balanced_accuracy_ci95": [
+              0.5,
+              0.5
+            ]
+          },
+          "named_real_type_wrong_disposition": null,
+          "type_accuracy": 0.5,
+          "inconsistent_rate": 0.0,
+          "missed_defect_rate": 1.0,
+          "false_alarm_rate": 0.0,
+          "recall_by_worst": {
+            "copper": {
+              "n": 35,
+              "disposition_accuracy": 0.0
+            },
+            "mousebite": {
+              "n": 6,
+              "disposition_accuracy": 0.0
+            },
+            "none": {
+              "n": 92,
+              "disposition_accuracy": 1.0
+            },
+            "open": {
+              "n": 44,
+              "disposition_accuracy": 0.0
+            },
+            "pinhole": {
+              "n": 1,
+              "disposition_accuracy": 0.0
+            },
+            "short": {
+              "n": 6,
+              "disposition_accuracy": 0.0
+            }
+          },
+          "recall_by_disposition": {
+            "scrap": {
+              "n": 50,
+              "accuracy": 0.0
+            },
+            "rework": {
+              "n": 42,
+              "accuracy": 0.0
+            },
+            "pass": {
+              "n": 92,
+              "accuracy": 1.0
+            }
+          },
+          "trials_per_task": 1,
+          "pass@k": null,
+          "pass^k": null,
+          "avg_latency_ms": 0.0,
+          "total_tokens": 0,
+          "total_cost_usd": 0,
+          "self_contradictions": 0
+        },
+        "wide/binary": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 0.0,
+            "fpr": 0.0,
+            "youden_j": 0.0,
+            "youden_j_ci95": [
+              0.0,
+              0.0
+            ],
+            "balanced_accuracy": 0.5,
+            "balanced_accuracy_ci95": [
+              0.5,
+              0.5
+            ]
+          },
+          "missed_defect_rate": 1.0,
+          "false_alarm_rate": 0.0
+        },
+        "wide/paired": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "disposition_accuracy": 0.5,
+          "disposition_accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 0.0,
+            "fpr": 0.0,
+            "youden_j": 0.0,
+            "youden_j_ci95": [
+              0.0,
+              0.0
+            ],
+            "balanced_accuracy": 0.5,
+            "balanced_accuracy_ci95": [
+              0.5,
+              0.5
+            ]
+          },
+          "named_real_type_wrong_disposition": null,
+          "type_accuracy": 0.5,
+          "inconsistent_rate": 0.0,
+          "missed_defect_rate": 1.0,
+          "false_alarm_rate": 0.0,
+          "recall_by_worst": {
+            "copper": {
+              "n": 35,
+              "disposition_accuracy": 0.0
+            },
+            "mousebite": {
+              "n": 6,
+              "disposition_accuracy": 0.0
+            },
+            "none": {
+              "n": 92,
+              "disposition_accuracy": 1.0
+            },
+            "open": {
+              "n": 44,
+              "disposition_accuracy": 0.0
+            },
+            "pinhole": {
+              "n": 1,
+              "disposition_accuracy": 0.0
+            },
+            "short": {
+              "n": 6,
+              "disposition_accuracy": 0.0
+            }
+          },
+          "recall_by_disposition": {
+            "scrap": {
+              "n": 50,
+              "accuracy": 0.0
+            },
+            "rework": {
+              "n": 42,
+              "accuracy": 0.0
+            },
+            "pass": {
+              "n": 92,
+              "accuracy": 1.0
+            }
+          },
+          "trials_per_task": 1,
+          "pass@k": null,
+          "pass^k": null,
+          "avg_latency_ms": 0.0,
+          "total_tokens": 0,
+          "total_cost_usd": 0,
+          "self_contradictions": 0
+        },
+        "wide/prior": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "disposition_accuracy": 0.5,
+          "disposition_accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 0.0,
+            "fpr": 0.0,
+            "youden_j": 0.0,
+            "youden_j_ci95": [
+              0.0,
+              0.0
+            ],
+            "balanced_accuracy": 0.5,
+            "balanced_accuracy_ci95": [
+              0.5,
+              0.5
+            ]
+          },
+          "named_real_type_wrong_disposition": null,
+          "type_accuracy": 0.5,
+          "inconsistent_rate": 0.0,
+          "missed_defect_rate": 1.0,
+          "false_alarm_rate": 0.0,
+          "recall_by_worst": {
+            "copper": {
+              "n": 35,
+              "disposition_accuracy": 0.0
+            },
+            "mousebite": {
+              "n": 6,
+              "disposition_accuracy": 0.0
+            },
+            "none": {
+              "n": 92,
+              "disposition_accuracy": 1.0
+            },
+            "open": {
+              "n": 44,
+              "disposition_accuracy": 0.0
+            },
+            "pinhole": {
+              "n": 1,
+              "disposition_accuracy": 0.0
+            },
+            "short": {
+              "n": 6,
+              "disposition_accuracy": 0.0
+            }
+          },
+          "recall_by_disposition": {
+            "scrap": {
+              "n": 50,
+              "accuracy": 0.0
+            },
+            "rework": {
+              "n": 42,
+              "accuracy": 0.0
+            },
+            "pass": {
+              "n": 92,
+              "accuracy": 1.0
+            }
+          },
+          "trials_per_task": 1,
+          "pass@k": null,
+          "pass^k": null,
+          "avg_latency_ms": 0.0,
+          "total_tokens": 0,
+          "total_cost_usd": 0,
+          "self_contradictions": 0
+        },
+        "wide/worst": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "disposition_accuracy": 0.5,
+          "disposition_accuracy_ci95": [
+            0.5,
+            0.5
+          ],
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 0.0,
+            "fpr": 0.0,
+            "youden_j": 0.0,
+            "youden_j_ci95": [
+              0.0,
+              0.0
+            ],
+            "balanced_accuracy": 0.5,
+            "balanced_accuracy_ci95": [
+              0.5,
+              0.5
+            ]
+          },
+          "named_real_type_wrong_disposition": null,
+          "type_accuracy": 0.5,
+          "inconsistent_rate": 0.0,
+          "missed_defect_rate": 1.0,
+          "false_alarm_rate": 0.0,
+          "recall_by_worst": {
+            "copper": {
+              "n": 35,
+              "disposition_accuracy": 0.0
+            },
+            "mousebite": {
+              "n": 6,
+              "disposition_accuracy": 0.0
+            },
+            "none": {
+              "n": 92,
+              "disposition_accuracy": 1.0
+            },
+            "open": {
+              "n": 44,
+              "disposition_accuracy": 0.0
+            },
+            "pinhole": {
+              "n": 1,
+              "disposition_accuracy": 0.0
+            },
+            "short": {
+              "n": 6,
+              "disposition_accuracy": 0.0
+            }
+          },
+          "recall_by_disposition": {
+            "scrap": {
+              "n": 50,
+              "accuracy": 0.0
+            },
+            "rework": {
+              "n": 42,
+              "accuracy": 0.0
+            },
+            "pass": {
+              "n": 92,
+              "accuracy": 1.0
+            }
+          },
+          "trials_per_task": 1,
+          "pass@k": null,
+          "pass^k": null,
+          "avg_latency_ms": 0.0,
+          "total_tokens": 0,
+          "total_cost_usd": 0,
+          "self_contradictions": 0
+        }
+      },
+      "reference": {
+        "wide": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "disposition_accuracy": 1.0,
+          "disposition_accuracy_ci95": [
+            1.0,
+            1.0
+          ],
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 1.0,
+            "fpr": 0.0,
+            "youden_j": 1.0,
+            "youden_j_ci95": [
+              1.0,
+              1.0
+            ],
+            "balanced_accuracy": 1.0,
+            "balanced_accuracy_ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "named_real_type_wrong_disposition": {
+            "n": 92,
+            "disposition_wrong_rate": 0.0
+          },
+          "type_accuracy": 1.0,
+          "inconsistent_rate": 0.0,
+          "missed_defect_rate": 0.0,
+          "false_alarm_rate": 0.0,
+          "recall_by_worst": {
+            "copper": {
+              "n": 35,
+              "disposition_accuracy": 1.0
+            },
+            "mousebite": {
+              "n": 6,
+              "disposition_accuracy": 1.0
+            },
+            "none": {
+              "n": 92,
+              "disposition_accuracy": 1.0
+            },
+            "open": {
+              "n": 44,
+              "disposition_accuracy": 1.0
+            },
+            "pinhole": {
+              "n": 1,
+              "disposition_accuracy": 1.0
+            },
+            "short": {
+              "n": 6,
+              "disposition_accuracy": 1.0
+            }
+          },
+          "recall_by_disposition": {
+            "scrap": {
+              "n": 50,
+              "accuracy": 1.0
+            },
+            "rework": {
+              "n": 42,
+              "accuracy": 1.0
+            },
+            "pass": {
+              "n": 92,
+              "accuracy": 1.0
+            }
+          },
+          "trials_per_task": 1,
+          "pass@k": null,
+          "pass^k": null,
+          "avg_latency_ms": 0.0,
+          "total_tokens": 0,
+          "total_cost_usd": 0,
+          "self_contradictions": 0
+        },
+        "wide/binary": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 1.0,
+            "fpr": 0.0,
+            "youden_j": 1.0,
+            "youden_j_ci95": [
+              1.0,
+              1.0
+            ],
+            "balanced_accuracy": 1.0,
+            "balanced_accuracy_ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "missed_defect_rate": 0.0,
+          "false_alarm_rate": 0.0
+        },
+        "wide/paired": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "disposition_accuracy": 1.0,
+          "disposition_accuracy_ci95": [
+            1.0,
+            1.0
+          ],
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 1.0,
+            "fpr": 0.0,
+            "youden_j": 1.0,
+            "youden_j_ci95": [
+              1.0,
+              1.0
+            ],
+            "balanced_accuracy": 1.0,
+            "balanced_accuracy_ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "named_real_type_wrong_disposition": {
+            "n": 92,
+            "disposition_wrong_rate": 0.0
+          },
+          "type_accuracy": 1.0,
+          "inconsistent_rate": 0.0,
+          "missed_defect_rate": 0.0,
+          "false_alarm_rate": 0.0,
+          "recall_by_worst": {
+            "copper": {
+              "n": 35,
+              "disposition_accuracy": 1.0
+            },
+            "mousebite": {
+              "n": 6,
+              "disposition_accuracy": 1.0
+            },
+            "none": {
+              "n": 92,
+              "disposition_accuracy": 1.0
+            },
+            "open": {
+              "n": 44,
+              "disposition_accuracy": 1.0
+            },
+            "pinhole": {
+              "n": 1,
+              "disposition_accuracy": 1.0
+            },
+            "short": {
+              "n": 6,
+              "disposition_accuracy": 1.0
+            }
+          },
+          "recall_by_disposition": {
+            "scrap": {
+              "n": 50,
+              "accuracy": 1.0
+            },
+            "rework": {
+              "n": 42,
+              "accuracy": 1.0
+            },
+            "pass": {
+              "n": 92,
+              "accuracy": 1.0
+            }
+          },
+          "trials_per_task": 1,
+          "pass@k": null,
+          "pass^k": null,
+          "avg_latency_ms": 0.0,
+          "total_tokens": 0,
+          "total_cost_usd": 0,
+          "self_contradictions": 0
+        },
+        "wide/prior": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "disposition_accuracy": 1.0,
+          "disposition_accuracy_ci95": [
+            1.0,
+            1.0
+          ],
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 1.0,
+            "fpr": 0.0,
+            "youden_j": 1.0,
+            "youden_j_ci95": [
+              1.0,
+              1.0
+            ],
+            "balanced_accuracy": 1.0,
+            "balanced_accuracy_ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "named_real_type_wrong_disposition": {
+            "n": 92,
+            "disposition_wrong_rate": 0.0
+          },
+          "type_accuracy": 1.0,
+          "inconsistent_rate": 0.0,
+          "missed_defect_rate": 0.0,
+          "false_alarm_rate": 0.0,
+          "recall_by_worst": {
+            "copper": {
+              "n": 35,
+              "disposition_accuracy": 1.0
+            },
+            "mousebite": {
+              "n": 6,
+              "disposition_accuracy": 1.0
+            },
+            "none": {
+              "n": 92,
+              "disposition_accuracy": 1.0
+            },
+            "open": {
+              "n": 44,
+              "disposition_accuracy": 1.0
+            },
+            "pinhole": {
+              "n": 1,
+              "disposition_accuracy": 1.0
+            },
+            "short": {
+              "n": 6,
+              "disposition_accuracy": 1.0
+            }
+          },
+          "recall_by_disposition": {
+            "scrap": {
+              "n": 50,
+              "accuracy": 1.0
+            },
+            "rework": {
+              "n": 42,
+              "accuracy": 1.0
+            },
+            "pass": {
+              "n": 92,
+              "accuracy": 1.0
+            }
+          },
+          "trials_per_task": 1,
+          "pass@k": null,
+          "pass^k": null,
+          "avg_latency_ms": 0.0,
+          "total_tokens": 0,
+          "total_cost_usd": 0,
+          "self_contradictions": 0
+        },
+        "wide/worst": {
+          "tasks": 184,
+          "scored": 184,
+          "invalid_output_rate": 0.0,
+          "disposition_accuracy": 1.0,
+          "disposition_accuracy_ci95": [
+            1.0,
+            1.0
+          ],
+          "detection": {
+            "n_defective": 92,
+            "n_clean": 92,
+            "tpr": 1.0,
+            "fpr": 0.0,
+            "youden_j": 1.0,
+            "youden_j_ci95": [
+              1.0,
+              1.0
+            ],
+            "balanced_accuracy": 1.0,
+            "balanced_accuracy_ci95": [
+              1.0,
+              1.0
+            ]
+          },
+          "named_real_type_wrong_disposition": {
+            "n": 92,
+            "disposition_wrong_rate": 0.0
+          },
+          "type_accuracy": 1.0,
+          "inconsistent_rate": 0.0,
+          "missed_defect_rate": 0.0,
+          "false_alarm_rate": 0.0,
+          "recall_by_worst": {
+            "copper": {
+              "n": 35,
+              "disposition_accuracy": 1.0
+            },
+            "mousebite": {
+              "n": 6,
+              "disposition_accuracy": 1.0
+            },
+            "none": {
+              "n": 92,
+              "disposition_accuracy": 1.0
+            },
+            "open": {
+              "n": 44,
+              "disposition_accuracy": 1.0
+            },
+            "pinhole": {
+              "n": 1,
+              "disposition_accuracy": 1.0
+            },
+            "short": {
+              "n": 6,
+              "disposition_accuracy": 1.0
+            }
+          },
+          "recall_by_disposition": {
+            "scrap": {
+              "n": 50,
+              "accuracy": 1.0
+            },
+            "rework": {
+              "n": 42,
+              "accuracy": 1.0
+            },
+            "pass": {
+              "n": 92,
+              "accuracy": 1.0
+            }
+          },
+          "trials_per_task": 1,
+          "pass@k": null,
+          "pass^k": null,
+          "avg_latency_ms": 0.0,
+          "total_tokens": 0,
+          "total_cost_usd": 0,
+          "self_contradictions": 0
+        }
+      },
+      "_constant_answer_accuracy": {
+        "wide": {
+          "tasks": 184,
+          "always_pass": 0.5,
+          "always_rework": 0.228,
+          "always_scrap": 0.272
+        },
+        "wide/binary": {
+          "tasks": 184,
+          "always_pass": 0.5,
+          "always_rework": 0.228,
+          "always_scrap": 0.272
+        },
+        "wide/paired": {
+          "tasks": 184,
+          "always_pass": 0.5,
+          "always_rework": 0.228,
+          "always_scrap": 0.272
+        },
+        "wide/prior": {
+          "tasks": 184,
+          "always_pass": 0.5,
+          "always_rework": 0.228,
+          "always_scrap": 0.272
+        },
+        "wide/worst": {
+          "tasks": 184,
+          "always_pass": 0.5,
+          "always_rework": 0.228,
+          "always_scrap": 0.272
+        }
       }
     }
   }

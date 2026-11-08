@@ -27,6 +27,72 @@ def instructions() -> str:
     return INSTRUCTIONS_TEMPLATE.format(types=", ".join(BASE_DEFECT_TYPES))
 
 
+# Prompt variants for the "wide" suite. `production` is the exact prompt above
+# (the one the product ships). The others each change one thing so that a
+# result can be attributed: the worst-defect rule that the production prompt
+# leaves implicit, a base-rate statement, a binary question with no taxonomy,
+# and a golden reference image.
+WORST_RULE = (
+    "\nA board may show several defects. Report the single worst one "
+    "(open and short are worse than mousebite and copper, which are worse than "
+    "spur and pinhole); defect_type and disposition must describe that defect. "
+    'If you can see no defect, answer defect_type "none" and disposition "pass".'
+)
+BASE_RATE = (
+    "\nAbout half of the boards you are shown have no defect at all. Flag a "
+    "defect only when you can point to it; a needless flag sends a good board "
+    "to re-inspection."
+)
+PAIRED_NOTE = (
+    "\nYou get two images of the same board region: first the golden reference "
+    "(known defect-free), then the board under test. Compare them; report only "
+    "differences that are real defects on the board under test."
+)
+BINARY_PROMPT = (
+    "You are a PCB quality inspector. Decide only whether this board image "
+    "shows any manufacturing defect (open, short, mousebite, spur, spurious "
+    "copper or pin hole).\n"
+    "- confidence: 0.0-1.0, your confidence in your yes/no answer\n"
+    "- reason: one sentence\n"
+    'Reply as JSON only: {"defective": true or false, "confidence":..., "reason":...}'
+)
+VARIANTS = ("production", "worst", "prior", "binary", "paired")
+
+
+def wide_task_files(tasks_dir) -> list:
+    """The wide suite is stored one file per prompt variant (each under the
+    repository's 500 KB file cap); this returns them in a stable order."""
+    from pathlib import Path
+
+    return sorted(Path(tasks_dir).glob("tasks_wide_*.jsonl"))
+
+
+def prompt_for(variant: str) -> str:
+    base = instructions()
+    if variant == "production":
+        return base
+    if variant == "worst":
+        return base + WORST_RULE
+    if variant == "prior":
+        return base + WORST_RULE + BASE_RATE
+    if variant == "paired":
+        return base + WORST_RULE + PAIRED_NOTE
+    if variant == "binary":
+        return BINARY_PROMPT
+    raise ValueError(f"unknown prompt variant: {variant}")
+
+
+def is_flagged(row: dict) -> bool | None:
+    """Whether the model called the input defective; None if no usable answer."""
+    if "error" in row:
+        return None
+    if "defective" in row:
+        return bool(row["defective"])
+    if row.get("defect_type") is None or row.get("disposition") is None:
+        return None
+    return row["defect_type"] != "none"
+
+
 # The disposition the taxonomy implies for each defect type. Boards are scored
 # against this, so a wrong disposition shows up in the accuracy numbers.
 DISPOSITION_BY_TYPE = {
@@ -90,7 +156,7 @@ def ground_truth(annotations: list[dict]) -> dict:
     """The expected verdict for a board (or region), from DeepPCB labels."""
     types = sorted(
         {a["type"] for a in annotations if a["type"] != "none"},
-        key=lambda t: -SEVERITY_RANK.get(t, 0),
+        key=lambda t: (-SEVERITY_RANK.get(t, 0), t),
     )
     worst = types[0] if types else "none"
     return {
@@ -133,6 +199,27 @@ def parse_classification(raw: str) -> dict:
     for key in ("defect_type", "severity", "disposition"):
         if key not in data:
             raise ValueError(f"missing field: {key}")
+    return data
+
+
+def parse_binary(raw: str) -> dict:
+    """Parse the binary-variant answer; accepts true/false or yes/no strings."""
+    text = raw.strip()
+    fence = re.search(r"```(?:json)?\s*(.*?)```", text, re.DOTALL)
+    if fence:
+        text = fence.group(1).strip()
+    start, end = text.find("{"), text.rfind("}")
+    if start == -1 or end == -1:
+        raise ValueError("no JSON object in response")
+    data = json.loads(text[start : end + 1])
+    value = data.get("defective")
+    if isinstance(value, str):
+        value = {"true": True, "yes": True, "false": False, "no": False}.get(
+            value.strip().lower()
+        )
+    if not isinstance(value, bool):
+        raise ValueError("missing or non-boolean field: defective")
+    data["defective"] = value
     return data
 
 

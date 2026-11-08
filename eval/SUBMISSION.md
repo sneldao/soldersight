@@ -3,29 +3,43 @@
 ## Short description (for the event form)
 
 **SolderSight PCB Defect Eval** — a vision eval for PCB manufacturing quality
-inspection on the expert-labeled DeepPCB dataset (207 tasks, two suites,
-7 frontier models × 3 trials). On whole-board images no model exceeds 44%
-disposition accuracy, below the 50% a constant "pass" answer scores on the
-balanced board suite — on scrap boards they name benign defect
-types (`pinhole`, `spur`) and recommend `rework`, and on defect-free golden
-samples they invent defects anyway (board-level false-alarm rates 0.21–0.89).
-On defect-isolated crops the same models improve but still miss up to 13% of
-defects and over-flag clean regions (one model flags 99.5% of clean crops).
-The `crop`→board aggregation ablation shows a perception front-end helps
-(up to 0.97 board accuracy) but doesn't fix over-flagging, and stated
-confidence is not comparable across models (Gemini states ≥0.90 on 617 of 621
-trials at 57% accuracy; the Claude models almost never do). Deterministic
-code-based grading against expert labels, pass@k/pass^k across trials,
-per-class recall, reference solutions proving solvability, and a grader
-self-test on right and wrong answers. OpenAI-compatible runner; fully
-reproducible offline.
+inspection on the expert-labeled DeepPCB dataset: 1,127 tasks in three suites
+(whole boards, defect crops, and a 92-board balanced "wide" suite with five
+prompt variants), 7 frontier models on the core suites and 4 on the wide
+suite. Finding: models almost never miss a defective board, but they flag
+clean ones (board-level false-alarm rate 0.21-0.89) and cannot reliably tell
+the two apart (Youden J 0.11-0.70), and when they do see a defect they under-call
+its severity (scrap boards called scrap 8-50% of the time). We tested whether
+that is an artifact: stating the worst-defect rule does not change it, a
+base-rate hint trades false alarms for misses, and supplying the golden
+reference image lifts three of four models to J 0.90-0.92, so the main
+failure is detecting absence without a reference, not seeing defects. Severity
+under-calling persists even with the reference (scrap recall 20-70%).
+Deterministic code-based grading against expert labels with board-clustered
+95% intervals, constant-answer floors, reference solutions and null fixtures
+for every task, a model-free check that the clean boards are clean, and
+stated confidence that is informative within a model but not comparable across
+models (Gemini states >=0.90 on 617 of 621 trials at 57% accuracy). OpenAI-compatible
+runner, fully reproducible offline.
+
+## Where this submission is weakest (and what we did about it)
+
+- *Only 30 boards in the first version* -> the wide suite adds 92 fresh boards
+  from 8 DeepPCB groups, balanced scrap/rework/clean.
+- *Clean boards judged from one image* -> clean twins are verified clean by the
+  production change detector, and a golden-reference variant is included.
+- *Failure might be the prompt* -> five prompt variants; results above.
+- *The "below a constant answer" result did not replicate on the wide suite*
+  (3 of 4 models sit slightly above 0.5), so it is not a headline; Youden J is.
+- Wide suite: 4 models, 1 trial; no human-inspector baseline.
 
 ## What existed before vs. built for this event
 
 - **Before:** SolderSight, a PCB inspection app — DeepPCB data subset,
   template-diff region proposer, production prompt, verdict aggregation.
-- **For this event:** the `eval/` package — task dataset, standalone runner +
-  grader, metrics, frontier-model results.
+- **For this event:** the `eval/` package — task dataset (core + wide suites),
+  standalone runner + grader, metrics, prompt-variant ablation, frontier-model
+  results.
 
 ## Video — as built (4:33, cap 5:00)
 

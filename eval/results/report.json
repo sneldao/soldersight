@@ -5,6 +5,30 @@
       "scored": 180,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.406,
+      "disposition_accuracy_ci95": [
+        0.3,
+        0.528
+      ],
+      "detection": {
+        "n_defective": 90,
+        "n_clean": 90,
+        "tpr": 1.0,
+        "fpr": 0.744,
+        "youden_j": 0.256,
+        "youden_j_ci95": [
+          0.122,
+          0.411
+        ],
+        "balanced_accuracy": 0.628,
+        "balanced_accuracy_ci95": [
+          0.561,
+          0.706
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 87,
+        "disposition_wrong_rate": 0.46
+      },
       "type_accuracy": 0.611,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.0,
@@ -19,12 +43,26 @@
           "disposition_accuracy": 0.256
         },
         "open": {
-          "n": 81,
-          "disposition_accuracy": 0.543
+          "n": 84,
+          "disposition_accuracy": 0.56
         },
         "short": {
-          "n": 6,
-          "disposition_accuracy": 0.5
+          "n": 3,
+          "disposition_accuracy": 0.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 87,
+          "accuracy": 0.54
+        },
+        "rework": {
+          "n": 3,
+          "accuracy": 1.0
+        },
+        "pass": {
+          "n": 90,
+          "accuracy": 0.256
         }
       },
       "trials_per_task": 3,
@@ -40,6 +78,30 @@
       "scored": 441,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.719,
+      "disposition_accuracy_ci95": [
+        0.642,
+        0.796
+      ],
+      "detection": {
+        "n_defective": 231,
+        "n_clean": 210,
+        "tpr": 0.939,
+        "fpr": 0.433,
+        "youden_j": 0.506,
+        "youden_j_ci95": [
+          0.385,
+          0.62
+        ],
+        "balanced_accuracy": 0.753,
+        "balanced_accuracy_ci95": [
+          0.693,
+          0.81
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 175,
+        "disposition_wrong_rate": 0.051
+      },
       "type_accuracy": 0.667,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.061,
@@ -58,20 +120,34 @@
           "disposition_accuracy": 0.567
         },
         "open": {
-          "n": 78,
-          "disposition_accuracy": 0.859
+          "n": 81,
+          "disposition_accuracy": 0.864
         },
         "pinhole": {
-          "n": 18,
+          "n": 24,
           "disposition_accuracy": 1.0
         },
         "short": {
-          "n": 51,
-          "disposition_accuracy": 0.745
+          "n": 48,
+          "disposition_accuracy": 0.729
         },
         "spur": {
-          "n": 21,
+          "n": 15,
           "disposition_accuracy": 1.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 129,
+          "accuracy": 0.814
+        },
+        "rework": {
+          "n": 102,
+          "accuracy": 0.912
+        },
+        "pass": {
+          "n": 210,
+          "accuracy": 0.567
         }
       },
       "trials_per_task": 3,
@@ -91,12 +167,36 @@
       "scored": 178,
       "invalid_output_rate": 0.011,
       "disposition_accuracy": 0.438,
+      "disposition_accuracy_ci95": [
+        0.322,
+        0.556
+      ],
+      "detection": {
+        "n_defective": 88,
+        "n_clean": 90,
+        "tpr": 1.0,
+        "fpr": 0.467,
+        "youden_j": 0.533,
+        "youden_j_ci95": [
+          0.378,
+          0.689
+        ],
+        "balanced_accuracy": 0.767,
+        "balanced_accuracy_ci95": [
+          0.689,
+          0.844
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 88,
+        "disposition_wrong_rate": 0.659
+      },
       "type_accuracy": 0.764,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.0,
       "false_alarm_rate": 0.467,
       "recall_by_worst": {
-        "mousebite": {
+        "copper": {
           "n": 3,
           "disposition_accuracy": 1.0
         },
@@ -105,12 +205,26 @@
           "disposition_accuracy": 0.533
         },
         "open": {
-          "n": 27,
-          "disposition_accuracy": 0.407
+          "n": 82,
+          "disposition_accuracy": 0.329
         },
         "short": {
-          "n": 58,
-          "disposition_accuracy": 0.276
+          "n": 3,
+          "disposition_accuracy": 0.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 85,
+          "accuracy": 0.318
+        },
+        "rework": {
+          "n": 3,
+          "accuracy": 1.0
+        },
+        "pass": {
+          "n": 90,
+          "accuracy": 0.533
         }
       },
       "trials_per_task": 3,
@@ -126,6 +240,30 @@
       "scored": 441,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.721,
+      "disposition_accuracy_ci95": [
+        0.653,
+        0.787
+      ],
+      "detection": {
+        "n_defective": 231,
+        "n_clean": 210,
+        "tpr": 0.883,
+        "fpr": 0.324,
+        "youden_j": 0.559,
+        "youden_j_ci95": [
+          0.432,
+          0.701
+        ],
+        "balanced_accuracy": 0.78,
+        "balanced_accuracy_ci95": [
+          0.716,
+          0.851
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 153,
+        "disposition_wrong_rate": 0.033
+      },
       "type_accuracy": 0.669,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.117,
@@ -160,6 +298,20 @@
           "disposition_accuracy": 1.0
         }
       },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 129,
+          "accuracy": 0.651
+        },
+        "rework": {
+          "n": 102,
+          "accuracy": 0.902
+        },
+        "pass": {
+          "n": 210,
+          "accuracy": 0.676
+        }
+      },
       "trials_per_task": 3,
       "pass@k": 0.789,
       "pass^k": 0.673,
@@ -177,12 +329,36 @@
       "scored": 180,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.4,
+      "disposition_accuracy_ci95": [
+        0.3,
+        0.506
+      ],
+      "detection": {
+        "n_defective": 90,
+        "n_clean": 90,
+        "tpr": 1.0,
+        "fpr": 0.711,
+        "youden_j": 0.289,
+        "youden_j_ci95": [
+          0.144,
+          0.444
+        ],
+        "balanced_accuracy": 0.644,
+        "balanced_accuracy_ci95": [
+          0.572,
+          0.722
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 90,
+        "disposition_wrong_rate": 0.489
+      },
       "type_accuracy": 0.644,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.0,
       "false_alarm_rate": 0.711,
       "recall_by_worst": {
-        "mousebite": {
+        "copper": {
           "n": 3,
           "disposition_accuracy": 1.0
         },
@@ -191,12 +367,26 @@
           "disposition_accuracy": 0.289
         },
         "open": {
-          "n": 27,
-          "disposition_accuracy": 0.481
+          "n": 84,
+          "disposition_accuracy": 0.512
         },
         "short": {
-          "n": 60,
-          "disposition_accuracy": 0.5
+          "n": 3,
+          "disposition_accuracy": 0.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 87,
+          "accuracy": 0.494
+        },
+        "rework": {
+          "n": 3,
+          "accuracy": 1.0
+        },
+        "pass": {
+          "n": 90,
+          "accuracy": 0.289
         }
       },
       "trials_per_task": 3,
@@ -212,6 +402,30 @@
       "scored": 441,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.642,
+      "disposition_accuracy_ci95": [
+        0.542,
+        0.736
+      ],
+      "detection": {
+        "n_defective": 231,
+        "n_clean": 210,
+        "tpr": 0.987,
+        "fpr": 0.619,
+        "youden_j": 0.368,
+        "youden_j_ci95": [
+          0.24,
+          0.507
+        ],
+        "balanced_accuracy": 0.684,
+        "balanced_accuracy_ci95": [
+          0.62,
+          0.754
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 185,
+        "disposition_wrong_rate": 0.049
+      },
       "type_accuracy": 0.601,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.013,
@@ -246,6 +460,20 @@
           "disposition_accuracy": 1.0
         }
       },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 129,
+          "accuracy": 0.783
+        },
+        "rework": {
+          "n": 102,
+          "accuracy": 1.0
+        },
+        "pass": {
+          "n": 210,
+          "accuracy": 0.381
+        }
+      },
       "trials_per_task": 3,
       "pass@k": 0.68,
       "pass^k": 0.605,
@@ -263,12 +491,36 @@
       "scored": 180,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.256,
+      "disposition_accuracy_ci95": [
+        0.167,
+        0.35
+      ],
+      "detection": {
+        "n_defective": 90,
+        "n_clean": 90,
+        "tpr": 1.0,
+        "fpr": 0.889,
+        "youden_j": 0.111,
+        "youden_j_ci95": [
+          0.033,
+          0.189
+        ],
+        "balanced_accuracy": 0.556,
+        "balanced_accuracy_ci95": [
+          0.517,
+          0.594
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 90,
+        "disposition_wrong_rate": 0.6
+      },
       "type_accuracy": 0.556,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.0,
       "false_alarm_rate": 0.889,
       "recall_by_worst": {
-        "mousebite": {
+        "copper": {
           "n": 3,
           "disposition_accuracy": 1.0
         },
@@ -277,12 +529,26 @@
           "disposition_accuracy": 0.111
         },
         "open": {
-          "n": 27,
-          "disposition_accuracy": 0.407
+          "n": 84,
+          "disposition_accuracy": 0.393
         },
         "short": {
-          "n": 60,
-          "disposition_accuracy": 0.367
+          "n": 3,
+          "disposition_accuracy": 0.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 87,
+          "accuracy": 0.379
+        },
+        "rework": {
+          "n": 3,
+          "accuracy": 1.0
+        },
+        "pass": {
+          "n": 90,
+          "accuracy": 0.111
         }
       },
       "trials_per_task": 3,
@@ -298,6 +564,30 @@
       "scored": 441,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.404,
+      "disposition_accuracy_ci95": [
+        0.324,
+        0.483
+      ],
+      "detection": {
+        "n_defective": 231,
+        "n_clean": 210,
+        "tpr": 0.983,
+        "fpr": 0.995,
+        "youden_j": -0.013,
+        "youden_j_ci95": [
+          -0.048,
+          0.011
+        ],
+        "balanced_accuracy": 0.494,
+        "balanced_accuracy_ci95": [
+          0.476,
+          0.505
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 145,
+        "disposition_wrong_rate": 0.083
+      },
       "type_accuracy": 0.331,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.017,
@@ -332,6 +622,20 @@
           "disposition_accuracy": 1.0
         }
       },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 129,
+          "accuracy": 0.628
+        },
+        "rework": {
+          "n": 102,
+          "accuracy": 0.941
+        },
+        "pass": {
+          "n": 210,
+          "accuracy": 0.005
+        }
+      },
       "trials_per_task": 3,
       "pass@k": 0.435,
       "pass^k": 0.367,
@@ -349,12 +653,36 @@
       "scored": 180,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.428,
+      "disposition_accuracy_ci95": [
+        0.372,
+        0.483
+      ],
+      "detection": {
+        "n_defective": 90,
+        "n_clean": 90,
+        "tpr": 0.911,
+        "fpr": 0.211,
+        "youden_j": 0.7,
+        "youden_j_ci95": [
+          0.578,
+          0.811
+        ],
+        "balanced_accuracy": 0.85,
+        "balanced_accuracy_ci95": [
+          0.789,
+          0.906
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 73,
+        "disposition_wrong_rate": 0.945
+      },
       "type_accuracy": 0.8,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.089,
       "false_alarm_rate": 0.211,
       "recall_by_worst": {
-        "mousebite": {
+        "copper": {
           "n": 3,
           "disposition_accuracy": 0.667
         },
@@ -363,12 +691,26 @@
           "disposition_accuracy": 0.789
         },
         "open": {
-          "n": 27,
-          "disposition_accuracy": 0.0
+          "n": 84,
+          "disposition_accuracy": 0.048
         },
         "short": {
-          "n": 60,
-          "disposition_accuracy": 0.067
+          "n": 3,
+          "disposition_accuracy": 0.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 87,
+          "accuracy": 0.046
+        },
+        "rework": {
+          "n": 3,
+          "accuracy": 0.667
+        },
+        "pass": {
+          "n": 90,
+          "accuracy": 0.789
         }
       },
       "trials_per_task": 3,
@@ -384,6 +726,30 @@
       "scored": 441,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.531,
+      "disposition_accuracy_ci95": [
+        0.464,
+        0.603
+      ],
+      "detection": {
+        "n_defective": 231,
+        "n_clean": 210,
+        "tpr": 0.866,
+        "fpr": 0.543,
+        "youden_j": 0.323,
+        "youden_j_ci95": [
+          0.202,
+          0.461
+        ],
+        "balanced_accuracy": 0.661,
+        "balanced_accuracy_ci95": [
+          0.601,
+          0.731
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 109,
+        "disposition_wrong_rate": 0.101
+      },
       "type_accuracy": 0.465,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.134,
@@ -418,6 +784,20 @@
           "disposition_accuracy": 0.933
         }
       },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 129,
+          "accuracy": 0.38
+        },
+        "rework": {
+          "n": 102,
+          "accuracy": 0.873
+        },
+        "pass": {
+          "n": 210,
+          "accuracy": 0.457
+        }
+      },
       "trials_per_task": 3,
       "pass@k": 0.653,
       "pass^k": 0.388,
@@ -435,6 +815,30 @@
       "scored": 180,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.339,
+      "disposition_accuracy_ci95": [
+        0.222,
+        0.461
+      ],
+      "detection": {
+        "n_defective": 90,
+        "n_clean": 90,
+        "tpr": 0.989,
+        "fpr": 0.578,
+        "youden_j": 0.411,
+        "youden_j_ci95": [
+          0.278,
+          0.556
+        ],
+        "balanced_accuracy": 0.706,
+        "balanced_accuracy_ci95": [
+          0.639,
+          0.778
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 84,
+        "disposition_wrong_rate": 0.762
+      },
       "type_accuracy": 0.678,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.011,
@@ -449,12 +853,26 @@
           "disposition_accuracy": 0.422
         },
         "open": {
-          "n": 81,
-          "disposition_accuracy": 0.247
+          "n": 84,
+          "disposition_accuracy": 0.238
         },
         "short": {
-          "n": 6,
+          "n": 3,
           "disposition_accuracy": 0.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 87,
+          "accuracy": 0.23
+        },
+        "rework": {
+          "n": 3,
+          "accuracy": 1.0
+        },
+        "pass": {
+          "n": 90,
+          "accuracy": 0.422
         }
       },
       "trials_per_task": 3,
@@ -470,6 +888,30 @@
       "scored": 441,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.508,
+      "disposition_accuracy_ci95": [
+        0.424,
+        0.582
+      ],
+      "detection": {
+        "n_defective": 231,
+        "n_clean": 210,
+        "tpr": 0.944,
+        "fpr": 0.714,
+        "youden_j": 0.229,
+        "youden_j_ci95": [
+          0.113,
+          0.358
+        ],
+        "balanced_accuracy": 0.615,
+        "balanced_accuracy_ci95": [
+          0.557,
+          0.679
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 123,
+        "disposition_wrong_rate": 0.049
+      },
       "type_accuracy": 0.415,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.056,
@@ -488,20 +930,34 @@
           "disposition_accuracy": 0.286
         },
         "open": {
-          "n": 78,
-          "disposition_accuracy": 0.654
+          "n": 81,
+          "disposition_accuracy": 0.63
         },
         "pinhole": {
-          "n": 18,
-          "disposition_accuracy": 0.944
+          "n": 24,
+          "disposition_accuracy": 0.958
         },
         "short": {
-          "n": 51,
-          "disposition_accuracy": 0.353
+          "n": 48,
+          "disposition_accuracy": 0.375
         },
         "spur": {
-          "n": 21,
+          "n": 15,
           "disposition_accuracy": 1.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 129,
+          "accuracy": 0.535
+        },
+        "rework": {
+          "n": 102,
+          "accuracy": 0.931
+        },
+        "pass": {
+          "n": 210,
+          "accuracy": 0.286
         }
       },
       "trials_per_task": 3,
@@ -521,6 +977,30 @@
       "scored": 180,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.339,
+      "disposition_accuracy_ci95": [
+        0.244,
+        0.439
+      ],
+      "detection": {
+        "n_defective": 90,
+        "n_clean": 90,
+        "tpr": 1.0,
+        "fpr": 0.767,
+        "youden_j": 0.233,
+        "youden_j_ci95": [
+          0.122,
+          0.356
+        ],
+        "balanced_accuracy": 0.617,
+        "balanced_accuracy_ci95": [
+          0.561,
+          0.678
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 89,
+        "disposition_wrong_rate": 0.551
+      },
       "type_accuracy": 0.611,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.0,
@@ -535,12 +1015,26 @@
           "disposition_accuracy": 0.233
         },
         "open": {
-          "n": 81,
-          "disposition_accuracy": 0.42
+          "n": 84,
+          "disposition_accuracy": 0.44
         },
         "short": {
-          "n": 6,
-          "disposition_accuracy": 0.5
+          "n": 3,
+          "disposition_accuracy": 0.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 87,
+          "accuracy": 0.425
+        },
+        "rework": {
+          "n": 3,
+          "accuracy": 1.0
+        },
+        "pass": {
+          "n": 90,
+          "accuracy": 0.233
         }
       },
       "trials_per_task": 3,
@@ -556,6 +1050,30 @@
       "scored": 441,
       "invalid_output_rate": 0.0,
       "disposition_accuracy": 0.469,
+      "disposition_accuracy_ci95": [
+        0.396,
+        0.545
+      ],
+      "detection": {
+        "n_defective": 231,
+        "n_clean": 210,
+        "tpr": 0.944,
+        "fpr": 0.838,
+        "youden_j": 0.106,
+        "youden_j_ci95": [
+          0.037,
+          0.183
+        ],
+        "balanced_accuracy": 0.553,
+        "balanced_accuracy_ci95": [
+          0.518,
+          0.592
+        ]
+      },
+      "named_real_type_wrong_disposition": {
+        "n": 155,
+        "disposition_wrong_rate": 0.065
+      },
       "type_accuracy": 0.429,
       "inconsistent_rate": 0.0,
       "missed_defect_rate": 0.056,
@@ -574,20 +1092,34 @@
           "disposition_accuracy": 0.162
         },
         "open": {
-          "n": 78,
-          "disposition_accuracy": 0.756
+          "n": 81,
+          "disposition_accuracy": 0.765
         },
         "pinhole": {
-          "n": 18,
-          "disposition_accuracy": 0.889
+          "n": 24,
+          "disposition_accuracy": 0.875
         },
         "short": {
-          "n": 51,
-          "disposition_accuracy": 0.549
+          "n": 48,
+          "disposition_accuracy": 0.521
         },
         "spur": {
-          "n": 21,
-          "disposition_accuracy": 0.952
+          "n": 15,
+          "disposition_accuracy": 1.0
+        }
+      },
+      "recall_by_disposition": {
+        "scrap": {
+          "n": 129,
+          "accuracy": 0.674
+        },
+        "rework": {
+          "n": 102,
+          "accuracy": 0.843
+        },
+        "pass": {
+          "n": 210,
+          "accuracy": 0.162
         }
       },
       "trials_per_task": 3,
@@ -599,6 +1131,50 @@
       "boards": 30,
       "board_disposition_accuracy": 0.9,
       "self_contradictions": 0
+    }
+  },
+  "_constant_answer_accuracy": {
+    "board": {
+      "tasks": 60,
+      "always_pass": 0.5,
+      "always_rework": 0.017,
+      "always_scrap": 0.483
+    },
+    "crop": {
+      "tasks": 147,
+      "always_pass": 0.476,
+      "always_rework": 0.231,
+      "always_scrap": 0.293
+    },
+    "wide": {
+      "tasks": 184,
+      "always_pass": 0.5,
+      "always_rework": 0.228,
+      "always_scrap": 0.272
+    },
+    "wide/binary": {
+      "tasks": 184,
+      "always_pass": 0.5,
+      "always_rework": 0.228,
+      "always_scrap": 0.272
+    },
+    "wide/paired": {
+      "tasks": 184,
+      "always_pass": 0.5,
+      "always_rework": 0.228,
+      "always_scrap": 0.272
+    },
+    "wide/prior": {
+      "tasks": 184,
+      "always_pass": 0.5,
+      "always_rework": 0.228,
+      "always_scrap": 0.272
+    },
+    "wide/worst": {
+      "tasks": 184,
+      "always_pass": 0.5,
+      "always_rework": 0.228,
+      "always_scrap": 0.272
     }
   }
 }
