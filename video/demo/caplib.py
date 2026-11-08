@@ -135,6 +135,9 @@ class Recorder:
             for i, (p, t) in enumerate(self.frames):
                 d = (ts[i + 1] - t) if i + 1 < len(ts) else (total - (t - self.t0))
                 f.write(f"file '{p}'\nduration {max(d, 0.02):.4f}\n")
+            # The concat demuxer drops the final `duration` unless the last file
+            # is repeated, so always repeat it; `-t total` below then clamps the
+            # result to exactly the requested length.
             f.write(f"file '{self.frames[-1][0]}'\n")
         subprocess.run(
             [
@@ -148,6 +151,8 @@ class Recorder:
                 lst,
                 "-vf",
                 "fps=30,scale=1920:1080",
+                "-t",
+                f"{total:.3f}",
                 "-c:v",
                 "libx264",
                 "-pix_fmt",
