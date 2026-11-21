@@ -27,12 +27,16 @@ build/
 # video/shots/ are regenerable outputs (and exceed the 500KB commit cap).
 video/shots/
 
-# OS / editor
+# OS / editor / agent tool configs (machine-local)
 .DS_Store
 *.log
 .idea/
 .vscode/
 .qoder/
+.claude/
+.agents/
+.perch/
+.freebuff/
 
 # DeepPCB: the 30-pair demo subset (images + annotations) and the recorded ledgers are
 # committed, so a fresh clone can run the demo with no download step. Anything else
@@ -67,3 +71,14 @@ video/eval/clips/
 video/eval/vo/*.mp3
 video/eval/vo_backup*/
 eval/soldersight-pcb-eval.zip
+
+# heypcb challenge: KiCad schematics/layouts, footprint libs, board overlays,
+# scraped research pages and screenshots are regenerable from the heypcb MCP
+# thread and sit at/over the 500KB cap — the brief, args, router scripts and
+# per-export metadata (requirements, design state, chat status, notes) stay tracked.
+heypcb/shots/
+heypcb/**/*.kicad_pcb
+heypcb/**/*.kicad_sch
+heypcb/**/*.overlay.json
+heypcb/**/heypcb-libs/
+heypcb/**/research/web/

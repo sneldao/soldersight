@@ -1,0 +1,187 @@
+{
+  "schema": "heypcb.requirements.v1",
+  "goal": "Build a benchtop PCB quality-control camera board: a two-layer 60x40 mm board built around an ESP32-S3-WROOM-1 (N8R8, 8 MB flash, 8 MB PSRAM) with a DVP camera connector for an OV2640 module (24-pin 0",
+  "power": "USB-C 5 V supply rated at least 2 A required; no electronic current-advertisement detection or enforcement. Separate 5.1k Rd on CC1 and CC2; 2 A resettable PTC after VBUS ESD, in series before board loads.",
+  "mcu": "ESP32-S3-WROOM-1",
+  "interfaces": [
+    "SD card",
+    "USB-C"
+  ],
+  "actuators": [],
+  "sensors": [],
+  "envelopeMm": {
+    "width": 60.0,
+    "height": 40.0,
+    "fit": "about"
+  },
+  "boardShape": null,
+  "shapeNamed": null,
+  "droneClass": null,
+  "rotorsNamed": null,
+  "envelopeSource": "the user wrote \"\u2026control camera board: a two-layer 60x40 mm board built around an esp\u2026\"",
+  "sizeGoal": null,
+  "containmentMm": null,
+  "mountingPatternMm": null,
+  "layers": 2,
+  "fab": null,
+  "hdi": null,
+  "fabPresetState": {
+    "seeded": "jlcpcb_2layer",
+    "board": "written",
+    "conflictReported": null
+  },
+  "boardType": null,
+  "flex": null,
+  "budgetUsd": null,
+  "quantity": null,
+  "notes": "User explicitly replaces earlier 3 A advertisement enforcement with documented external 5 V >=2 A supply requirement. Estimated maximum board load 1.5 A; preserve existing routing, no whole-board copper clearing. Widen 5 V LED rail and ground returns toward 2 mm where clearance allows.",
+  "notesParts": [
+    {
+      "by": "2131e514-ddaf-46e3-857d-d6db9c3aaf66",
+      "text": "User explicitly replaces earlier 3 A advertisement enforcement with documented external 5 V >=2 A supply requirement. Estimated maximum board load 1.5 A; preserve existing routing, no whole-board copper clearing. Widen 5 V LED rail and ground returns toward 2 mm where clearance allows."
+    }
+  ],
+  "confirmed": true,
+  "layoutRequested": true,
+  "pourRequested": true,
+  "pourRefused": false,
+  "copperDiscardApproved": false,
+  "boardKind": null,
+  "artworkReference": null,
+  "referenceProduct": null,
+  "referenceParts": null,
+  "derivedFields": {
+    "layers": "the user wrote \"2-layer\"",
+    "statedCurrents": "the user wrote \"a 3.3 V LDO (at least 600 mA) feeding the module\""
+  },
+  "pictureLayout": null,
+  "look": null,
+  "lookBasis": null,
+  "lookRetired": null,
+  "listEntryRemovals": {},
+  "sourceParts": null,
+  "briefChecklist": {
+    "items": [
+      {
+        "kind": "mcu",
+        "count": 1,
+        "onBoard": true,
+        "label": "ESP32-S3 N8R8 module",
+        "said": "ESP32-S3-WROOM-1-N8R8",
+        "parts": [
+          "ESP32-S3-WROOM-1",
+          "ESP32-S3-WROOM-1-N8R8"
+        ]
+      },
+      {
+        "kind": "sensor_connector",
+        "count": 1,
+        "onBoard": true,
+        "label": "Bottom-contact camera FPC connector",
+        "said": "bottom-contact (flip-down) 24-pin 0.5 mm FPC connector",
+        "parts": []
+      },
+      {
+        "kind": "camera",
+        "count": 1,
+        "onBoard": false,
+        "label": "OV2640FSL DVP camera module",
+        "said": "OmniVision OV2640FSL 24-pin 0.5 mm FPC DVP module",
+        "parts": [
+          "OV2640",
+          "OV2640FSL"
+        ]
+      },
+      {
+        "kind": "addressable_leds",
+        "count": 8,
+        "onBoard": true,
+        "label": "5 V WS2812B RGB LEDs",
+        "said": "Power the WS2812B ring from USB 5 V",
+        "parts": [
+          "WS2812B"
+        ]
+      },
+      {
+        "kind": "sd_card",
+        "count": 1,
+        "onBoard": true,
+        "label": "microSD card slot",
+        "said": "a microSD card slot",
+        "parts": []
+      },
+      {
+        "kind": "usb_connector",
+        "count": 1,
+        "onBoard": true,
+        "label": "USB-C 5 V power connector",
+        "said": "Power from USB-C",
+        "parts": []
+      },
+      {
+        "kind": "regulator",
+        "count": 1,
+        "onBoard": true,
+        "label": "Stocked 1.3 V LDO",
+        "said": "stocked 1.3 V regulator substitute for the TLV70013",
+        "parts": [
+          "TLV70013"
+        ]
+      },
+      {
+        "kind": "buttons",
+        "count": 2,
+        "onBoard": true,
+        "label": "Boot and reset buttons",
+        "said": "boot and reset buttons",
+        "parts": []
+      },
+      {
+        "kind": "connector",
+        "count": 1,
+        "onBoard": true,
+        "label": "4-pin UART header",
+        "said": "4-pin header (3V3, TX, RX, GND)",
+        "parts": []
+      }
+    ],
+    "read": [
+      "3e6ce83e98f34cfe",
+      "8b513a9f19300cd5",
+      "b960646e86d4b4d1",
+      "b33b013370edd605",
+      "5e160af49485132b",
+      "ae72838fb419645f",
+      "4b36d035644889b6",
+      "4b91ec420be6dbc2",
+      "b97320832e93978d",
+      "ef157700edb556e4",
+      "0325e1825a68b8ca"
+    ],
+    "offBoard": [
+      {
+        "part": "XIAO ESP32S3 Sense",
+        "why": "copied"
+      },
+      {
+        "part": "ESP32-CAM",
+        "why": "replaced"
+      }
+    ],
+    "at": "2026-11-16T12:43:27.724Z"
+  },
+  "statedCurrents": [
+    {
+      "amps": 0.6,
+      "kind": null,
+      "applies": "load",
+      "quote": "a 3.3 V LDO (at least 600 mA) feeding the module",
+      "volts": 3.3
+    }
+  ],
+  "inputVoltage": null,
+  "askedFields": [],
+  "declinedFields": [],
+  "questionCount": 0,
+  "updatedAt": "2026-11-16T12:43:27.991878+00:00"
+}

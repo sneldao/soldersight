@@ -19,6 +19,9 @@ repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.0
     hooks:
+      # heypcb/ is contest scratch tooling, not app code — excluded
       - id: ruff
         args: [--fix]
+        exclude: ^heypcb/
       - id: ruff-format
+        exclude: ^heypcb/

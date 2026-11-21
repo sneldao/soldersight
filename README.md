@@ -214,7 +214,7 @@ Install: `pre-commit install`. Run manually: `pre-commit run --all-files`.
 
 ## Status
 
-App: core build + SolderSight Foundry complete. Eval: complete, with committed results and a zip packaged by `eval/package.sh`.
+App: core build + SolderSight Foundry complete. Eval: complete, with committed results and a zip packaged by `eval/package.sh`. Active event entry: **Worn × MicroLumin M6 glasses** — wearable reference-diff inspection; see [`docs/worn-m6-plan.md`](docs/worn-m6-plan.md).
 - **Backend:** concurrent per-region triage with per-crop failure isolation and confidence-weighted board verdict, corrections→instructions adaptation with append-only rule disabling, compare, metrics, benchmark, and Banyan Sapling policy gate + trace audit (`inspection.py`, `sapling.py`); **42 backend tests pass**.
 - **Foundry (`frontend/src/foundry/` + `data/foundry/`):**
   - `foundry/core`: deterministic A\* router, IPC-2221 DRC scorer, seeded evolutionary loop (`evolve()`), and autonomous defect repair (`heal()`).
