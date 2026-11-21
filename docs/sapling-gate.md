@@ -197,6 +197,23 @@ a second, magnified look at hedged regions targets the majority of the miss
 surface — that queue costs nothing to compute and is where upstream detection
 work should focus.
 
+### Re-inspection — closing part of the miss surface
+
+`python -m gate_eval --reinspect` re-crops every hedged region and re-asks it
+through a live vision model (Mubit → OpenRouter free tier,
+`nvidia/nemotron-3.5-super-vl:free`, instrumented in the console), then reruns
+`rule_gate` on the merged notes. First live run (Nov 21): **15 hedged regions,
+2 findings, 2 boards flipped SHIP→BLOCK** — `baseline:00041002` (spur) and
+`baseline:00041005` (open), both truly scrap — 0 false blocks introduced. A
+$0 second look recovers ~18% of the recorded vision-miss surface; a stronger
+VLM or tighter crop model is the lever on the rest. Two operational notes:
+the free VLMs are reasoning models — long system prompts and `max_tokens`
+under ~800 get spent on reasoning and return empty content (`reasoning:
+{effort: "low"}` + a compact prompt is what made them answer); and `--reinspect`
+makes live network calls — it is not replayable offline. The OpenRouter key
+lives in the Mubit console as `tynf OpenRouter` (Provider keys →
+OpenAI-compatible → OpenRouter); `REINSPECT_MODEL` selects the model.
+
 Additional surfaces: `backend/verifier.py` (the shared ladder),
 `backend/gate_eval.py` (the rung benchmark), `backend/glasses.py` (`gate_for`,
 §5 overlay payloads), `backend/glasses_server.py` (stdlib replay box,

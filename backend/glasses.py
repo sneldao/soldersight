@@ -223,6 +223,7 @@ def payload_for(
         "regions": overlay_rows(regions),
         "board": {
             **verdict,
+            "hedged_count": len(verifier.hedged_regions(regions)),
             "gate": gate_for(
                 board_id,
                 lane,
@@ -251,7 +252,11 @@ def payload_from_triage(result: dict, gate: dict | None = None) -> dict:
         if result.get("board_id")
         else None,
         "regions": overlay,
-        "board": {**board_verdict(rows), "gate": gate},
+        "board": {
+            **board_verdict(rows),
+            "hedged_count": len(verifier.hedged_regions(rows)),
+            "gate": gate,
+        },
     }
 
 

@@ -19,6 +19,9 @@ not a gate miss. The report keeps the two apart on purpose.
 """
 
 import collections
+import json
+import os
+import re
 import sys
 
 import glasses
@@ -133,6 +136,118 @@ def evaluate_ambiguous(use_llm: bool) -> None:
         print(f"llm:   {score['llm'][1]}/{n} expected actions on ambiguous evidence")
 
 
+REINSPECT_URL = "https://api.mubit.ai/compat/openrouter/v1/chat/completions"
+REINSPECT_MODEL = os.environ.get("REINSPECT_MODEL", "nvidia/nemotron-3.5-super-vl:free")
+
+
+_REINSPECT_PROMPT = (
+    "Inspect this PCB crop. Reply as JSON only: "
+    '{"defect_type": "open|short|mousebite|spur|copper|pinhole|none", '
+    '"severity": "cosmetic|minor|major|critical", '
+    '"disposition": "pass|rework|scrap", "confidence": 0.0-1.0, '
+    '"reason": "one sentence"}'
+)
+
+
+def _second_look(image: bytes, row: dict) -> dict | None:
+    """Re-ask one hedged crop through a live VLM (Mubit → OpenRouter free tier).
+    Returns a classification-shaped row, or None on provider/parse failure.
+    Compact prompt + low reasoning effort: the free VLMs are reasoning models
+    and a long system prompt burns the token budget before content lands."""
+    import base64
+
+    import httpx
+    from inspection import Region, crop
+
+    data_url = (
+        "data:image/jpeg;base64,"
+        + base64.b64encode(crop(image, Region(**row["region"]))).decode()
+    )
+    resp = httpx.post(
+        REINSPECT_URL,
+        headers={"Authorization": f"Bearer {os.environ.get('MUBIT_API_KEY', '')}"},
+        json={
+            "model": REINSPECT_MODEL,
+            "reasoning": {"effort": "low"},
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": _REINSPECT_PROMPT},
+                        {"type": "image_url", "image_url": {"url": data_url}},
+                    ],
+                }
+            ],
+            "max_tokens": 1200,
+        },
+        timeout=120,
+    )
+    try:
+        content = (resp.json().get("choices") or [{}])[0].get("message", {}).get(
+            "content"
+        ) or ""
+        content = re.sub(r"^```(?:json)?\s*|\s*```$", "", content.strip())
+        data = json.loads(content)
+    except Exception:
+        # truncated JSON (finish_reason=length): salvage the verdict itself
+        m = re.search(r'"defect_type"\s*:\s*"(\w+)"', content)
+        data = {"defect_type": m.group(1), "confidence": 0.5} if m else None
+    if data is None:
+        return None
+    from main import allowed_types
+
+    if data.get("defect_type") not in allowed_types():
+        return None
+    return {
+        **data,
+        "region": row["region"],
+        "reinspected": True,
+        "reinspect_model": REINSPECT_MODEL,
+    }
+
+
+def evaluate_reinspect() -> None:
+    """Second-look pass: hedged clean regions get re-cropped and re-asked through
+    a live VLM; the gate reruns on the merged notes. Measures how many clean-note
+    vision misses a re-inspection recovers — live network calls, not replayable."""
+    print(f"\nmodel: {REINSPECT_MODEL} via mubit+openrouter\n")
+    print(f"{'board':<22} {'truth':<7} {'hedged':<6} {'before':<7} {'after':<7} found")
+    print("-" * 70)
+    recovered = rechecked = findings = 0
+    for (lane, board_id), _ in sorted(glasses.groups().items()):
+        regions = glasses.run_for(board_id, lane)
+        if not regions:
+            continue
+        hedged = verifier.hedged_regions(regions)
+        if not hedged:
+            continue
+        truth = ground_truth(annotations_for(board_id))
+        before = verifier.rule_gate(regions)["action"]
+        image = open(f"../data/deeppcb/images/{board_id}_test.jpg", "rb").read()
+        found = []
+        merged = list(regions)
+        for row in hedged:
+            rechecked += 1
+            new = _second_look(image, row)
+            if new is None:
+                continue
+            merged[merged.index(row)] = new
+            if new.get("defect_type") not in (None, "none"):
+                findings += 1
+                found.append(new["defect_type"])
+        after = verifier.rule_gate(merged)["action"]
+        if before != "BLOCK" and after == "BLOCK":
+            recovered += 1
+        print(
+            f"{lane}:{board_id:<14} {truth['disposition']:<7} {len(hedged):<6} "
+            f"{before:<7} {after:<7} {','.join(found) or '-'}"
+        )
+    print(
+        f"\n{rechecked} hedged regions re-inspected, {findings} findings, "
+        f"{recovered} boards flipped to BLOCK (of 11 prior vision misses)."
+    )
+
+
 def rungs_for(regions: list[dict], key: str, live: bool, use_llm: bool) -> dict:
     """One verdict per available rung."""
     verdicts = {}
@@ -234,5 +349,7 @@ def evaluate(live: bool = False, use_llm: bool = False) -> None:
 if __name__ == "__main__":
     if "--ambiguous" in sys.argv:
         evaluate_ambiguous(use_llm="--llm" in sys.argv)
+    elif "--reinspect" in sys.argv:
+        evaluate_reinspect()
     else:
         evaluate(live="--live" in sys.argv, use_llm="--llm" in sys.argv)

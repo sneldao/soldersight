@@ -831,12 +831,15 @@ def verify_bundle(
             }
     else:
         gate = {**sapling.gate_decision(response), "source": "live"}
+    hedged = verifier.hedged_regions(regions) if regions else []
     return {
         "policy": policy,
         "evidence": evidence,
         "claim": claim,
         "sapling": response,
         "gate": gate,
+        "hedged_regions": hedged,
+        "hedged_count": len(hedged),
     }
 
 
