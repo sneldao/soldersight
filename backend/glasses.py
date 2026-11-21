@@ -251,8 +251,9 @@ def llm_gate(regions: list[dict]) -> dict | None:
         f"\n\nCLAIM:\n{sapling.build_claim()}"
     )
     # OpenAI-compatible endpoints in priority order — Mubit first (it's the demo's
-    # stack), then evomap (free tier, verified working), then whatever ambient
-    # gateway/key is configured.
+    # stack: /openai/v1 if a real OpenAI key is added, /compat/groq/v1 via the
+    # registered free-tier Groq key), then evomap (free, verified), then whatever
+    # ambient gateway/key is configured.
     candidates = []
     if os.environ.get("MUBIT_API_KEY"):
         candidates.append(
@@ -261,6 +262,18 @@ def llm_gate(regions: list[dict]) -> dict | None:
                 os.environ.get("MUBIT_BASE_URL", "https://api.mubit.ai/openai/v1"),
                 os.environ["MUBIT_API_KEY"],
                 os.environ.get("MUBIT_MODEL", "gpt-4o-mini"),
+                {},
+            )
+        )
+        candidates.append(
+            (
+                "mubit+groq",
+                "https://api.mubit.ai/compat/groq/v1",
+                os.environ["MUBIT_API_KEY"],
+                os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b"),
+                # gpt-oss is a reasoning model; low effort keeps the gate fast
+                # and leaves room for reasoning + the JSON verdict.
+                {"reasoning_effort": "low", "max_tokens": 1500},
             )
         )
     if os.environ.get("EVOMAP_API_KEY"):
@@ -270,6 +283,7 @@ def llm_gate(regions: list[dict]) -> dict | None:
                 os.environ.get("EVOMAP_BASE_URL", "https://api.evomap.ai/v1"),
                 os.environ["EVOMAP_API_KEY"],
                 os.environ.get("EVOMAP_MODEL", "evomap-glm-5.1"),
+                {},
             )
         )
     if os.environ.get("OPENAI_API_KEY"):
@@ -284,16 +298,18 @@ def llm_gate(regions: list[dict]) -> dict | None:
                 base,
                 os.environ["OPENAI_API_KEY"],
                 os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+                {},
             )
         )
-    for name, base, key, model in candidates:
+    for name, base, key, model, extra in candidates:
         try:
             client = OpenAI(base_url=base, api_key=key, timeout=15.0)
             resp = client.chat.completions.create(
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
+                **extra,
             )
-            content = resp.choices[0].message.content.strip()
+            content = (resp.choices[0].message.content or "").strip()
             # Some models wrap the object in ```json fences despite instructions.
             if content.startswith("```"):
                 content = content.split("```")[1]
