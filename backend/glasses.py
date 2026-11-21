@@ -251,7 +251,8 @@ def llm_gate(regions: list[dict]) -> dict | None:
         f"\n\nCLAIM:\n{sapling.build_claim()}"
     )
     # OpenAI-compatible endpoints in priority order — Mubit first (it's the demo's
-    # stack), then whatever ambient gateway/key is configured.
+    # stack), then evomap (free tier, verified working), then whatever ambient
+    # gateway/key is configured.
     candidates = []
     if os.environ.get("MUBIT_API_KEY"):
         candidates.append(
@@ -260,6 +261,15 @@ def llm_gate(regions: list[dict]) -> dict | None:
                 os.environ.get("MUBIT_BASE_URL", "https://api.mubit.ai/openai/v1"),
                 os.environ["MUBIT_API_KEY"],
                 os.environ.get("MUBIT_MODEL", "gpt-4o-mini"),
+            )
+        )
+    if os.environ.get("EVOMAP_API_KEY"):
+        candidates.append(
+            (
+                "evomap",
+                os.environ.get("EVOMAP_BASE_URL", "https://api.evomap.ai/v1"),
+                os.environ["EVOMAP_API_KEY"],
+                os.environ.get("EVOMAP_MODEL", "evomap-glm-5.1"),
             )
         )
     if os.environ.get("OPENAI_API_KEY"):
@@ -282,9 +292,14 @@ def llm_gate(regions: list[dict]) -> dict | None:
             resp = client.chat.completions.create(
                 model=model,
                 messages=[{"role": "user", "content": prompt}],
-                response_format={"type": "json_object"},
             )
-            out = json.loads(resp.choices[0].message.content)
+            content = resp.choices[0].message.content.strip()
+            # Some models wrap the object in ```json fences despite instructions.
+            if content.startswith("```"):
+                content = content.split("```")[1]
+                if content.startswith("json"):
+                    content = content[4:]
+            out = json.loads(content)
         except Exception:
             continue  # that provider is down -> try the next one
         label = out.get("label")

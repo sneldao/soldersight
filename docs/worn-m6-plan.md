@@ -183,13 +183,16 @@ Rung 2 + rung 3 of the fallback ladder exist and run offline:
   `docs/sapling-gate.md`, marked `source: "recorded"`. Re-run `snapshot` to refresh.
 - **Gate redundancy** (`glasses.gate_for`, each rung labels its `source`):
   live Sapling → recorded snapshot → LLM verifier (`use_llm`/`GLASSES_LLM_GATE=1`;
-  Mubit first, then ambient OpenAI-compatible gateways) → deterministic policy
-  check (`rule_gate` — always on, zero network). As of Nov 21 every cloud rung
-  is dead (Sapling 503, Mubit 403 no provider key, ambient gateway 402 credits),
-  so the working pair is snapshot + rules — and rules is honest, not a Sapling
-  stand-in: it answers only "did the model's own notes forbid shipping as-is?"
-  Self-hosting Sapling is documented but not venue-viable (46 GB checkpoint,
-  H200 reference runtime — `MubitLabs/banyan-sapling` on HF).
+  Mubit → evomap free tier → ambient OpenAI-compatible gateways) → deterministic
+  policy check (`rule_gate` — always on, zero network). Verified Nov 21: Sapling
+  503, Mubit 403, ambient gateway 402 — but **evomap (`evomap-glm-5.1`) is a live
+  free fallback**: `violation`@1.0 on `baseline:00041003`, `supported`@0.9 on
+  `baseline:00041004`. Probed-and-dead: freemodel 401, openmodel 404, aiml 403
+  (no funds), featherless 403 (no subscription), aisa 402 (no balance).
+  `rule_gate` is honest, not a Sapling stand-in: it answers only "did the
+  model's own notes forbid shipping as-is?" Self-hosting Sapling is documented
+  but not venue-viable (46 GB checkpoint, H200 reference runtime —
+  `MubitLabs/banyan-sapling` on HF).
 
 Still open until the SDK brief: §4 capture path, the real M6 transport
 (the contract assumes a client that can poll HTTP or read NDJSON), rung 4.
