@@ -13,6 +13,16 @@ const LABEL_TEXT: Record<SaplingLabel, string> = {
   inconsistent_context: "Inconsistent context",
 };
 
+// Which rung of the verifier ladder decided — disclosed so a fallback never
+// reads as a Sapling verdict.
+const SOURCE_TEXT: Record<string, string> = {
+  live: "sapling",
+  recorded: "recorded sapling",
+  llm: "LLM verifier",
+  rules: "policy rules",
+  unavailable: "fail-safe",
+};
+
 function ProbBar({ label, value, lead }: { label: SaplingLabel; value: number; lead: boolean }) {
   return (
     <div className="prob-row">
@@ -70,6 +80,7 @@ export function PolicyGate({ result }: { result: VerifyResult }) {
             Verdict: {gate.label ? LABEL_TEXT[gate.label] : "unavailable"}
             {gate.confidence != null && ` · ${Math.round(gate.confidence * 100)}% calibrated`}
             {gate.unsure && " · uncertain"}
+            {gate.source && ` · via ${SOURCE_TEXT[gate.source] ?? gate.source}`}
           </div>
         </div>
       </div>

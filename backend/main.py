@@ -14,6 +14,7 @@ from openai import APIConnectionError, APIStatusError, OpenAI
 from pydantic import BaseModel
 
 import sapling
+import verifier
 from inspection import Region, changed_regions, crop, grid_regions
 
 try:
@@ -804,15 +805,38 @@ def compare(body: Comparison) -> dict:
     }
 
 
-def verify_bundle(policy: str, evidence: str, claim: str) -> dict:
-    """Run Banyan Sapling and attach the line decision it implies."""
+def verify_bundle(
+    policy: str,
+    evidence: str,
+    claim: str,
+    regions: list[dict] | None = None,
+    subject: str = "the model's own notes",
+) -> dict:
+    """Run the verifier ladder and attach the line decision it implies.
+
+    Sapling is preferred; on an outage the gate still answers through the
+    labeled fallbacks in `verifier` (independent LLM when a provider is
+    configured, then the deterministic policy check over the evidence
+    regions). `gate["source"]` always names which rung decided — nothing
+    impersonates Sapling. `regions`/`subject` feed the fallbacks; oracle-mode
+    callers pass pseudo-regions and "the AOI evidence".
+    """
     response = sapling.verify(policy, evidence, claim)
+    if "error" in response:
+        gate = verifier.fallback_gate(regions or [], evidence=evidence, subject=subject)
+        if gate is None:
+            gate = {
+                **sapling.gate_decision(response),
+                "source": "unavailable",
+            }
+    else:
+        gate = {**sapling.gate_decision(response), "source": "live"}
     return {
         "policy": policy,
         "evidence": evidence,
         "claim": claim,
         "sapling": response,
-        "gate": sapling.gate_decision(response),
+        "gate": gate,
     }
 
 
@@ -873,7 +897,15 @@ def verify_board(board_id: str, body: Verify) -> dict:
     policy = body.policy or sapling.default_policy()
     claim = sapling.build_claim(body.disposition)
 
-    bundle = verify_bundle(policy, evidence, claim)
+    if evidence_mode == "oracle":
+        # The fallbacks read region-shaped evidence; oracle types become
+        # pseudo-regions so the same ladder applies.
+        fallback_regions = [{"defect_type": t} for t in body.evidence_types]
+        bundle = verify_bundle(
+            policy, evidence, claim, fallback_regions, subject="the AOI evidence"
+        )
+    else:
+        bundle = verify_bundle(policy, evidence, claim, regions)
     # So the demo can show "vision said pass, gate caught it" against the truth.
     bundle["board_id"] = board_id
     bundle["claimed_disposition"] = body.disposition
@@ -902,7 +934,7 @@ def verify_trace(body: TraceVerify) -> dict:
             if r.get("defect_type") not in (None, "none")
         }
     )
-    bundle = verify_bundle(policy, evidence, claim)
+    bundle = verify_bundle(policy, evidence, claim, body.regions)
     bundle["regions_examined"] = len(body.regions)
     bundle["defects_the_model_noted"] = noted
     return bundle

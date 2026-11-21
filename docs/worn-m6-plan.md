@@ -16,6 +16,8 @@ Brooklyn.
 | **Judging**    | Understands you · Adaptability (phone↔glasses) · Ergonomics · Works on     |
 |                | glasses · Impact — each 0–2 / 10. Below 1 avg on *works on glasses* DQ's   |
 | **Deadline**   | Sat Nov 21, 2:00 PM ET via Airtable — no late edits                        |
+| **Submission** | Draft copy ready at `docs/SUBMISSION_WORN.md` — two bracketed slots        |
+|                | to fill after hardware contact (render channel + observed behavior).     |
 | **Prior work** | SolderSight predates the event → **disclose it** in the submission         |
 
 ## 2. The honest reframe — what the eval already proved
@@ -181,11 +183,15 @@ Rung 2 + rung 3 of the fallback ladder exist and run offline:
 - `glasses/gate_verdicts.json` — **Sapling was 503 on Nov 21**; the hero verdict
   (`baseline:00041003` → violation 0.84 → BLOCK) is the value documented in
   `docs/sapling-gate.md`, marked `source: "recorded"`. Re-run `snapshot` to refresh.
-- **Gate redundancy** (`glasses.gate_for`, each rung labels its `source`):
-  live Sapling → recorded snapshot → LLM verifier (`use_llm`/`GLASSES_LLM_GATE=1`;
-  Mubit `/openai/v1` → Mubit `/compat/groq/v1` (gpt-oss-120b, free tier, key
-  registered in console Nov 21) → evomap → ambient) → deterministic
-  policy check (`rule_gate` — always on, zero network). Verified live Nov 21:
+- **Gate redundancy** (`glasses.gate_for` → shared rungs in
+  `backend/verifier.py`, each labels its `source`): live Sapling → recorded
+  snapshot → LLM verifier (`use_llm`/`GLASSES_LLM_GATE=1`; Mubit `/openai/v1` →
+  Mubit `/compat/groq/v1` (gpt-oss-120b, free tier, key registered in console
+  Nov 21) → evomap → ambient) → deterministic policy check (`rule_gate` —
+  always on, zero network). The same rungs now back `/verify/board` and
+  `/verify/trace` when Sapling errors (`verify_bundle`), and
+  `python -m gate_eval` benchmarks every rung on the recorded ledger
+  (Nov 21: llm + rules both convict 12/12 noted defects, 0 false blocks). Verified live Nov 21:
   `mubit+groq` BLOCKs `adapted:00041000` (open defects) and SHIPs
   `baseline:00041004` — every gate call instrumented in the Mubit console.
   Sapling itself: endpoint 503 (paused HF dedicated endpoint — Mubit-owned,
@@ -199,7 +205,63 @@ Rung 2 + rung 3 of the fallback ladder exist and run offline:
 Still open until the SDK brief: §4 capture path, the real M6 transport
 (the contract assumes a client that can poll HTTP or read NDJSON), rung 4.
 
-## 12. Mapping to existing docs
+## 12. Transport gap — the one thing between this and a submission
+
+**Nov 21 review:** the data plane is proven end-to-end offline (payloads,
+replay server, gate ladder all verified live). The sibling entry (mettle)
+is ahead on exactly one axis: it has a **built, sideload-ready M6 viewer
+APK** that polls an HTTP relay and renders mono-green cards. Soldersight
+has no display path — closing that gap *is* the submission. Options ranked
+by venue-time cost:
+
+1. **M6 built-in browser — check first, zero code.** The M6 is Android 9;
+   if it ships a usable browser, point it at
+   `http://<mac-ip>:8001/glasses` — `glasses/index.html` already is the
+   waveguide renderer (cell overlay, one-line verdict, gate banner) and
+   already falls back to embedded `payloads.js`. If this works, rung 3 is
+   live in minutes. Test this before building anything.
+2. **Mettle-pattern APK (~1–2h with the scaffold as reference).** The
+   mettle `glasses-android/` app is the same shape this needs: one
+   activity polling HTTP and painting mono-green. The endpoints it would
+   consume already exist — `GET /glasses/board/{id}?lane=` (baked
+   payloads) and `GET /glasses/stream/{id}` (paced NDJSON replay). Don't
+   rewrite the pipeline; write the viewer. Note mettle's lesson: APK
+   *iteration* on one device is costly — prefer options 1/3 before
+   committing to on-device builds.
+3. **Zero-build push channels** — same hardware facts as the mettle doc:
+   `MLVISION Secret Vision` teleprompter/text push, or iOS notification
+   mirroring if the M6 renders iPhone notifications. Weakest fidelity
+   (text only — no cell overlay), but it still lands the demo's closer:
+   `BLOCK`/`SHIP` + one line on the glasses.
+
+**Venue WiFi:** same constraint as mettle — event networks isolate
+clients, and every channel here hits `http://<mac-ip>:8001`. Plan A is
+the iPhone hotspot: Mac + M6 join it, `glasses_server.py` binds the
+Mac's hotspot IP. **Test the hotspot path before leaving, not at the
+venue.**
+
+**Also required before touching hardware:** write
+`docs/SUBMISSION_WORN.md` — the Airtable is due 2:00 PM with no late
+edits, and the draft costs nothing now. Follow the mettle pattern:
+complete copy with two bracketed slots (render channel + observed
+on-device behavior) filled after hardware contact.
+
+**Revised execution order (supersedes §6 for remaining time):**
+
+| Order | Step |
+| ----- | ---- |
+| 1 | `SUBMISSION_WORN.md` draft (no hardware needed) |
+| 2 | Hotspot test: Mac + phone on iPhone hotspot, replay server reachable |
+| 3 | M6 browser probe → `http://<mac-ip>:8001/glasses` (option 1 above) |
+| 4 | If browser fails: clone mettle's APK viewer pattern against `/glasses/stream/{id}` |
+| 5 | If APK fails: Secret Vision / notification push of `gate` line only |
+| 6 | Two rehearsals at the working rung; submit with buffer |
+
+**Score impact:** transport closed → works-on-glasses 2, ceiling ~8/10.
+Transport open → a laptop demo at a glasses hackathon, ~5/10. Binary and
+cheap to close — do it before anything else.
+
+## 13. Mapping to existing docs
 
 - [`../eval/README.md`](../eval/README.md) — the numbers §2 cites; the
   credibility slide.

@@ -156,11 +156,14 @@ Details: [`docs/sapling-gate.md`](docs/sapling-gate.md).
 (cached real verdicts as instant fallback). See [`docs/huggingface_strategy.md`](docs/huggingface_strategy.md).
 
 > **Verifier status (Nov 21, 2026):** the research-preview endpoint is paused
-> (Mubit-owned; the contract is unchanged). `glasses.gate_for` now falls back
-> through a labeled ladder — recorded snapshots → an independent LLM verifier
-> (Mubit-routed Groq free tier, then evomap) → a deterministic policy check on
-> the model's own notes. Every verdict names its `source`; nothing impersonates
-> Sapling. See `docs/sapling-gate.md` § *Service status & fallbacks*.
+> (Mubit-owned; the contract is unchanged). Every gate surface — `/verify/*`
+> and the glasses payloads — now falls back through a labeled ladder in
+> `backend/verifier.py`: an independent LLM verifier (Mubit-routed Groq free
+> tier, then evomap) → a deterministic policy check on the evidence. Every
+> verdict names its `source`; nothing impersonates Sapling. Measured on the
+> 23-board ledger: both rungs convict 12/12 noted defects with 0 false blocks
+> (`python -m gate_eval --llm`). See `docs/sapling-gate.md` § *Service status
+> & fallbacks*.
 
 ## SolderSight Foundry — Autonomous PCB Engine (Evolve + Heal)
 

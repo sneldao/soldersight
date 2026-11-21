@@ -17,6 +17,7 @@ import json
 from pathlib import Path
 
 import sapling
+import verifier
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "deeppcb"
 RUNS_PATH = DATA_DIR / "runs.jsonl"
@@ -169,168 +170,6 @@ def gate_snapshot() -> dict:
     return {}
 
 
-_SCRAP_TYPES = {"open", "short"}  # policy: scrap-grade, cannot ship as-is
-_REWORK_TYPES = {"mousebite", "spur", "copper", "pinhole"}  # policy: must rework
-
-
-def rule_gate(regions: list[dict]) -> dict:
-    """The deterministic verifier: the same written policy as code.
-
-    Not a stand-in for Sapling's calibrated semantics — it answers the narrower
-    question the gate exists for: do the model's own notes record anything the
-    acceptance policy forbids shipping as-is? Always available, zero network,
-    and honest about being a rule check rather than a learned verdict.
-    Confidence = the strength of the strongest defect note it blocks on.
-    """
-    notes = [
-        r
-        for r in regions
-        if r.get("defect_type") not in (None, "none") and not r.get("error")
-    ]
-    errored = sum(1 for r in regions if r.get("error"))
-    scrap = [r for r in notes if r["defect_type"] in _SCRAP_TYPES]
-    rework = [r for r in notes if r["defect_type"] in _REWORK_TYPES]
-    if scrap:
-        worst = max(scrap, key=lambda r: r.get("confidence") or 0)
-        return {
-            "action": "BLOCK",
-            "label": "violation",
-            "reason": f"Policy check: the model's own notes record '{worst['defect_type']}' (scrap-grade) — this board cannot ship as-is.",
-            "confidence": worst.get("confidence"),
-            "source": "rules",
-            "errored_regions": errored or None,
-        }
-    if rework:
-        worst = max(rework, key=lambda r: r.get("confidence") or 0)
-        return {
-            "action": "BLOCK",
-            "label": "violation",
-            "reason": f"Policy check: the model's own notes record '{worst['defect_type']}' (rework-grade) — must rework, cannot ship as-is.",
-            "confidence": worst.get("confidence"),
-            "source": "rules",
-            "errored_regions": errored or None,
-        }
-    if errored:
-        return {
-            "action": "REVIEW",
-            "label": "insufficient_information",
-            "reason": f"Policy check: {errored} crop(s) failed inspection — incomplete evidence, route to a human inspector.",
-            "confidence": None,
-            "source": "rules",
-            "errored_regions": errored,
-        }
-    return {
-        "action": "SHIP",
-        "label": "supported",
-        "reason": "Policy check: no defect recorded in the model's own observations — cleared to ship.",
-        "confidence": None,
-        "source": "rules",
-    }
-
-
-def llm_gate(regions: list[dict]) -> dict | None:
-    """A second opinion from a different service: the claim vs the model's own
-    notes, put to the Mubit-routed LLM. Needs MUBIT_API_KEY + network — a live
-    fallback when Sapling is down but connectivity isn't. Imported lazily so
-    the stdlib replay server stays dependency-free."""
-    import os
-
-    try:
-        from openai import OpenAI
-    except ImportError:
-        return None
-    evidence = sapling.build_trace_evidence(regions)
-    prompt = (
-        "You are an independent quality gate on a PCB line. Given the acceptance "
-        "policy, the inspection model's own per-region observations, and the claim, "
-        "decide if the claim holds. Reply as JSON only: "
-        '{"label": "supported"|"violation"|"insufficient_information", '
-        '"confidence": 0.0-1.0, "reason": "one sentence"}'
-        f"\n\nPOLICY:\n{sapling.default_policy()}"
-        f"\n\nEVIDENCE:\n{evidence}"
-        f"\n\nCLAIM:\n{sapling.build_claim()}"
-    )
-    # OpenAI-compatible endpoints in priority order — Mubit first (it's the demo's
-    # stack: /openai/v1 if a real OpenAI key is added, /compat/groq/v1 via the
-    # registered free-tier Groq key), then evomap (free, verified), then whatever
-    # ambient gateway/key is configured.
-    candidates = []
-    if os.environ.get("MUBIT_API_KEY"):
-        candidates.append(
-            (
-                "mubit",
-                os.environ.get("MUBIT_BASE_URL", "https://api.mubit.ai/openai/v1"),
-                os.environ["MUBIT_API_KEY"],
-                os.environ.get("MUBIT_MODEL", "gpt-4o-mini"),
-                {},
-            )
-        )
-        candidates.append(
-            (
-                "mubit+groq",
-                "https://api.mubit.ai/compat/groq/v1",
-                os.environ["MUBIT_API_KEY"],
-                os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b"),
-                # gpt-oss is a reasoning model; low effort keeps the gate fast
-                # and leaves room for reasoning + the JSON verdict.
-                {"reasoning_effort": "low", "max_tokens": 1500},
-            )
-        )
-    if os.environ.get("EVOMAP_API_KEY"):
-        candidates.append(
-            (
-                "evomap",
-                os.environ.get("EVOMAP_BASE_URL", "https://api.evomap.ai/v1"),
-                os.environ["EVOMAP_API_KEY"],
-                os.environ.get("EVOMAP_MODEL", "evomap-glm-5.1"),
-                {},
-            )
-        )
-    if os.environ.get("OPENAI_API_KEY"):
-        base = (
-            os.environ.get("OPENAI_BASE_URL")
-            or os.environ.get("OPENAI_API_BASE")
-            or "https://api.openai.com/v1"
-        )
-        candidates.append(
-            (
-                "openai",
-                base,
-                os.environ["OPENAI_API_KEY"],
-                os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-                {},
-            )
-        )
-    for name, base, key, model, extra in candidates:
-        try:
-            client = OpenAI(base_url=base, api_key=key, timeout=15.0)
-            resp = client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                **extra,
-            )
-            content = (resp.choices[0].message.content or "").strip()
-            # Some models wrap the object in ```json fences despite instructions.
-            if content.startswith("```"):
-                content = content.split("```")[1]
-                if content.startswith("json"):
-                    content = content[4:]
-            out = json.loads(content)
-        except Exception:
-            continue  # that provider is down -> try the next one
-        label = out.get("label")
-        action = {"supported": "SHIP", "violation": "BLOCK"}.get(label, "REVIEW")
-        return {
-            "action": action,
-            "label": label,
-            "reason": f"LLM verifier ({name}): {out.get('reason', '')}",
-            "confidence": out.get("confidence"),
-            "source": "llm",
-            "provider": name,
-        }
-    return None
-
-
 def gate_for(
     board_id: str,
     lane: str,
@@ -354,10 +193,10 @@ def gate_for(
     if snap:
         return {**snap, "source": "recorded"}
     if use_llm:
-        llm = llm_gate(regions)
+        llm = verifier.llm_gate(regions)
         if llm:
             return llm
-    return rule_gate(regions)
+    return verifier.rule_gate(regions)
 
 
 def payload_for(

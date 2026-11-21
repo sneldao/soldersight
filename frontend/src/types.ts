@@ -207,6 +207,10 @@ export interface GateDecision {
   confidence: number | null;
   margin: number | null;
   unsure: boolean;
+  // Which verifier rung decided: "live" (Sapling), "recorded" (snapshot),
+  // "llm" (independent LLM), "rules" (policy-as-code), "unavailable".
+  source?: string;
+  provider?: string;
   probabilities?: Record<SaplingLabel, number>;
   prediction_set?: SaplingLabel[];
   error?: string;
