@@ -169,37 +169,176 @@ def gate_snapshot() -> dict:
     return {}
 
 
-def gate_for(board_id: str, lane: str, regions: list[dict], live: bool = False) -> dict:
-    """Sapling's verdict on the ship claim against the model's own notes.
+_SCRAP_TYPES = {"open", "short"}  # policy: scrap-grade, cannot ship as-is
+_REWORK_TYPES = {"mousebite", "spur", "copper", "pinhole"}  # policy: must rework
 
-    Default is the committed snapshot (venue-proof). `live=True` re-asks Sapling —
-    used by the snapshot generator and any live path; failure falls back to the
-    snapshot, then to REVIEW (fail safe).
+
+def rule_gate(regions: list[dict]) -> dict:
+    """The deterministic verifier: the same written policy as code.
+
+    Not a stand-in for Sapling's calibrated semantics — it answers the narrower
+    question the gate exists for: do the model's own notes record anything the
+    acceptance policy forbids shipping as-is? Always available, zero network,
+    and honest about being a rule check rather than a learned verdict.
+    Confidence = the strength of the strongest defect note it blocks on.
+    """
+    notes = [
+        r
+        for r in regions
+        if r.get("defect_type") not in (None, "none") and not r.get("error")
+    ]
+    errored = sum(1 for r in regions if r.get("error"))
+    scrap = [r for r in notes if r["defect_type"] in _SCRAP_TYPES]
+    rework = [r for r in notes if r["defect_type"] in _REWORK_TYPES]
+    if scrap:
+        worst = max(scrap, key=lambda r: r.get("confidence") or 0)
+        return {
+            "action": "BLOCK",
+            "label": "violation",
+            "reason": f"Policy check: the model's own notes record '{worst['defect_type']}' (scrap-grade) — this board cannot ship as-is.",
+            "confidence": worst.get("confidence"),
+            "source": "rules",
+            "errored_regions": errored or None,
+        }
+    if rework:
+        worst = max(rework, key=lambda r: r.get("confidence") or 0)
+        return {
+            "action": "BLOCK",
+            "label": "violation",
+            "reason": f"Policy check: the model's own notes record '{worst['defect_type']}' (rework-grade) — must rework, cannot ship as-is.",
+            "confidence": worst.get("confidence"),
+            "source": "rules",
+            "errored_regions": errored or None,
+        }
+    if errored:
+        return {
+            "action": "REVIEW",
+            "label": "insufficient_information",
+            "reason": f"Policy check: {errored} crop(s) failed inspection — incomplete evidence, route to a human inspector.",
+            "confidence": None,
+            "source": "rules",
+            "errored_regions": errored,
+        }
+    return {
+        "action": "SHIP",
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations — cleared to ship.",
+        "confidence": None,
+        "source": "rules",
+    }
+
+
+def llm_gate(regions: list[dict]) -> dict | None:
+    """A second opinion from a different service: the claim vs the model's own
+    notes, put to the Mubit-routed LLM. Needs MUBIT_API_KEY + network — a live
+    fallback when Sapling is down but connectivity isn't. Imported lazily so
+    the stdlib replay server stays dependency-free."""
+    import os
+
+    try:
+        from openai import OpenAI
+    except ImportError:
+        return None
+    evidence = sapling.build_trace_evidence(regions)
+    prompt = (
+        "You are an independent quality gate on a PCB line. Given the acceptance "
+        "policy, the inspection model's own per-region observations, and the claim, "
+        "decide if the claim holds. Reply as JSON only: "
+        '{"label": "supported"|"violation"|"insufficient_information", '
+        '"confidence": 0.0-1.0, "reason": "one sentence"}'
+        f"\n\nPOLICY:\n{sapling.default_policy()}"
+        f"\n\nEVIDENCE:\n{evidence}"
+        f"\n\nCLAIM:\n{sapling.build_claim()}"
+    )
+    # OpenAI-compatible endpoints in priority order — Mubit first (it's the demo's
+    # stack), then whatever ambient gateway/key is configured.
+    candidates = []
+    if os.environ.get("MUBIT_API_KEY"):
+        candidates.append(
+            (
+                "mubit",
+                os.environ.get("MUBIT_BASE_URL", "https://api.mubit.ai/openai/v1"),
+                os.environ["MUBIT_API_KEY"],
+                os.environ.get("MUBIT_MODEL", "gpt-4o-mini"),
+            )
+        )
+    if os.environ.get("OPENAI_API_KEY"):
+        base = (
+            os.environ.get("OPENAI_BASE_URL")
+            or os.environ.get("OPENAI_API_BASE")
+            or "https://api.openai.com/v1"
+        )
+        candidates.append(
+            (
+                "openai",
+                base,
+                os.environ["OPENAI_API_KEY"],
+                os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+            )
+        )
+    for name, base, key, model in candidates:
+        try:
+            client = OpenAI(base_url=base, api_key=key, timeout=15.0)
+            resp = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"},
+            )
+            out = json.loads(resp.choices[0].message.content)
+        except Exception:
+            continue  # that provider is down -> try the next one
+        label = out.get("label")
+        action = {"supported": "SHIP", "violation": "BLOCK"}.get(label, "REVIEW")
+        return {
+            "action": action,
+            "label": label,
+            "reason": f"LLM verifier ({name}): {out.get('reason', '')}",
+            "confidence": out.get("confidence"),
+            "source": "llm",
+            "provider": name,
+        }
+    return None
+
+
+def gate_for(
+    board_id: str,
+    lane: str,
+    regions: list[dict],
+    live: bool = False,
+    use_llm: bool = False,
+) -> dict:
+    """The gate, with redundancy: live Sapling -> recorded snapshot -> LLM
+    verifier (opt-in, needs key+network) -> deterministic policy check.
+
+    Every rung labels its `source` so nothing pretends to be Sapling.
     """
     key = f"{lane}:{board_id}"
     if live:
         evidence = sapling.build_trace_evidence(regions)
         resp = sapling.verify(sapling.default_policy(), evidence, sapling.build_claim())
         decision = sapling.gate_decision(resp)
-        if decision.get("label") or decision.get("action"):
+        if decision.get("label") or decision.get("action") == "SHIP":
             return {**decision, "source": "live"}
     snap = gate_snapshot().get(key)
     if snap:
         return {**snap, "source": "recorded"}
-    return {
-        "action": "REVIEW",
-        "label": None,
-        "confidence": None,
-        "reason": "No gate verdict on record — route to a human inspector.",
-        "source": "none",
-    }
+    if use_llm:
+        llm = llm_gate(regions)
+        if llm:
+            return llm
+    return rule_gate(regions)
 
 
 def payload_for(
-    board_id: str, lane: str = "adapted", gate_live: bool = False
+    board_id: str,
+    lane: str = "adapted",
+    gate_live: bool = False,
+    use_llm: bool = False,
 ) -> dict | None:
     """One board's glasses payload, from its recorded run (pinned for demo boards,
     latest otherwise)."""
+    import os
+
     regions = run_for(board_id, lane)
     if regions is None:
         return None
@@ -214,7 +353,13 @@ def payload_for(
         "regions": overlay_rows(regions),
         "board": {
             **verdict,
-            "gate": gate_for(board_id, lane, regions, live=gate_live),
+            "gate": gate_for(
+                board_id,
+                lane,
+                regions,
+                live=gate_live,
+                use_llm=use_llm or os.environ.get("GLASSES_LLM_GATE") == "1",
+            ),
         },
     }
 

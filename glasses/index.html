@@ -133,7 +133,9 @@ function showGate(payload) {
   el.style.display = "block";
   const conf = g.confidence != null ? ` · ${Math.round(g.confidence*100)}%` : "";
   el.textContent = `GATE ${g.action || "REVIEW"}${conf} — ${(g.reason || "").split("—")[0].trim()}`;
-  const src = g.source === "recorded" ? "recorded sapling verdict" : g.source === "live" ? "live sapling" : "no verdict on record";
+  const SRC = {recorded: "recorded sapling verdict", live: "live sapling",
+               llm: "LLM verifier (Mubit)", rules: "deterministic policy check"};
+  const src = SRC[g.source] || "no verdict on record";
   $("meta").textContent =
     `${payload.board_id} · ${payload.lane} lane · ${state.source} · ${src}` +
     (payload.board.caveat ? ` · ${payload.board.caveat}` : "");

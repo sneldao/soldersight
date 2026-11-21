@@ -5,11 +5,12 @@
       "defect_type": "open",
       "disposition": "scrap",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 1.0,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "A bright gap in the copper trace indicates a broken circuit."
     },
@@ -138,11 +139,12 @@
       "defect_type": "none",
       "disposition": "scrap",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 1.0,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "There is a bright gap breaking a dark copper trace\u2026"
     },
@@ -271,11 +273,12 @@
       "defect_type": "open",
       "disposition": "scrap",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 1.0,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "A bright gap is present breaking a dark copper trace\u2026"
     },
@@ -404,11 +407,12 @@
       "defect_type": "open",
       "disposition": "scrap",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 1.0,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "There is a bright gap breaking the dark copper trace\u2026"
     },
@@ -537,11 +541,12 @@
       "defect_type": "open",
       "disposition": "scrap",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 1.0,
+        "errored_regions": 1,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "A visible gap in the copper trace indicates a broken\u2026"
     },
@@ -670,11 +675,12 @@
       "defect_type": "open",
       "disposition": "scrap",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 1.0,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "A visible gap disrupting a copper trace indicates a broken\u2026"
     },
@@ -803,11 +809,12 @@
       "defect_type": "open",
       "disposition": "scrap",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 1.0,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "There is a bright gap breaking a dark copper trace\u2026"
     },
@@ -936,11 +943,12 @@
       "defect_type": "open",
       "disposition": "scrap",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 1.0,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "There is a visible break in the trace causing an open\u2026"
     },
@@ -1027,11 +1035,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image shows no identifiable defects on the PCB."
     },
@@ -1160,11 +1168,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image shows standard PCB symbols and does not indicate\u2026"
     },
@@ -1293,11 +1301,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image does not show any visible defects or issues on\u2026"
     },
@@ -1561,11 +1569,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The close-up shows no visible defects on the PCB."
     },
@@ -1694,11 +1702,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image does not display any noticeable defects on the\u2026"
     },
@@ -1827,11 +1835,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image does not show any identifiable defects on the PCB."
     },
@@ -1960,11 +1968,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image shows clean traces with no visible defects."
     },
@@ -2093,11 +2101,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image shows no discernible defects on the PCB."
     },
@@ -2184,11 +2192,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The surface appears clean without any visible defects."
     },
@@ -2317,11 +2325,12 @@
       "defect_type": "pinhole",
       "disposition": "rework",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 0.75,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'pinhole' (rework-grade) \u2014 must rework, cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "Visible defect likely affecting conductivity."
     },
@@ -2450,11 +2459,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image shows no clear defects, but minor cosmetic\u2026"
     },
@@ -2583,11 +2592,12 @@
       "defect_type": "pinhole",
       "disposition": "rework",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 0.85,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'pinhole' (rework-grade) \u2014 must rework, cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "A small pinhole is detected, which may affect performance\u2026"
     },
@@ -2716,11 +2726,11 @@
       "defect_type": "none",
       "disposition": "pass",
       "gate": {
-        "action": "REVIEW",
+        "action": "SHIP",
         "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "label": "supported",
+        "reason": "Policy check: no defect recorded in the model's own observations \u2014 cleared to ship.",
+        "source": "rules"
       },
       "reason": "The image shows no identifiable defects on the PCB."
     },
@@ -2849,11 +2859,12 @@
       "defect_type": "open",
       "disposition": "rework",
       "gate": {
-        "action": "REVIEW",
-        "confidence": null,
-        "label": null,
-        "reason": "No gate verdict on record \u2014 route to a human inspector.",
-        "source": "none"
+        "action": "BLOCK",
+        "confidence": 0.85,
+        "errored_regions": null,
+        "label": "violation",
+        "reason": "Policy check: the model's own notes record 'open' (scrap-grade) \u2014 this board cannot ship as-is.",
+        "source": "rules"
       },
       "reason": "There appears to be a break in the circuit trace."
     },

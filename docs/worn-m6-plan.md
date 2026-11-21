@@ -181,6 +181,15 @@ Rung 2 + rung 3 of the fallback ladder exist and run offline:
 - `glasses/gate_verdicts.json` — **Sapling was 503 on Nov 21**; the hero verdict
   (`baseline:00041003` → violation 0.84 → BLOCK) is the value documented in
   `docs/sapling-gate.md`, marked `source: "recorded"`. Re-run `snapshot` to refresh.
+- **Gate redundancy** (`glasses.gate_for`, each rung labels its `source`):
+  live Sapling → recorded snapshot → LLM verifier (`use_llm`/`GLASSES_LLM_GATE=1`;
+  Mubit first, then ambient OpenAI-compatible gateways) → deterministic policy
+  check (`rule_gate` — always on, zero network). As of Nov 21 every cloud rung
+  is dead (Sapling 503, Mubit 403 no provider key, ambient gateway 402 credits),
+  so the working pair is snapshot + rules — and rules is honest, not a Sapling
+  stand-in: it answers only "did the model's own notes forbid shipping as-is?"
+  Self-hosting Sapling is documented but not venue-viable (46 GB checkpoint,
+  H200 reference runtime — `MubitLabs/banyan-sapling` on HF).
 
 Still open until the SDK brief: §4 capture path, the real M6 transport
 (the contract assumes a client that can poll HTTP or read NDJSON), rung 4.
