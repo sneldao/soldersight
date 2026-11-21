@@ -166,6 +166,37 @@ nothing false-blocks a clean board. On this evidence shape a free LLM and a
 policy-as-code check agree exactly — Sapling's remaining edge is calibrated
 uncertainty on ambiguous evidence, not catch rate.
 
+### Ambiguous evidence — where semantics pay
+
+`python -m gate_eval --ambiguous [--llm]` replays 12 synthetic cases built to
+separate the rungs: notes whose *text* says "look again" while the structured
+`defect_type` field says `none` (hedged cracks, hazy bridges, glare-occluded
+pads, low-confidence cleans, contradictions, cosmetic caveats). Result with
+`llm` live via `mubit+groq` (Nov 21):
+
+| rung | expected actions | failure mode |
+|------|------------------|--------------|
+| `rules` | 6/12 | SHIPs every hedged/low-confidence note — it only reads `defect_type` |
+| `llm` | 9/12 | catches all 6 ambiguous cases (4 REVIEW, 2 conservative BLOCK); over-escalates one error case to BLOCK |
+
+The gap is real and one-directional: rules' misses are silent SHIPs (the
+dangerous direction); the LLM's are over-cautious BLOCKs. This is the load a
+semantic verifier carries that policy-as-code can't — and a free LLM already
+captures most of it. When Sapling's endpoint returns, `--live` adds its
+calibrated column to this table; the bet to check is whether its
+`insufficient_information` calls land better than an off-the-shelf model's.
+
+### The hedge signal — a re-inspection queue for free
+
+The same eval now prints a `hedged` column: clean notes flagged by
+`verifier.hedged_regions()` for hedge language or confidence < 0.8. On the
+23-board ledger, **8 of the 11 shipped-defective boards carried hedge signals**
+(the model said "appears clean"/"may be" on boards that were truly defective);
+only 3 vision misses were confident-and-wrong. A re-inspection pass that takes
+a second, magnified look at hedged regions targets the majority of the miss
+surface — that queue costs nothing to compute and is where upstream detection
+work should focus.
+
 Additional surfaces: `backend/verifier.py` (the shared ladder),
 `backend/gate_eval.py` (the rung benchmark), `backend/glasses.py` (`gate_for`,
 §5 overlay payloads), `backend/glasses_server.py` (stdlib replay box,

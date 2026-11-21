@@ -32,6 +32,107 @@ def expected_action(disposition: str) -> str:
     return "SHIP" if disposition == "pass" else "BLOCK"
 
 
+# Synthetic ambiguous-evidence cases: notes a human inspector would route to
+# REVIEW, phrased so the *text* says "look again" while the structured fields
+# say "none". rule_gate reads only defect_type — the gap between its answer and
+# the expected action is exactly the semantic load Sapling/LLM can carry.
+def _region(dtype, reason, conf=None, error=None):
+    r = {
+        "defect_type": dtype,
+        "severity": "unspecified",
+        "reason": reason,
+        "region": {"x1": 0, "y1": 0, "x2": 80, "y2": 80},
+    }
+    if conf is not None:
+        r["confidence"] = conf
+    if error:
+        r["error"] = error
+    return r
+
+
+AMBIGUOUS_CASES = [
+    (
+        "hedged crack",
+        [
+            _region(
+                "none",
+                "possible hairline crack near via 4 — cannot confirm from this angle",
+                0.72,
+            )
+        ],
+        "REVIEW",
+    ),
+    (
+        "hedged bridge",
+        [
+            _region(
+                "none",
+                "suspected bridging between adjacent traces, image is hazy",
+                0.65,
+            )
+        ],
+        "REVIEW",
+    ),
+    (
+        "glare occludes",
+        [_region("none", "cannot fully confirm — glare obscures the pad", 0.6)],
+        "REVIEW",
+    ),
+    ("low-conf clean", [_region("none", "no visible defects", 0.5)], "REVIEW"),
+    (
+        "tombstoning?",
+        [_region("none", "potential tombstoning of component C12, edge is faint", 0.7)],
+        "REVIEW",
+    ),
+    (
+        "oxidation?",
+        [_region("none", "copper discoloration, possibly oxidation", 0.75)],
+        "REVIEW",
+    ),
+    (
+        "contradiction",
+        [
+            _region("short", "clear bridge across traces", 0.9),
+            _region("none", "clean", 0.9),
+        ],
+        "BLOCK",
+    ),
+    (
+        "error+clean",
+        [_region("none", "clean", 0.95), _region("none", None, error="crop timeout")],
+        "REVIEW",
+    ),
+    ("error only", [_region("none", None, error="model unavailable")], "REVIEW"),
+    (
+        "cosmetic",
+        [_region("none", "minor cosmetic scratch, no functional impact", 0.9)],
+        "SHIP",
+    ),
+    ("confident clean", [_region("none", "no visible defects", 0.95)], "SHIP"),
+    ("real spur", [_region("spur", "copper spur protruding from trace", 0.8)], "BLOCK"),
+]
+
+
+def evaluate_ambiguous(use_llm: bool) -> None:
+    print(f"\n{'case':<15}  expected  rules     " + ("llm        " if use_llm else ""))
+    print("-" * 60)
+    score = {"rules": [0, 0], "llm": [0, 0]}
+    for name, regions, expected in AMBIGUOUS_CASES:
+        g = verifier.rule_gate(regions)
+        line = f"{name:<15}  {expected:<8}  {g['action']:<9}"
+        score["rules"][g["action"] == expected] += 1
+        if use_llm:
+            lg = verifier.llm_gate(regions)
+            line += f"  {(lg or {}).get('action', 'ERR'):<9}"
+            if lg:
+                score["llm"][lg["action"] == expected] += 1
+        print(line)
+    n = len(AMBIGUOUS_CASES)
+    print(f"\nrules: {score['rules'][1]}/{n} expected actions on ambiguous evidence")
+    if use_llm:
+        print(f"llm:   {score['llm'][1]}/{n} expected actions on ambiguous evidence")
+
+
 def rungs_for(regions: list[dict], key: str, live: bool, use_llm: bool) -> dict:
     """One verdict per available rung."""
     verdicts = {}
@@ -95,6 +196,7 @@ def evaluate(live: bool = False, use_llm: bool = False) -> None:
                 key,
                 truth["disposition"],
                 ",".join(sorted(noted)) or "-",
+                len(verifier.hedged_regions(regions)) or "-",
                 {rung: g["action"] for rung, g in verdicts.items()},
             )
         )
@@ -102,13 +204,13 @@ def evaluate(live: bool = False, use_llm: bool = False) -> None:
     rung_order = [r for r in ("live", "recorded", "llm", "rules") if stats.get(r)]
     name_w = max(len(k) for k, *_ in rows)
     print(
-        f"\n{'board':<{name_w}}  truth   noted           "
+        f"\n{'board':<{name_w}}  truth   noted           hedged  "
         + "  ".join(f"{r:<9}" for r in rung_order)
     )
-    print("-" * (name_w + 30 + 12 * len(rung_order)))
-    for key, disp, noted_str, actions in rows:
+    print("-" * (name_w + 38 + 12 * len(rung_order)))
+    for key, disp, noted_str, hedged_n, actions in rows:
         print(
-            f"{key:<{name_w}}  {disp:<7} {noted_str:<15} "
+            f"{key:<{name_w}}  {disp:<7} {noted_str:<15} {hedged_n!s:<7} "
             + "  ".join(f"{actions.get(r, '-'):<9}" for r in rung_order)
         )
     print()
@@ -130,4 +232,7 @@ def evaluate(live: bool = False, use_llm: bool = False) -> None:
 
 
 if __name__ == "__main__":
-    evaluate(live="--live" in sys.argv, use_llm="--llm" in sys.argv)
+    if "--ambiguous" in sys.argv:
+        evaluate_ambiguous(use_llm="--llm" in sys.argv)
+    else:
+        evaluate(live="--live" in sys.argv, use_llm="--llm" in sys.argv)

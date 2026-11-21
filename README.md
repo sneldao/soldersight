@@ -162,8 +162,9 @@ Details: [`docs/sapling-gate.md`](docs/sapling-gate.md).
 > tier, then evomap) → a deterministic policy check on the evidence. Every
 > verdict names its `source`; nothing impersonates Sapling. Measured on the
 > 23-board ledger: both rungs convict 12/12 noted defects with 0 false blocks
-> (`python -m gate_eval --llm`). See `docs/sapling-gate.md` § *Service status
-> & fallbacks*.
+> (`python -m gate_eval --llm`); on ambiguous evidence the LLM rung catches
+> what rules can't see (`--ambiguous`: 9/12 vs 6/12). See
+> `docs/sapling-gate.md` § *Service status & fallbacks*.
 
 ## SolderSight Foundry — Autonomous PCB Engine (Evolve + Heal)
 

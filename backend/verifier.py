@@ -22,11 +22,35 @@ Consumers:
 
 import json
 import os
+import re
 
 import sapling
 
 _SCRAP_TYPES = {"open", "short"}  # policy: scrap-grade, cannot ship as-is
 _REWORK_TYPES = {"mousebite", "spur", "copper", "pinhole"}  # policy: must rework
+
+_HEDGE_RE = re.compile(
+    r"possibly|potential|suspect|may be|might|unclear|cannot confirm|unsure|"
+    r"appear|seem|likely|probable|faint|hazy|minor cosmetic|cosmetic",
+    re.I,
+)
+
+
+def hedged_regions(regions: list[dict]) -> list[dict]:
+    """Clean notes that aren't quite clean: hedged language or confidence under
+    0.8. These are the queue a re-inspection pass (magnified second look) would
+    take — the gate leaves them alone, but 'appears clean' is not 'is clean'.
+    Defects and errors are already handled by the gate."""
+    return [
+        r
+        for r in regions
+        if not r.get("error")
+        and r.get("defect_type") in (None, "none")
+        and (
+            (r.get("confidence") or 1.0) < 0.8
+            or _HEDGE_RE.search(r.get("reason") or "")
+        )
+    ]
 
 
 def rule_gate(regions: list[dict], subject: str = "the model's own notes") -> dict:
