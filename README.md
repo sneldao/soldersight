@@ -155,6 +155,13 @@ Details: [`docs/sapling-gate.md`](docs/sapling-gate.md).
 — a free static HF Space that calls Banyan Sapling **live from your browser**
 (cached real verdicts as instant fallback). See [`docs/huggingface_strategy.md`](docs/huggingface_strategy.md).
 
+> **Verifier status (Nov 21, 2026):** the research-preview endpoint is paused
+> (Mubit-owned; the contract is unchanged). `glasses.gate_for` now falls back
+> through a labeled ladder — recorded snapshots → an independent LLM verifier
+> (Mubit-routed Groq free tier, then evomap) → a deterministic policy check on
+> the model's own notes. Every verdict names its `source`; nothing impersonates
+> Sapling. See `docs/sapling-gate.md` § *Service status & fallbacks*.
+
 ## SolderSight Foundry — Autonomous PCB Engine (Evolve + Heal)
 
 Where **Triage** catches defective boards and adapts the vision task, **Foundry** (the

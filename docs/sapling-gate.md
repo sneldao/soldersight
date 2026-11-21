@@ -107,3 +107,38 @@ it before the board left the line.
 Endpoint: Mubit's research-preview Banyan Sapling
 (`https://6adbee0669a00298cd4774c9.endpoints.huggingface.cloud`, no auth).
 Override with `BANYAN_ENDPOINT` to point at self-hosted open weights.
+
+## Service status & fallbacks (Nov 21, 2026)
+
+The research-preview endpoint is **paused** — it answers 503 instantly, the
+signature of a stopped HF dedicated endpoint in Mubit's account (we can't wake
+it; their demo Space `MubitLabs/banyan-sapling-demo` is paused too and only
+proxies the same endpoint). The request/response contract is unchanged, so the
+integration needs no edits when it comes back.
+
+Until then, `glasses.gate_for` verifies through a labeled fallback ladder —
+every verdict reports its `source`, so nothing pretends to be Sapling:
+
+1. **`live`** — Sapling, when reachable (`live=True`).
+2. **`recorded`** — committed snapshots in `glasses/gate_verdicts.json`
+   (e.g. `baseline:00041003` → violation 0.84 → BLOCK, the documented value).
+3. **`llm`** — an independent OpenAI-compatible verifier (opt-in via `use_llm`
+   or `GLASSES_LLM_GATE=1`): Mubit `/openai/v1` → Mubit `/compat/groq/v1`
+   (free-tier `gpt-oss-120b`, registered under Provider keys in the console —
+   verified live: BLOCKs `adapted:00041000`, SHIPs `baseline:00041004`) →
+   evomap (`evomap-glm-5.1`, free) → ambient gateways. Probed dead:
+   Anthropic route (valid key, zero credit), freemodel, openmodel, aiml,
+   featherless, aisa.
+4. **`rules`** — `glasses.rule_gate`: the acceptance policy as code over the
+   model's own notes. Always on, zero network. Honest — it answers only "did
+   the model's own notes forbid shipping as-is?"; it is not a Sapling stand-in.
+
+Self-hosting the real Sapling: `hf download MubitLabs/banyan-sapling`, run the
+bundled `inference.py` (pinned runtime — Python 3.12 / CUDA 13 / H200
+reference, ~46 GB checkpoint), point `BANYAN_ENDPOINT` at it.
+
+Additional surfaces added for the wearable demo: `backend/glasses.py`
+(`gate_for`, `rule_gate`, `llm_gate`, §5 overlay payloads),
+`backend/glasses_server.py` (stdlib replay box, `:8001`), `glasses/index.html`
+(waveguide preview, works from `file://`), `glasses/payloads.{json,js}` (all
+recorded boards baked).

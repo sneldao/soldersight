@@ -1,6 +1,11 @@
 # SolderSight — Hugging Face Space (as built)
 
 **Status: DEPLOYED.** → https://huggingface.co/spaces/Papajams/soldersight-sapling
+
+> Nov 21, 2026: the research-preview endpoint is **paused** (503s — Mubit-owned,
+> can't wake it). The Space still loads and serves the **cached real verdicts**
+> instantly; the "live" chip won't appear until the endpoint returns. The gate's
+> local fallback ladder is documented in `docs/sapling-gate.md`.
 (direct app: https://papajams-soldersight-sapling.static.hf.space)
 
 A living, linkable demo that shows Banyan Sapling doing the hard part — semantic
