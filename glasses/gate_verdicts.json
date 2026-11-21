@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "provenance": "Sapling research-preview endpoint was returning 503 on 2026-11-21; entries below are the verdicts documented in docs/sapling-gate.md / README from recorded runs. Refresh live with: python -m glasses snapshot",
+    "recorded_from": "docs/sapling-gate.md (trace audit, 14/14 blocked)"
+  },
+  "baseline:00041003": {
+    "action": "BLOCK",
+    "label": "violation",
+    "reason": "Claim conflicts with the acceptance policy — ship blocked.",
+    "confidence": 0.84,
+    "margin": null,
+    "unsure": false
+  }
+}

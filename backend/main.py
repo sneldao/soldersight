@@ -8,12 +8,18 @@ from typing import Annotated
 from uuid import uuid4
 
 from fastapi import FastAPI, File, Form, HTTPException, Response, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from openai import APIConnectionError, APIStatusError, OpenAI
 from pydantic import BaseModel
 
 import sapling
 from inspection import Region, changed_regions, crop, grid_regions
+
+try:
+    import glasses
+except ImportError:  # glasses.py is worn-demo tooling; app must boot without it
+    glasses = None
 
 MUBIT_BASE_URL = "https://api.mubit.ai/openai/v1"
 MODEL = "gpt-4o-mini"
@@ -32,6 +38,14 @@ INSTRUCTIONS_TEMPLATE = """You are a PCB quality inspector. Look at this close-u
 Reply as JSON only: {{"defect_type":..., "severity":..., "disposition":..., "confidence":..., "reason":...}}"""
 
 app = FastAPI(title="SolderSight")
+# Local demo backend — the worn surface (glasses client / file:// preview) polls
+# it cross-origin. There is no auth on any endpoint.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data" / "deeppcb"
 RUNS_PATH = DATA_DIR / "runs.jsonl"
@@ -892,3 +906,17 @@ def verify_trace(body: TraceVerify) -> dict:
     bundle["regions_examined"] = len(body.regions)
     bundle["defects_the_model_noted"] = noted
     return bundle
+
+
+@app.get("/glasses/board/{board_id}")
+def glasses_board(board_id: str, lane: str = "adapted") -> dict:
+    """The worn-demo overlay payload (worn-m6 plan §5): per-region cell + verdict +
+    the model's own note, and the board verdict + Sapling gate snapshot."""
+    if glasses is None:
+        raise HTTPException(status_code=503, detail="glasses module unavailable")
+    payload = glasses.payload_for(board_id, lane)
+    if payload is None:
+        raise HTTPException(
+            status_code=404, detail=f"no recorded run for {lane}:{board_id}"
+        )
+    return payload

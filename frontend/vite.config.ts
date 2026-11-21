@@ -14,6 +14,7 @@ export default defineConfig({
       "/metrics": "http://localhost:8000",
       "/benchmark": "http://localhost:8000",
       "/crop": "http://localhost:8000",
+      "/glasses": "http://localhost:8000",
       "/boards": "http://localhost:8000",
       "/assets": "http://localhost:8000",
     },

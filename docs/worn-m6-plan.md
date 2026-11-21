@@ -162,7 +162,30 @@ Insight with a board inspector.
 - **Prior work** → disclose in the Airtable form; the delta being submitted
   is the glasses surface and the worn workflow.
 
-## 11. Mapping to existing docs
+## 11. Built (Nov 21)
+
+Rung 2 + rung 3 of the fallback ladder exist and run offline:
+
+- `backend/glasses.py` — §5 payload builder (`payload_for`, `payload_from_triage`
+  for the live path). `PINNED_RUNS` pins `baseline:00041003` to the batch whose
+  own notes say "short circuit". `python -m glasses snapshot` refreshes
+  `glasses/gate_verdicts.json` from live Sapling; `python -m glasses payloads`
+  rebakes `glasses/payloads.{json,js}` after any new recorded run.
+- `backend/glasses_server.py` — stdlib-only venue box on :8001: `GET /glasses`
+  (preview page), `GET /glasses/board/{id}?lane=`, `GET /glasses/stream/{id}`
+  (paced NDJSON — region per tick, verdict, gate), `/images/{name}`.
+- `glasses/index.html` — waveguide preview (rung 2): green-on-black cell overlay,
+  one-line verdict, gate banner. Fetch order: replay server → :8000 backend →
+  embedded `payloads.js` — so it also runs from `file://` with no servers.
+- `GET /glasses/board/{id}` on the FastAPI backend (same contract, recorded runs).
+- `glasses/gate_verdicts.json` — **Sapling was 503 on Nov 21**; the hero verdict
+  (`baseline:00041003` → violation 0.84 → BLOCK) is the value documented in
+  `docs/sapling-gate.md`, marked `source: "recorded"`. Re-run `snapshot` to refresh.
+
+Still open until the SDK brief: §4 capture path, the real M6 transport
+(the contract assumes a client that can poll HTTP or read NDJSON), rung 4.
+
+## 12. Mapping to existing docs
 
 - [`../eval/README.md`](../eval/README.md) — the numbers §2 cites; the
   credibility slide.

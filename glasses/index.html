@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SolderSight — worn overlay preview</title>
+<style>
+  /* Waveguide-preview aesthetic: one accent colour on black, hairline boxes,
+     one line of text at a time — what an M6 lens renders, at laptop size. */
+  :root {
+    --accent: #4ade80;          /* waveguide green — swap once the M6 palette is known */
+    --accent-dim: rgba(74,222,128,.38);
+    --warn: #fbbf24;            /* rework */
+    --bad: #f87171;             /* scrap / BLOCK */
+    --bg: #000;
+    --ink: #d7f5e3;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 14px/1.4 "SF Mono", ui-monospace, Menlo, monospace;
+         min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 14px; }
+  .hud { width: min(92vw, 560px); }
+  .topline { font-size: 20px; letter-spacing: .04em; margin-bottom: 10px; min-height: 1.4em; }
+  .board { position: relative; width: 100%; aspect-ratio: 1; border: 1px solid var(--accent-dim); }
+  .board img { width: 100%; height: 100%; object-fit: contain; opacity: .5; display: block;
+               filter: grayscale(.6) brightness(.85); }
+  .cell { position: absolute; border: 1px solid var(--accent-dim); }
+  .cell .tag { position: absolute; top: -1px; left: -1px; font-size: 10px; padding: 0 3px;
+               background: var(--accent-dim); color: #000; font-weight: 700; }
+  .cell.bad { border: 2px solid var(--bad); box-shadow: 0 0 12px rgba(248,113,113,.35) inset; }
+  .cell.warn { border: 2px solid var(--warn); }
+  .cell.bad .tag { background: var(--bad); }
+  .cell.warn .tag { background: var(--warn); }
+  .cell.pending { opacity: .15; }
+  .regions { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; min-height: 150px; }
+  .rrow { display: flex; gap: 8px; align-items: baseline; opacity: .95; }
+  .rrow .v { width: 56px; font-weight: 700; text-align: right; }
+  .v.pass { color: var(--accent); } .v.rework { color: var(--warn); } .v.scrap { color: var(--bad); }
+  .rrow .c { color: var(--accent-dim); width: 52px; }
+  .rrow .n { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .gate { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--accent-dim); font-size: 18px;
+          display: none; }
+  .gate.BLOCK { border-color: var(--bad); color: var(--bad); }
+  .gate.SHIP { border-color: var(--accent); color: var(--accent); }
+  .gate.REVIEW { border-color: var(--warn); color: var(--warn); }
+  .meta { margin-top: 8px; color: var(--accent-dim); font-size: 11px; }
+  .controls { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+  button, select { background: none; border: 1px solid var(--accent-dim); color: var(--ink);
+                   font: inherit; padding: 6px 10px; cursor: pointer; }
+  button:hover, select:hover { border-color: var(--accent); }
+  button:disabled { opacity: .35; cursor: default; }
+  select option { background: #000; }
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="topline" id="topline">SOLDERSIGHT</div>
+  <div class="controls">
+    <select id="boardSel"></select>
+    <select id="laneSel">
+      <option value="baseline">baseline</option>
+      <option value="adapted">adapted</option>
+      <option value="crops">crops</option>
+    </select>
+    <button id="replayBtn">▶ replay</button>
+    <button id="liveBtn">live :8000</button>
+  </div>
+  <div class="board"><img id="boardImg" alt="" /><div id="cells"></div></div>
+  <div class="regions" id="regions"></div>
+  <div class="gate" id="gate"></div>
+  <div class="meta" id="meta"></div>
+</div>
+<script src="payloads.js"></script>
+<script>
+const Q = new URLSearchParams(location.search);
+const state = { payload: null, playing: false, source: "embedded" };
+
+const $ = id => document.getElementById(id);
+
+// Fetch order: same-origin replay server → FastAPI backend → embedded corpus.
+// file:// falls through to the baked payloads.json straight away.
+async function loadPayload(board, lane, preferLive) {
+  const bases = [];
+  if (location.protocol.startsWith("http")) bases.push("");           // same origin (replay server)
+  if (preferLive || true) bases.push("http://localhost:8000");        // FastAPI, if running
+  for (const base of bases) {
+    try {
+      const r = await fetch(`${base}/glasses/board/${board}?lane=${lane}`, {signal: AbortSignal.timeout(2500)});
+      if (r.ok) { state.source = base ? "backend :8000" : "replay server"; return await r.json(); }
+    } catch (_) {}
+  }
+  state.source = "recorded ledger";
+  if (window.SOLDERSIGHT_PAYLOADS) return window.SOLDERSIGHT_PAYLOADS[`${lane}:${board}`] || null;
+  try {
+    const r = await fetch("payloads.json");
+    const corpus = await r.json();
+    return corpus[`${lane}:${board}`] || null;
+  } catch (_) { return null; }
+}
+
+function imgSrc(payload) {
+  // Replay server serves /images/; file:// reads the committed dataset.
+  if (location.protocol.startsWith("http")) return "/" + payload.image;
+  return "../data/deeppcb/" + payload.image;
+}
+
+function verdictClass(v) { return v === "scrap" ? "bad" : v === "rework" ? "warn" : ""; }
+
+function drawGrid(payload) {
+  const cells = $("cells"); cells.innerHTML = "";
+  for (const r of payload.regions) {
+    const d = document.createElement("div");
+    d.className = "cell " + verdictClass(r.verdict);
+    d.style.cssText = `left:${r.bbox[0]*100}%;top:${r.bbox[1]*100}%;width:${r.bbox[2]*100}%;height:${r.bbox[3]*100}%`;
+    d.dataset.cell = r.cell;
+    d.innerHTML = `<span class="tag">${r.cell}</span>`;
+    cells.appendChild(d);
+  }
+}
+
+function row(r) {
+  const d = document.createElement("div");
+  d.className = "rrow";
+  d.innerHTML = `<span class="c">cell ${r.cell}</span>
+    <span class="v ${r.verdict}">${(r.verdict||"").toUpperCase()}</span>
+    <span class="n">${r.defect_type && r.defect_type !== "none" ? r.defect_type + " · " : ""}${r.note || ""}</span>`;
+  return d;
+}
+
+function showGate(payload) {
+  const g = payload.board.gate || {};
+  const el = $("gate");
+  el.className = "gate " + (g.action || "REVIEW");
+  el.style.display = "block";
+  const conf = g.confidence != null ? ` · ${Math.round(g.confidence*100)}%` : "";
+  el.textContent = `GATE ${g.action || "REVIEW"}${conf} — ${(g.reason || "").split("—")[0].trim()}`;
+  const src = g.source === "recorded" ? "recorded sapling verdict" : g.source === "live" ? "live sapling" : "no verdict on record";
+  $("meta").textContent =
+    `${payload.board_id} · ${payload.lane} lane · ${state.source} · ${src}` +
+    (payload.board.caveat ? ` · ${payload.board.caveat}` : "");
+}
+
+function render(payload, {staged = false} = {}) {
+  state.payload = payload;
+  $("regions").innerHTML = "";
+  $("gate").style.display = "none";
+  if (!payload) { $("topline").textContent = "NO RECORDED RUN"; return; }
+  $("topline").textContent = "SCANNING…";
+  $("boardImg").src = imgSrc(payload);
+  drawGrid(payload);
+  if (staged) {
+    document.querySelectorAll(".cell").forEach(c => c.classList.add("pending"));
+    return;
+  }
+  for (const r of payload.regions) $("regions").appendChild(row(r));
+  const b = payload.board;
+  $("topline").textContent =
+    `${b.disposition.toUpperCase()} — ${b.defect_type && b.defect_type !== "none" ? b.defect_type : "clean"}` +
+    (b.confidence != null ? ` · ${Math.round(b.confidence*100)}%` : "");
+  showGate(payload);
+}
+
+async function replay() {
+  const payload = state.payload;
+  if (!payload || state.playing) return;
+  state.playing = true; $("replayBtn").disabled = true;
+  render(payload, {staged: true});
+  const cellEls = [...document.querySelectorAll(".cell")];
+  for (const r of payload.regions) {
+    await new Promise(s => setTimeout(s, 700));
+    $("regions").appendChild(row(r));
+    const el = cellEls.find(c => +c.dataset.cell === r.cell);
+    if (el) el.classList.remove("pending");
+  }
+  await new Promise(s => setTimeout(s, 400));
+  const b = payload.board;
+  $("topline").textContent =
+    `${b.disposition.toUpperCase()} — ${b.defect_type && b.defect_type !== "none" ? b.defect_type : "clean"}` +
+    (b.confidence != null ? ` · ${Math.round(b.confidence*100)}%` : "");
+  await new Promise(s => setTimeout(s, 700));
+  showGate(payload);
+  state.playing = false; $("replayBtn").disabled = false;
+}
+
+async function refresh(preferLive = false) {
+  const p = await loadPayload($("boardSel").value, $("laneSel").value, preferLive);
+  render(p);
+}
+
+async function init() {
+  const boards = ["00041003","00041004","00041000","00041001","00041002","00041005","00041009","00041015","00041029"];
+  try {
+    if (location.protocol.startsWith("http")) {
+      const r = await fetch("/glasses/boards", {signal: AbortSignal.timeout(1500)});
+      if (r.ok) { const j = await r.json(); boards.splice(0, boards.length, ...j.boards); }
+    }
+  } catch (_) {}
+  $("boardSel").innerHTML = boards.map(b => `<option>${b}</option>`).join("");
+  $("boardSel").value = Q.get("board") || "00041003";
+  $("laneSel").value = Q.get("lane") || "baseline";
+  $("boardSel").onchange = () => refresh();
+  $("laneSel").onchange = () => refresh();
+  $("replayBtn").onclick = replay;
+  $("liveBtn").onclick = () => refresh(true);
+  await refresh();
+}
+init();
+</script>
+</body>
+</html>
