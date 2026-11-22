@@ -220,14 +220,17 @@ by venue-time cost:
    waveguide renderer (cell overlay, one-line verdict, gate banner) and
    already falls back to embedded `payloads.js`. If this works, rung 3 is
    live in minutes. Test this before building anything.
-2. **Mettle-pattern APK (~1–2h with the scaffold as reference).** The
-   mettle `glasses-android/` app is the same shape this needs: one
-   activity polling HTTP and painting mono-green. The endpoints it would
-   consume already exist — `GET /glasses/board/{id}?lane=` (baked
-   payloads) and `GET /glasses/stream/{id}` (paced NDJSON replay). Don't
-   rewrite the pipeline; write the viewer. Note mettle's lesson: APK
-   *iteration* on one device is costly — prefer options 1/3 before
-   committing to on-device builds.
+2. **Mettle-pattern APK — BUILT Nov 22.** `glasses-android/` consumes the
+   endpoints that already exist: paced NDJSON
+   `GET /glasses/stream/{id}?lane=` (cells light up one verdict at a
+   time), falling back to the `/glasses/board/{id}` snapshot. It merged
+   the Worn `GlassesAppTemplate` on top of mettle's pattern:
+   accessibility-service boot persistence (`setup.sh` once over adb →
+   self-starts ~20 s after every power-on), foreground keep-alive, and an
+   on-glasses HTTP server on `:8080` — `GET /open /close /ping
+   /config?base&board&lane` plus `POST /gate`, which lands the BLOCK/SHIP
+   closer on the lens instantly. Untested on hardware; render checks at
+   the venue: first boot, stream pacing, cell scaling.
 3. **Zero-build push channels** — same hardware facts as the mettle doc:
    `MLVISION Secret Vision` teleprompter/text push, or iOS notification
    mirroring if the M6 renders iPhone notifications. Weakest fidelity
@@ -253,7 +256,7 @@ on-device behavior) filled after hardware contact.
 | 1 | `SUBMISSION_WORN.md` draft (no hardware needed) |
 | 2 | Hotspot test: Mac + phone on iPhone hotspot, replay server reachable |
 | 3 | M6 browser probe → `http://<mac-ip>:8001/glasses` (option 1 above) |
-| 4 | If browser fails: clone mettle's APK viewer pattern against `/glasses/stream/{id}` |
+| 4 | If browser fails: `glasses-android/` APK against `/glasses/stream/{id}` (built Nov 22 — `./setup.sh` once, then `curl :8080/config`) |
 | 5 | If APK fails: Secret Vision / notification push of `gate` line only |
 | 6 | Two rehearsals at the working rung; submit with buffer |
 
